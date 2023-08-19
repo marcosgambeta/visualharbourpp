@@ -95,7 +95,7 @@ METHOD Init( oParent ) CLASS Button
    DEFAULT ::__xCtrlName TO "Button"
    ::ImgInst   := ::Instance
    ::ClsName   := "Button"
-   DEFAULT ::Style TO ( WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS )
+   DEFAULT ::Style TO ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
    ::Super:Init( oParent )
    ::Width     := 80
    ::Height    := 25
@@ -216,7 +216,7 @@ METHOD DrawFrame( hDC, aRect, nAlign, nWidth, nStatus ) CLASS Button
    LOCAL nFlags := DFCS_BUTTONPUSH
 
    IF nStatus != NIL
-      nFlags := ( nFlags | nStatus )
+      nFlags := ( hb_bitor(nFlags, nStatus) )
    ENDIF
    DO CASE
       CASE nAlign == DT_LEFT
@@ -251,7 +251,7 @@ METHOD OnParentDrawItem( nwParam, nlParam, dis ) CLASS Button
       lDefault  := ( dis:itemState & ODS_DEFAULT  ) != 0
 
       aTextRect  := aClone( aRect )
-      nTextFlags := ( ::Alignment | DT_VCENTER | DT_SINGLELINE )
+      nTextFlags := ( hb_bitor(::Alignment, DT_VCENTER, DT_SINGLELINE) )
 
       IF oImageList != NIL .AND. ::ImageIndex > 0
          DO CASE
@@ -371,7 +371,7 @@ METHOD OnParentDrawItem( nwParam, nlParam, dis ) CLASS Button
                aTextRect[1]++
                aTextRect[2]++
             ENDIF
-            nTextFlags := ( ::Alignment | DT_VCENTER )
+            nTextFlags := ( hb_bitor(::Alignment, DT_VCENTER) )
          ENDIF
          _DrawText( dis:hDC, ::xText, aTextRect, nTextFlags )
       ENDIF
@@ -461,7 +461,7 @@ ENDCLASS
 METHOD Init( oParent ) CLASS CommandLink
    ::__xCtrlName := "CommandLink"
    ::ClsName   := "Button"
-   DEFAULT ::Style TO ( WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_COMMANDLINK )
+   DEFAULT ::Style TO ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_COMMANDLINK) )
    ::Super:Init( oParent )
    ::Width     := 180
    ::Height    := 45

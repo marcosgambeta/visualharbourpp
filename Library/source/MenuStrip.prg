@@ -45,7 +45,7 @@ ENDCLASS
 //-------------------------------------------------------------------------------------------------------
 METHOD Init( oParent ) CLASS MenuStrip
    ::__xCtrlName   := "MenuStrip"
-   ::Style         := (WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   ::Style         := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ClsName       := "MenuStrip"
    ::Super:Init( oParent )
    IF ::DesignMode
@@ -66,7 +66,7 @@ METHOD OnParentSysKeyDown( nwParam ) CLASS MenuStrip
          IF !EMPTY( oItem:Children ) .AND. ( oItem:DropDown > 1 .OR. oItem:Parent:__lIsMenu )
             IF ::System:__ToolStripFlags[ "s_CurrFocus" ] != NIL
                ::System:__ToolStripFlags[ "s_CurrFocus" ]:__lSelected := .F.
-               ::System:__ToolStripFlags[ "s_CurrFocus" ]:RedrawWindow( , , (RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT) )
+               ::System:__ToolStripFlags[ "s_CurrFocus" ]:RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
                ::System:__ToolStripFlags[ "s_CurrFocus" ] := NIL
             ENDIF
             oItem:PostMessage( WM_USER + 1028 )
@@ -107,7 +107,7 @@ METHOD OnSysKeyDown( nwParam ) CLASS MenuStrip
    // close the menu on ALT KEY y it is selected
    IF nwParam == VK_MENU .AND. ::System:__ToolStripFlags[ "s_CurrentObject" ] != NIL
       ::System:__ToolStripFlags[ "s_CurrentObject" ]:__lSelected := .F.
-      ::System:__ToolStripFlags[ "s_CurrentObject" ]:RedrawWindow( , , (RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT) )
+      ::System:__ToolStripFlags[ "s_CurrentObject" ]:RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
       ::System:__ToolStripFlags[ "s_CurrFocus" ] := NIL
       ::System:__ToolStripFlags[ "s_CurrentObject" ] := NIL
       UnhookWindowsHookEx( ::System:__ToolStripFlags[ "s_hKeyMenuHook" ] )
@@ -144,10 +144,10 @@ RETURN NIL
 METHOD OnSize( nwParam, nlParam ) CLASS MenuStrip
    Super:OnSize( nwParam, nlParam )
    ::__PrevSize := LOWORD(nlParam)
-   ::Parent:RedrawWindow( , , (RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT) )
+   ::Parent:RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
    IF ::Row > 0 //.AND. ::__PrevRow == 0
-      ::RedrawWindow( , , (RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT | RDW_ALLCHILDREN) )
-      //AEVAL( ::Children, {|o| o:SetWindowPos( , 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER ) } )
+      ::RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT, RDW_ALLCHILDREN) )
+      //AEVAL( ::Children, {|o| o:SetWindowPos( , 0, 0, 0, 0, hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER)) } )
    ENDIF
 RETURN NIL
 
@@ -158,7 +158,7 @@ METHOD __OnParentSize( x, y, hDef ) CLASS MenuStrip
    IF ::IsWindowVisible() .AND. ::Parent:ClientWidth > 0
       ::Width := ::Parent:ClientWidth - IIF( ::xShowGrip, (::__GripperPos + 1), 0 )
       IF ::Row > 0 .AND. ::__PrevRow == 0
-         ::RedrawWindow( , , (RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT) )
+         ::RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
       ENDIF
       IF LEN( ::Children ) > 0
          aLines := {}
@@ -196,7 +196,7 @@ RETURN hDef
 //-------------------------------------------------------------------------------------------------------
 //METHOD OnMove( x, y ) CLASS MenuStrip
 //   Super:OnMove( x, y )
-//   ::RedrawWindow( , , RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT )
+//   ::RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
 //   AEVAL( ::Children, {|o| o:InvalidateRect() } )
 //RETURN NIL
 
@@ -207,7 +207,7 @@ METHOD OnPaint() CLASS MenuStrip
    LOCAL y, n, nDots := ( ::Height - 6 ) / 4
    LOCAL hMemDC, hMemBitmap, hOldBitmap, hDC, pt := (struct POINT)
 
-   ::Parent:RedrawWindow( , , RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT )
+   ::Parent:RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
 
    hDC        := ::BeginPaint()
 
@@ -269,7 +269,7 @@ RETURN 0
 METHOD OnEraseBkgnd( hDC ) CLASS MenuStrip
    LOCAL y, n, nDots := ( ::Height - 6 ) / 4
 
-   //::Parent:RedrawWindow( , , RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT )
+   //::Parent:RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
    SetBrushOrgEx( hDC, ::Parent:ClientWidth-::Left, ::Parent:ClientHeight-::Top )
 
    _FillRect( hDC, {0,0,::Width,::Height}, ::Parent:BkBrush )

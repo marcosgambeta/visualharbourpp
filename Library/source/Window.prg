@@ -24,7 +24,7 @@
 #define ETDT_DISABLE        0x00000001
 #define ETDT_ENABLE         0x00000002
 #define ETDT_USETABTEXTURE  0x00000004
-#define ETDT_ENABLETAB      (ETDT_ENABLE | ETDT_USETABTEXTURE)
+#define ETDT_ENABLETAB      hb_bitor(ETDT_ENABLE, ETDT_USETABTEXTURE)
 
 #define CTYPE_BOOL                 9
 #define PP_MOVEOVERLAY 8
@@ -262,7 +262,7 @@ CLASS Window INHERIT Object
    DATA ClassBrush             EXPORTED  INIT COLOR_BTNFACE+1
    DATA Style                  EXPORTED
    DATA ExStyle                EXPORTED  INIT 0
-   DATA ClassStyle             EXPORTED  INIT (CS_OWNDC | CS_DBLCLKS | CS_SAVEBITS)
+   DATA ClassStyle             EXPORTED  INIT hb_bitor(CS_OWNDC, CS_DBLCLKS, CS_SAVEBITS)
 
    DATA TopMargin              EXPORTED  INIT 0
    DATA RightMargin            EXPORTED  INIT 0
@@ -682,7 +682,7 @@ METHOD Init( oParent, lInitValues ) CLASS Window
    ::__lInitialized := .T.
 
    DEFAULT ::ThemeName    TO "window"
-   DEFAULT ::Style        TO (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   DEFAULT ::Style        TO hb_bitor(WS_OVERLAPPEDWINDOW, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    DEFAULT ::xLeft        TO 0
    DEFAULT ::xTop         TO 0
    DEFAULT ::xWidth       TO CW_USEDEFAULT
@@ -1030,7 +1030,7 @@ METHOD Create( oParent ) CLASS Window
    ::xHeight := IFNIL( ::xHeight, CW_USEDEFAULT, ::xheight)
 
    IF ::DesignMode
-      ::Style := (::Style | WS_VISIBLE)
+      ::Style := hb_bitor(::Style, WS_VISIBLE)
    ENDIF
 
    IF ! ::DesignMode .AND. !EMPTY( ::BitmapMask )
@@ -1044,7 +1044,7 @@ METHOD Create( oParent ) CLASS Window
          ::__hBmpRgn := LoadImage( ::Instance, cBmpMask, IMAGE_BITMAP, 0, 0, LR_VGACOLOR )
        ELSE
          IF RIGHT( UPPER( ::BitmapMask ), 4 ) == ".BMP"
-            ::__hBmpRgn := LoadImage( ::Instance, ::BitmapMask, IMAGE_BITMAP, 0, 0, (LR_LOADFROMFILE | LR_VGACOLOR) )
+            ::__hBmpRgn := LoadImage( ::Instance, ::BitmapMask, IMAGE_BITMAP, 0, 0, hb_bitor(LR_LOADFROMFILE, LR_VGACOLOR) )
          ELSE
             ::__hBmpRgn := LoadBitmap( ::Instance, ::BitmapMask )
          ENDIF
@@ -1090,7 +1090,7 @@ METHOD Create( oParent ) CLASS Window
       //ENDIF
       ::hWnd := CreateWindowEx( ::ExStyle, ::ClsName, ::Caption, ::Style, nLeft, nTop, ::Width, ::Height, hParent, ::Id, ::AppInstance, ::__ClientStruct )
     ELSE
-      ::hWnd := capCreateCaptureWindow( "CaptureWindow", (WS_CHILD | WS_VISIBLE), ::Left, ::Top, ::Width, ::Height, hParent, 0 )
+      ::hWnd := capCreateCaptureWindow( "CaptureWindow", hb_bitor(WS_CHILD, WS_VISIBLE), ::Left, ::Top, ::Width, ::Height, hParent, 0 )
    ENDIF
    IF ::hWnd == 0
       nError := GetLastError()
@@ -1346,15 +1346,15 @@ METHOD SetExStyle(nStyle,lAdd) CLASS Window
       ::ExStyle := ::GetWindowLong( GWL_EXSTYLE )
    ENDIF
    IF lAdd
-      ::ExStyle := (::ExStyle | nStyle)
+      ::ExStyle := hb_bitor(::ExStyle, nStyle)
     ELSE
       ::ExStyle := (::ExStyle & NOT( nStyle ))
    ENDIF
    IF ::hWnd != NIL .AND. ::IsWindow()
       ::SetWindowLong( GWL_EXSTYLE, ::ExStyle )
       IF ::IsWindowVisible()
-         ::SetWindowPos(,0,0,0,0,(SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER))
-         ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW) )
+         ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
+         ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
       ENDIF
    ENDIF
 RETURN Self
@@ -1391,7 +1391,7 @@ METHOD SetStyle( nStyle, lAdd ) CLASS Window
       lAdd := !lAdd
    ENDIF
    IF lAdd
-      ::Style := (::Style | nStyle)
+      ::Style := hb_bitor(::Style, nStyle)
     ELSE
       ::Style := (::Style & NOT( nStyle ))
    ENDIF
@@ -1414,8 +1414,8 @@ METHOD SetStyle( nStyle, lAdd ) CLASS Window
       END
       ::SetWindowLong( GWL_STYLE, ::Style )
       IF ::IsWindowVisible()
-         ::SetWindowPos(,0,0,0,0,(SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER))
-         ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW) )
+         ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
+         ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
       ENDIF
    ENDIF
 RETURN self
@@ -1522,19 +1522,19 @@ RETURN nRet
 METHOD OnNCMouseMove() CLASS Window
    IF !::__lNCMouseHover
       ::__lNCMouseHover := .T.
-      ::TrackMouseEvent( TME_NONCLIENT | TME_LEAVE | TME_HOVER )
+      ::TrackMouseEvent( hb_bitor(TME_NONCLIENT, TME_LEAVE, TME_HOVER) )
    ENDIF
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 METHOD OnNCMouseHover() CLASS Window
-   ::TrackMouseEvent( TME_NONCLIENT | TME_LEAVE )
+   ::TrackMouseEvent( hb_bitor(TME_NONCLIENT, TME_LEAVE) )
    ::__lNCMouseHover := .T.
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 METHOD OnNCMouseLeave() CLASS Window
-   ::TrackMouseEvent( TME_NONCLIENT | TME_HOVER )
+   ::TrackMouseEvent( hb_bitor(TME_NONCLIENT, TME_HOVER) )
    ::__lNCMouseHover := .F.
 RETURN NIL
 
@@ -3511,13 +3511,13 @@ METHOD __OnParentSize( x, y, hDef, lMoveNow, lNoMove, nParX, nParY ) CLASS Windo
          ENDIF
 
          IF lMoveNow .OR. !::DeferRedraw .OR. hDef == NIL
-            n := (SWP_NOOWNERZORDER | SWP_NOZORDER)
+            n := hb_bitor(SWP_NOOWNERZORDER, SWP_NOZORDER)
             IF ::DeferRedraw
-               n := (n | SWP_NOACTIVATE | SWP_DEFERERASE)
+               n := hb_bitor(n, SWP_NOACTIVATE, SWP_DEFERERASE)
             ENDIF
             SetWindowPos( ::hWnd, , ::xLeft, ::xTop, ::xWidth, nHeight, n )
           ELSE
-            DeferWindowPos( hDef, ::hWnd, , ::xLeft, ::xTop, ::xWidth, nHeight, (SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER) ) //| IIF( ::Application:OsVersion:dwMajorVersion < 5, SWP_DEFERERASE, 0 ) )
+            DeferWindowPos( hDef, ::hWnd, , ::xLeft, ::xTop, ::xWidth, nHeight, hb_bitor(SWP_NOACTIVATE, SWP_NOOWNERZORDER, SWP_NOZORDER) ) //| IIF( ::Application:OsVersion:dwMajorVersion < 5, SWP_DEFERERASE, 0 ) )
          ENDIF
          //::UpdateWindow()
       ENDIF
@@ -3778,23 +3778,23 @@ METHOD __SetFrameStyle(n) CLASS Window
       CASE 1
          ::Style := (::Style & NOT( WS_POPUP ))
          ::Style := (::Style & NOT( WS_CHILD ))
-         ::Style := (::Style | WS_OVERLAPPED)
+         ::Style := hb_bitor(::Style, WS_OVERLAPPED)
          EXIT
       CASE 2
          ::Style := (::Style & NOT( WS_OVERLAPPED ))
          ::Style := (::Style & NOT( WS_CHILD ))
-         ::Style := (::Style | WS_POPUP)
+         ::Style := hb_bitor(::Style, WS_POPUP)
          EXIT
       CASE 3
          ::Style := (::Style & NOT( WS_OVERLAPPED ))
          ::Style := (::Style & NOT( WS_POPUP ))
-         ::Style := (::Style | WS_CHILD)
+         ::Style := hb_bitor(::Style, WS_CHILD)
          EXIT
    END
    IF ::hWnd != NIL .AND. ! ::DesignMode
       SetWindowLong( ::hWnd, GWL_STYLE, ::Style )
-      SetWindowPos( ::hWnd,, 0, 0, 0, 0, (SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER) )
-      ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW) )
+      SetWindowPos( ::hWnd,, 0, 0, 0, 0, hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
+      ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
    ENDIF
 RETURN Self
 
@@ -4499,7 +4499,7 @@ CLASS WinForm INHERIT Window
    METHOD __OnClose()
    METHOD OnSysCommand()
    METHOD SetInstance()
-   METHOD Redraw( aRect )                   INLINE ::RedrawWindow( , aRect, (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT | RDW_ALLCHILDREN) ),::UpdateWindow()
+   METHOD Redraw( aRect )                   INLINE ::RedrawWindow( , aRect, hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT, RDW_ALLCHILDREN) ),::UpdateWindow()
    METHOD RegisterHotKey( nId, nMod, nKey ) INLINE IIF( RegisterHotKey( ::hWnd, nId, nMod, nKey ), AADD( ::__aHotKey, { nId, nMod, nKey } ),)
    METHOD InvalidateRect(a,l)               INLINE Super:InvalidateRect(a,l), IIF( ::xMDIContainer .AND. ::MDIClient != NIL, ::MDIClient:InvalidateRect(), )
    METHOD __CreateProperty()
@@ -4639,7 +4639,7 @@ METHOD Create( hoParent ) CLASS WinForm
       IF ::VertScrollTopMargin > 0
          ::__oDlg := Dialog( Self )
          WITH OBJECT ::__oDlg
-            :Style       := (WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+            :Style       := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
             :ExStyle     := WS_EX_CONTROLPARENT
 
             :Top         := ::VertScrollTopMargin
@@ -4676,7 +4676,7 @@ METHOD Hide() CLASS WinForm
             CASE nAnimation == ::System:WindowAnimation:SlideVertNegative
                  nAnimation := ::System:WindowAnimation:SlideVertPositive
          ENDCASE
-         RETURN ::Animate( 1000, (AW_HIDE | nAnimation) )
+         RETURN ::Animate( 1000, hb_bitor(AW_HIDE, nAnimation) )
       ENDIF
       ShowWindow( ::hWnd, SW_HIDE )
    ENDIF
@@ -4706,7 +4706,7 @@ METHOD __OnClose( nwParam, nlParam ) CLASS WinForm
          CASE nAnimation == ::System:WindowAnimation:SlideVertNegative
               nAnimation := ::System:WindowAnimation:SlideVertPositive
       ENDCASE
-      ::Animate( 1000, (AW_HIDE | nAnimation) )
+      ::Animate( 1000, hb_bitor(AW_HIDE, nAnimation) )
    ENDIF
 RETURN nRet
 
@@ -5028,7 +5028,7 @@ METHOD Show( nShow ) CLASS WinForm
          ENDIF
       ENDIF
    ENDIF
-   ::Style := (::Style | WS_VISIBLE)
+   ::Style := hb_bitor(::Style, WS_VISIBLE)
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
@@ -5159,7 +5159,7 @@ METHOD __SetBitmapMaskColor( nColor ) CLASS WinForm
       ::Application:Yield()
 
       IF RIGHT( UPPER( cBmp ), 4 ) == ".BMP"
-         hBitmap := LoadImage( ::Instance, cBmp, IMAGE_BITMAP, 0, 0, (LR_LOADFROMFILE | LR_VGACOLOR) )
+         hBitmap := LoadImage( ::Instance, cBmp, IMAGE_BITMAP, 0, 0, hb_bitor(LR_LOADFROMFILE, LR_VGACOLOR) )
        ELSE
          hBitmap := LoadBitmap( ::Instance, cBmp )
       ENDIF
@@ -5172,8 +5172,8 @@ METHOD __SetBitmapMaskColor( nColor ) CLASS WinForm
       DeleteObject( hBitmap )
       InvalidateRgn( ::hWnd, ::__hRegion, .T. )
 
-      ::SetWindowPos(,0,0,0,0,(SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER))
-      ::RedrawWindow( , , ( RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW ) )
+      ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
+      ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
       InvalidateRgn( ::hWnd, ::__hRegion, .T. )
    ENDIF
 RETURN Self
@@ -5205,7 +5205,7 @@ METHOD __SetBitmapMask( cBmp ) CLASS WinForm
          ::Application:Yield()
 
          IF RIGHT( UPPER( cBmp ), 4 ) == ".BMP"
-            hBitmap := LoadImage( ::Instance, cBmp, IMAGE_BITMAP, 0, 0, (LR_LOADFROMFILE | LR_VGACOLOR ))
+            hBitmap := LoadImage( ::Instance, cBmp, IMAGE_BITMAP, 0, 0, hb_bitor(LR_LOADFROMFILE, LR_VGACOLOR))
           ELSE
             hBitmap := LoadBitmap( ::Instance, cBmp )
          ENDIF
@@ -5221,8 +5221,8 @@ METHOD __SetBitmapMask( cBmp ) CLASS WinForm
          DeleteObject( hBitmap )
          InvalidateRgn( ::hWnd, ::__hRegion, .T. )
 
-         ::SetWindowPos(,0,0,0,0,(SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER))
-         ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW ))
+         ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
+         ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW))
          InvalidateRgn( ::hWnd, ::__hRegion, .T. )
 
       ENDIF
@@ -5237,7 +5237,7 @@ METHOD SetOpacity( n ) CLASS WinForm
    IF ::hWnd != NIL
       nStyle := GetWindowLong( ::hWnd, GWL_EXSTYLE )
       IF n < 100
-         nStyle := (nStyle | WS_EX_LAYERED)
+         nStyle := hb_bitor(nStyle, WS_EX_LAYERED)
        ELSE
          nStyle := (nStyle & NOT( WS_EX_LAYERED ))
       ENDIF
@@ -5260,7 +5260,7 @@ FUNCTION __BrowseChildren( oObj )
           IF oChild:ClsName != "DataGrid"
              TRY
                 oChild:ImageIndex := oChild:ImageIndex
-                oChild:SetWindowPos(, 0, 0, 0, 0, (SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER) )
+                oChild:SetWindowPos(, 0, 0, 0, 0, hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
               catch
              END
              __BrowseChildren( oChild )

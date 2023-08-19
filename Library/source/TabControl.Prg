@@ -36,7 +36,7 @@
 #define ETDT_DISABLE        0x00000001
 #define ETDT_ENABLE         0x00000002
 #define ETDT_USETABTEXTURE  0x00000004
-#define ETDT_ENABLETAB      (ETDT_ENABLE | ETDT_USETABTEXTURE)
+#define ETDT_ENABLETAB      hb_bitor(ETDT_ENABLE, ETDT_USETABTEXTURE)
 
 typedef struct tagLOGBRUSH {;
    UINT      lbStyle;
@@ -158,7 +158,7 @@ CLASS TabControl INHERIT Control
 
    METHOD SetPos(n,l)                INLINE ::SetStyle(n,l),;
                                             IIF( ::IsWindow(),;
-                                               ( SetWindowPos( ::hWnd,, 0, 0, 0, 0, (SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER) ),;
+                                               ( SetWindowPos( ::hWnd,, 0, 0, 0, 0, hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) ),;
                                             ::__OnParentSize( ::ClientWidth, ::ClientHeight ) ),)
 
    METHOD Refresh()                  INLINE ::Super:Refresh(), ::OnNcCalcSize()
@@ -192,7 +192,7 @@ METHOD Init( oParent ) CLASS TabControl
 
    ::ClsName      := WC_TABCONTROL
    DEFAULT ::__xCtrlName TO "TabControl"
-   ::Style        := (WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | TCS_OWNERDRAWFIXED)
+   ::Style        := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS, TCS_OWNERDRAWFIXED)
    ::ExStyle      := WS_EX_CONTROLPARENT
    ::Super:Init( oParent )
    ::Width        := 200
@@ -320,7 +320,7 @@ METHOD Create() CLASS TabControl
    ::BoldFont:Create()
 
    IF ::DesignMode
-      ::SetWindowPos(, ::Left, ::Top, ::Width, ::Height, (SWP_FRAMECHANGED | SWP_NOZORDER ) )
+      ::SetWindowPos(, ::Left, ::Top, ::Width, ::Height, hb_bitor(SWP_FRAMECHANGED, SWP_NOZORDER) )
    ENDIF
 
 RETURN Self
@@ -394,8 +394,8 @@ METHOD SetItemText( n, cText, lBold ) CLASS TabControl
          tci:pszText := cText
          tci:cchTextMax := LEN( cText )
          SendMessage( ::hWnd, TCM_SETITEM, n-1, @tci )
-         //SetWindowPos( ::hWnd,, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER )
-         ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW) )
+         //SetWindowPos( ::hWnd,, 0, 0, 0, 0, hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
+         ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
       ENDIF
     catch
    END
@@ -427,7 +427,7 @@ RETURN Self
 //-----------------------------------------------------------------------------------------------
 METHOD HitTest( x, y, nFlags ) CLASS TabControl
    LOCAL tch := (struct TCHITTESTINFO)
-   DEFAULT nFlags TO (TCHT_NOWHERE | TCHT_ONITEM | TCHT_ONITEMICON | TCHT_ONITEMLABEL)
+   DEFAULT nFlags TO hb_bitor(TCHT_NOWHERE, TCHT_ONITEM, TCHT_ONITEMICON, TCHT_ONITEMLABEL)
    tch:pt:x  := x
    tch:pt:y  := y
    tch:flags := nFlags
@@ -489,7 +489,7 @@ METHOD OnPaint() CLASS TabControl
       RETURN NIL
    ENDIF
    IF !::ShowTabs .AND. ::__UpDn == NIL .AND. ! ::DesignMode
-      hWnd := GetWindow( ::hWnd, (GW_CHILD | GW_HWNDFIRST ))
+      hWnd := GetWindow( ::hWnd, hb_bitor(GW_CHILD, GW_HWNDFIRST))
       WHILE hWnd <> 0
          IF GetClassName( hWnd ) == "msctls_updown32"
             ::__UpDn := hWnd
@@ -598,7 +598,7 @@ METHOD OnPaint() CLASS TabControl
                 hOldFont := SelectObject( hMemDC, ::Font:Handle )
 
                 //aSize    := _GetTextExtentPoint32( hMemDC, tci:pszText  )
-                _DrawText( hMemDC, tci:pszText, aItem, (DT_CENTER|DT_VCENTER|DT_SINGLELINE ))
+                _DrawText( hMemDC, tci:pszText, aItem, hb_bitor(DT_CENTER, DT_VCENTER, DT_SINGLELINE))
                 SelectObject( hMemDC, hOldFont )
              ENDIF
              SetTextColor( hMemDC, nColor )
@@ -650,7 +650,7 @@ METHOD OnPaint() CLASS TabControl
          SetTextColor( hMemDC, IIF( oPage == NIL, ::ForeColor, IIF( oPage:TabTextColor != NIL, oPage:TabTextColor, IIF( oPage:ForeColor != NIL, oPage:ForeColor, ::ForeColor ) ) ) )
          nBkMode := SetBkMode( hMemDC, TRANSPARENT )
          hOldFont := SelectObject( hMemDC, ::Font:Handle )
-         _DrawText( hMemDC, tci:pszText, aItem, (DT_CENTER|DT_VCENTER|DT_SINGLELINE) )
+         _DrawText( hMemDC, tci:pszText, aItem, hb_bitor(DT_CENTER, DT_VCENTER, DT_SINGLELINE) )
          SetBkMode( hMemDC, nBkMode )
          SelectObject( hMemDC, hOldFont )
          SetTextColor( hMemDC, nColor )
@@ -664,7 +664,7 @@ METHOD OnPaint() CLASS TabControl
             pBrush:lbColor := oPage:TabTextColor //DIB_RGB_COLORS
             pBrush:lbHatch := NIL
 
-            hPen := SelectObject( hMemDC, ExtCreatePen( (PS_GEOMETRIC | PS_USERSTYLE), 1, pBrush, {1,2} ) )
+            hPen := SelectObject( hMemDC, ExtCreatePen( hb_bitor(PS_GEOMETRIC, PS_USERSTYLE), 1, pBrush, {1,2} ) )
             SelectObject( hMemDC, GetStockObject( NULL_BRUSH ) )
 
             Rectangle( hMemDC, aRect[1], aRect[2]+2, aRect[3], aRect[4] )
@@ -686,7 +686,7 @@ RETURN 0
 //-----------------------------------------------------------------------------------------------
 METHOD SetItemValues( nItem, cText, nImgIndex, hWnd ) CLASS TabControl
    LOCAL tci := (struct TCITEM)
-   tci:mask    := (TCIF_IMAGE | TCIF_TEXT | TCIF_PARAM)
+   tci:mask    := hb_bitor(TCIF_IMAGE, TCIF_TEXT, TCIF_PARAM)
    tci:pszText := cText
    tci:iImage  := nImgIndex-1
    tci:lParam  := hWnd
@@ -980,7 +980,7 @@ METHOD Init( oParent, acResource ) CLASS TabPage
 
    ::Super:Init( oParent, acResource )
    ::__hObjects    := NIL
-   ::Style         := (WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   ::Style         := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ExStyle       := WS_EX_CONTROLPARENT
    ::ClsName       := "TabPage"
    ::ClipChildren  := .T.
@@ -1099,7 +1099,7 @@ METHOD Create() CLASS TabPage
    ENDIF
 
    tci := (struct TCITEM)
-   tci:mask    := (TCIF_IMAGE | TCIF_TEXT | TCIF_PARAM)
+   tci:mask    := hb_bitor(TCIF_IMAGE, TCIF_TEXT, TCIF_PARAM)
 
    cText := ::Caption
 
@@ -1197,7 +1197,7 @@ METHOD Create() CLASS TabPage
          ::Application:ObjectTree:Set( Self )
          ::Application:Props[ "ComboSelect" ]:Reset()
       ENDIF
-      RedrawWindow( ::Parent:hWnd,,, (RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT ))
+      RedrawWindow( ::Parent:hWnd,,, hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT))
       ::Parent:InvalidateRect(,.f.)
    ENDIF
 RETURN Self
@@ -1278,7 +1278,7 @@ METHOD __SetPosition(n) CLASS TabPage
    ::Parent:SendMessage( TCM_DELETEITEM, ::__GetPosition() - 1 )
 
    tci := (struct TCITEM)
-   tci:mask    := (TCIF_IMAGE | TCIF_TEXT | TCIF_PARAM)
+   tci:mask    := hb_bitor(TCIF_IMAGE, TCIF_TEXT, TCIF_PARAM)
    tci:pszText := ::Caption
    tci:iImage  := IIF( ::ImageIndex > 0, ::ImageIndex-1, -1 )
    tci:lParam  := ::hWnd
@@ -1333,7 +1333,7 @@ METHOD __SetImageIndex( nImgIndex ) CLASS TabPage
    LOCAL tci
    IF ::hWnd != NIL
       tci := (struct TCITEM)
-      tci:mask    := (TCIF_IMAGE | TCIF_TEXT)
+      tci:mask    := hb_bitor(TCIF_IMAGE, TCIF_TEXT)
       tci:pszText := ::Caption
       tci:iImage  := nImgIndex-1
       SendMessage( ::Parent:hWnd, TCM_SETITEM,  ::__GetPosition()-1, tci )
@@ -1462,7 +1462,7 @@ METHOD __Show() CLASS TabPage
    FOR n := 1 TO LEN( ::Parent:Children )
        IF ::Parent:Children[ n ]:ClsName == "TabPage"
           IF ::Parent:Children[ n ]:xVisible
-             tci:mask    := (TCIF_IMAGE | TCIF_TEXT | TCIF_PARAM)
+             tci:mask    := hb_bitor(TCIF_IMAGE, TCIF_TEXT, TCIF_PARAM)
              tci:pszText := ::Parent:Children[ n ]:xText
              tci:lParam  := ::Parent:Children[ n ]:hWnd
              tci:iImage  := IIF( ::Parent:Children[ n ]:ImageIndex > 0, ::Parent:Children[ n ]:ImageIndex-1, -1 )
@@ -1674,7 +1674,7 @@ METHOD DrawTabStripItem( hDC, lCurSel, nSel ) CLASS TabStrip
 
       IF !lVert
          hOldFont := SelectObject( hDC, ::Font:Handle )
-         _DrawText( hDC, tci:pszText, aItem, (DT_CENTER|DT_VCENTER|DT_SINGLELINE) )
+         _DrawText( hDC, tci:pszText, aItem, hb_bitor(DT_CENTER, DT_VCENTER, DT_SINGLELINE) )
        ELSE
          hOldFont := SelectObject( hDC, ::VertFont:Handle )
 

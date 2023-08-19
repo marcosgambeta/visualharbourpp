@@ -156,7 +156,7 @@ CLASS EditBox INHERIT Control
    METHOD SetWordBreakProc(nProc)      INLINE ::SendMessage( EM_SETWORDBREAKPROC, 0, nProc )
    METHOD Undo()                       INLINE ::SendMessage( EM_UNDO, 0, 0 )
    METHOD OnEraseBkGnd()
-   METHOD SetParent( oParent )         INLINE ::Super:SetParent( oParent ), ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW) )
+   METHOD SetParent( oParent )         INLINE ::Super:SetParent( oParent ), ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
    METHOD SetRect(aRect, lRelative)
    METHOD SetRectNP(aRect, lRelative)
    METHOD SetTabStops( nTabs, aTabs )
@@ -202,7 +202,7 @@ METHOD Init( oParent ) CLASS EditBox
    ::ClsName   := "Edit"
    ::ThemeName := "EDIT"
 
-   ::Style        := (WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS) //| IIF( ! ::Application:IsThemedXP, WS_BORDER, 0 )
+   ::Style        := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) //| IIF( ! ::Application:IsThemedXP, WS_BORDER, 0 )
    ::Border       := WS_EX_CLIENTEDGE
 
    ::Super:Init( oParent )
@@ -288,8 +288,8 @@ METHOD __SetMenuArrow() CLASS EditBox
       ::xLayout := 1
    ENDIF
    IF ::IsWindow()
-      //::SetWindowPos(,0,0,0,0,SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER )
-      ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW) )
+      //::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
+      ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
    ENDIF
 RETURN Self
 
@@ -304,7 +304,7 @@ METHOD Create() CLASS EditBox
       oImageList := ::ImageList
       DEFAULT oImageList TO ::Parent:ImageList
       IF ::Button .OR. /*::DropCalendar .OR.*/ ::MenuArrow .OR. ( oImageList != NIL .AND. ::ImageIndex > 0 )
-         ::SetWindowPos(, 0, 0, 0, 0, (SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER) )
+         ::SetWindowPos(, 0, 0, 0, 0, hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
       ENDIF
    ENDIF
    IF ! ::DesignMode
@@ -350,7 +350,7 @@ RETURN Self
 //-----------------------------------------------------------------------------------------------
 METHOD __SetAutoScroll( nIndex, lSet ) CLASS EditBox
    ::SetStyle( nIndex, lSet )
-   //::SetWindowPos(, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER )
+   //::SetWindowPos(, 0, 0, 0, 0, hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
@@ -560,7 +560,7 @@ RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
 METHOD __SetContextMenu() CLASS EditBox
-   //::SetWindowPos(,0,0,0,0,SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER )
+   //::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
 RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
@@ -666,7 +666,7 @@ METHOD OnNCPaint() CLASS EditBox
 
          aRect := {::Width-16-n, n, ::Width-n, ::Height-n}
          hRegion := CreateRectRgn( aRect[1], aRect[2], aRect[3], aRect[4] )
-         hdc := GetDCEx( ::hWnd, hRegion, (DCX_WINDOW | DCX_PARENTCLIP | DCX_CLIPSIBLINGS | DCX_VALIDATE) )
+         hdc := GetDCEx( ::hWnd, hRegion, hb_bitor(DCX_WINDOW, DCX_PARENTCLIP, DCX_CLIPSIBLINGS, DCX_VALIDATE) )
 
          _DrawFrameControl( hDC, aRect, DFC_BUTTON, DFCS_BUTTONPUSH )
          SetBkMode( hDC, TRANSPARENT )
@@ -686,7 +686,7 @@ METHOD OnNCPaint() CLASS EditBox
 
             aRect := { ::__aArrowPos[1], 1, ::__aArrowPos[1] + ::__aArrowPos[2], ::Height-1 }
             hRegion := CreateRectRgn( aRect[1], aRect[2], aRect[3], aRect[4] )
-            hdc := GetDCEx( ::hWnd, hRegion, (DCX_WINDOW | DCX_PARENTCLIP | DCX_CLIPSIBLINGS | DCX_VALIDATE) )
+            hdc := GetDCEx( ::hWnd, hRegion, hb_bitor(DCX_WINDOW, DCX_PARENTCLIP, DCX_CLIPSIBLINGS, DCX_VALIDATE) )
 
             _FillRect( hDC, aRect, hBrush )
 
@@ -705,7 +705,7 @@ METHOD OnNCPaint() CLASS EditBox
          IF ::__aImagePos[2] > 0
             aRect := { ::__aImagePos[1], 1, ::__aImagePos[1] + ::__aImagePos[2], ::Height-1 }
             hRegion := CreateRectRgn( aRect[1], aRect[2], aRect[3], aRect[4] )
-            hdc := GetDCEx( ::hWnd, hRegion, (DCX_WINDOW | DCX_PARENTCLIP | DCX_CLIPSIBLINGS | DCX_VALIDATE) )
+            hdc := GetDCEx( ::hWnd, hRegion, hb_bitor(DCX_WINDOW, DCX_PARENTCLIP, DCX_CLIPSIBLINGS, DCX_VALIDATE) )
 
             oImageList := ::ImageList
             DEFAULT oImageList TO ::Parent:ImageList
@@ -770,11 +770,11 @@ METHOD OnNCLButtonDown( nwParam, nlParam ) CLASS EditBox
          ENDIF
 
          hRegion := CreateRectRgn( ::Width-16-n, n, ::Width-n, ::Height-n )
-         hdc := GetDCEx( ::hWnd, hRegion, (DCX_WINDOW | DCX_PARENTCLIP | DCX_CLIPSIBLINGS | DCX_VALIDATE) )
+         hdc := GetDCEx( ::hWnd, hRegion, hb_bitor(DCX_WINDOW, DCX_PARENTCLIP, DCX_CLIPSIBLINGS, DCX_VALIDATE) )
 
-         _DrawFrameControl( hDC, {::Width-16-n, n, ::Width-n, ::Height-n}, DFC_BUTTON, (DFCS_BUTTONPUSH | DFCS_PUSHED) )
+         _DrawFrameControl( hDC, {::Width-16-n, n, ::Width-n, ::Height-n}, DFC_BUTTON, hb_bitor(DFCS_BUTTONPUSH, DFCS_PUSHED) )
          SetBkMode( hDC, TRANSPARENT )
-         _DrawText( hDC, "...", {::Width-16-n, n, ::Width-n, ::Height-n}, (DT_CENTER | DT_SINGLELINE | DT_VCENTER) )
+         _DrawText( hDC, "...", {::Width-16-n, n, ::Width-n, ::Height-n}, hb_bitor(DT_CENTER, DT_SINGLELINE, DT_VCENTER) )
 
          ReleaseDC(::hWnd, hdc)
          DeleteObject( hRegion )
@@ -832,7 +832,7 @@ METHOD OnNCLButtonDown( nwParam, nlParam ) CLASS EditBox
                pt:y := ::top
 
                IF ::xLayout < 4
-                  nAlign := (TPM_RIGHTALIGN | TPM_TOPALIGN)
+                  nAlign := hb_bitor(TPM_RIGHTALIGN, TPM_TOPALIGN)
                   pt:x := ::left + ::Width
                ENDIF
 
@@ -865,11 +865,11 @@ METHOD OnNCLButtonUp( nwParam, nlParam ) CLASS EditBox
          ENDIF
 
          hRegion := CreateRectRgn( ::Width-16-n, n, ::Width-n, ::Height-n )
-         hdc := GetDCEx( ::hWnd, hRegion, (DCX_WINDOW | DCX_PARENTCLIP | DCX_CLIPSIBLINGS | DCX_VALIDATE) )
+         hdc := GetDCEx( ::hWnd, hRegion, hb_bitor(DCX_WINDOW, DCX_PARENTCLIP, DCX_CLIPSIBLINGS, DCX_VALIDATE) )
 
          _DrawFrameControl( hDC, {::Width-16-n, n, ::Width-n, ::Height-n}, DFC_BUTTON, DFCS_BUTTONPUSH )
          SetBkMode( hDC, TRANSPARENT )
-         _DrawText( hDC, "...", {::Width-16-n, n, ::Width-n, ::Height-n}, (DT_CENTER | DT_SINGLELINE | DT_VCENTER) )
+         _DrawText( hDC, "...", {::Width-16-n, n, ::Width-n, ::Height-n}, hb_bitor(DT_CENTER, DT_SINGLELINE, DT_VCENTER) )
 
          ReleaseDC(::hWnd, hdc)
          DeleteObject( hRegion )
@@ -1267,10 +1267,10 @@ METHOD Init( oParent ) CLASS FloatCalendar
 
    ::Super:Init( oParent )
 
-   ::Style   := WS_POPUP | WS_CLIPSIBLINGS
-   ::ExStyle := WS_EX_NOACTIVATE | WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_CONTROLPARENT
+   ::Style   := hb_bitor(WS_POPUP, WS_CLIPSIBLINGS)
+   ::ExStyle := hb_bitor(WS_EX_NOACTIVATE, WS_EX_TOPMOST, WS_EX_TOOLWINDOW, WS_EX_CONTROLPARENT)
 
-   ::ClassStyle := CS_DROPSHADOW | CS_OWNDC | CS_DBLCLKS | CS_SAVEBITS
+   ::ClassStyle := hb_bitor(CS_DROPSHADOW, CS_OWNDC, CS_DBLCLKS, CS_SAVEBITS)
 
    ::ClsName := "FloatShadow"
 

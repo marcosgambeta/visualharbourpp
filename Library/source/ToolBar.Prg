@@ -179,7 +179,7 @@ CLASS ToolBar INHERIT Control
                                                     ::SendMessage( TB_CHECKBUTTON, nBtn, If( lFlag, 1, 0 ) )
 
    METHOD IsButtonClicked(nBtn)              INLINE IF( ::SendMessage( TB_ISBUTTONCHECKED, nBtn, 0) == 0, .F., .T. )
-   METHOD SetListStyle()                     INLINE ::Style := (::Style | TBSTYLE_LIST)
+   METHOD SetListStyle()                     INLINE ::Style := hb_bitor(::Style, TBSTYLE_LIST)
    METHOD Disable()                          INLINE ::DisableAll()
    METHOD Enable()                           INLINE ::EnableAll()
 
@@ -225,7 +225,7 @@ METHOD Init( oParent ) CLASS ToolBar
    ::ClsName  := "ToolBarWindow32"
    DEFAULT ::__xCtrlName TO "ToolBar"
    ::Super:Init( oParent )
-   ::Style           :=  (WS_CHILD | WS_VISIBLE | CCS_NODIVIDER | CCS_NORESIZE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   ::Style           :=  hb_bitor(WS_CHILD, WS_VISIBLE, CCS_NODIVIDER, CCS_NORESIZE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ThemeName       := "toolbar"
    ::__hTheme        := OpenThemeData(,"MENU")
    ::ToolTips        := .T.
@@ -344,13 +344,13 @@ METHOD SetStyle( nStyle, lAdd ) CLASS ToolBar
    LOCAL cStyle := ""
    DEFAULT lAdd TO .T.
    IF lAdd
-      ::Style := (::Style | nStyle)
+      ::Style := hb_bitor(::Style, nStyle)
     ELSE
       ::Style := (::Style & NOT( nStyle ))
    ENDIF
    IF IsWindow( ::hWnd )
       ::SendMessage( TB_SETSTYLE, 0, ::Style )
-      ::SetWindowPos(,0,0,0,0,(SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER))
+      ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
       ::InvalidateRect()
    ENDIF
 RETURN self
@@ -365,7 +365,7 @@ RETURN Self
 METHOD SetExtStyle( nStyle, lSet ) CLASS ToolBar
    DEFAULT lSet TO .T.
    IF lSet
-      ::ExtStyle := (::ExtStyle | nStyle)
+      ::ExtStyle := hb_bitor(::ExtStyle, nStyle)
     ELSE
       ::ExtStyle := (::ExtStyle & NOT( nStyle ))
    ENDIF
@@ -674,7 +674,7 @@ METHOD OnDrawItem( nwParam, nlParam, dis ) CLASS ToolBar
                pt:x := dis:rcItem:Left
                pt:y := dis:rcItem:Bottom
                ClientToScreen( WindowFromDC( hDC ), @pt )
-               ::CreateDropDown( nPos, pt:x, pt:y, (TPM_LEFTALIGN | TPM_TOPALIGN), ::hWnd )
+               ::CreateDropDown( nPos, pt:x, pt:y, hb_bitor(TPM_LEFTALIGN, TPM_TOPALIGN), ::hWnd )
                SendMessage( ::hWnd, WM_CANCELMODE, 0, 0 )
             ENDIF
          ENDIF
@@ -1126,7 +1126,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS ToolBar
 */
                                SetBkMode( tbcd:nmcd:hdc, TRANSPARENT )
                                SelectObject( tbcd:nmcd:hdc, ::GetFont() )
-                               DrawText( tbcd:nmcd:hdc, ::aItems[nHot]:Caption, tbcd:nmcd:rc, (DT_CENTER | DT_VCENTER | DT_SINGLELINE) )
+                               DrawText( tbcd:nmcd:hdc, ::aItems[nHot]:Caption, tbcd:nmcd:rc, hb_bitor(DT_CENTER, DT_VCENTER, DT_SINGLELINE) )
                                nRet := CDRF_SKIPDEFAULT
                             ENDIF
                          ENDIF
@@ -1590,7 +1590,7 @@ METHOD Create( nPos ) CLASS ToolButton
    IF ::Parent:Parent:ClsName == "OptionBar"
       ::AutoSize   := .F.
       ::Width      := NIL
-      ::State      := (TBSTATE_ENABLED | TBSTATE_WRAP)
+      ::State      := hb_bitor(TBSTATE_ENABLED, TBSTATE_WRAP)
       ::Parent:Parent:__oPage:RecalSize()
       ::Parent:PostMessage( TB_SETBUTTONWIDTH, 0, MAKELONG( ::Parent:Parent:ClientWidth, ::Parent:Parent:ClientWidth ) )
    ENDIF
@@ -1613,13 +1613,13 @@ METHOD Create( nPos ) CLASS ToolButton
    ::oBtnInfo:idCommand := ::Id
 
    IF ::xCaption != NIL
-      ::oBtnInfo:dwMask := (::oBtnInfo:dwMask | TBIF_TEXT | TBIF_IMAGE)
+      ::oBtnInfo:dwMask := hb_bitor(::oBtnInfo:dwMask, TBIF_TEXT, TBIF_IMAGE)
       ::oBtnInfo:pszText:= ::xCaption
       ::oBtnInfo:iImage := IIF( (::Separator .OR. ::ImageIndex <= 0) .AND. !::IsMenuItem, -2, ::ImageIndex-1 )
    ENDIF
 
    IF ::Width != NIL .AND. !::AutoSize
-      ::oBtnInfo:dwMask := (::oBtnInfo:dwMask | TBIF_SIZE)
+      ::oBtnInfo:dwMask := hb_bitor(::oBtnInfo:dwMask, TBIF_SIZE)
       ::oBtnInfo:cx     := ::Width
    ENDIF
 
@@ -1705,7 +1705,7 @@ METHOD ShowMenu( x, y ) CLASS ToolButton
    LOCAL nRes := 0
    DEFAULT x TO ::Left
    DEFAULT y TO ::Top
-   TrackPopupMenu( ::hMenu, (TPM_LEFTALIGN | TPM_TOPALIGN), x, y, 0, ::Parent:hWnd )
+   TrackPopupMenu( ::hMenu, hb_bitor(TPM_LEFTALIGN, TPM_TOPALIGN), x, y, 0, ::Parent:hWnd )
 RETURN nRes
 
 //-------------------------------------------------------------------------------------------------------
@@ -1935,7 +1935,7 @@ METHOD SetStyle( nStyle, lAdd ) CLASS ToolButton
    DEFAULT lAdd TO .T.
 
    IF lAdd
-      ::Style := (::Style | nStyle)
+      ::Style := hb_bitor(::Style, nStyle)
       IF nStyle == BTNS_SEP
          ::Caption := ""
          IF ::lCreated .AND. !::DesignMode
@@ -1955,7 +1955,7 @@ METHOD SetStyle( nStyle, lAdd ) CLASS ToolButton
       tbbi:dwMask  := TBIF_STYLE
 
       IF ::Separator
-         ::Style := (::Style | TBSTYLE_AUTOSIZE)
+         ::Style := hb_bitor(::Style, TBSTYLE_AUTOSIZE)
          ::xAutoSize  := .T.
       ENDIF
       tbbi:fsStyle := ::Style

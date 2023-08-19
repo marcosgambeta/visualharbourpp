@@ -153,7 +153,7 @@ CLASS ActiveX INHERIT ToleAuto, TitleControl
    METHOD __GetObjProp()
 
    METHOD OnDestroy()
-   METHOD OnGetDlgCode() INLINE ( DLGC_WANTMESSAGE | DLGC_WANTALLKEYS )
+   METHOD OnGetDlgCode() INLINE ( hb_bitor(DLGC_WANTMESSAGE, DLGC_WANTALLKEYS) )
    //METHOD OnDestroy()    INLINE UnhookWindowsHookEx( s_hMsgHook ), s_hMsgHook := NIL, NIL
 ENDCLASS
 
@@ -161,7 +161,7 @@ ENDCLASS
 METHOD Init( oParent ) CLASS ActiveX
    ::Parent       := oParent
    ::ClsName      := "AtlAxWin"
-   ::Style        := ( WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS )
+   ::Style        := ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
 
    IF ::Parent != NIL .AND. ::Parent:DesignMode
       __SetInitialValues( Self )
@@ -423,7 +423,7 @@ METHOD SetStyle( nStyle, lAdd ) CLASS ActiveX
       lAdd := !lAdd
    ENDIF
    IF lAdd
-      ::Style := ( ::Style | nStyle )
+      ::Style := ( hb_bitor(::Style, nStyle) )
     ELSE
       ::Style := ( ::Style & NOT( nStyle ) )
    ENDIF

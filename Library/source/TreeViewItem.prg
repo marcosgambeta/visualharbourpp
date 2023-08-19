@@ -88,7 +88,7 @@ METHOD Create( lSetOwner ) CLASS TreeViewItem
    tvis:hParent             := IIF( ::Owner != NIL, ::Owner:hItem, )
    tvis:hInsertAfter        := ::InsertAfter
 
-   tvis:item:mask           := (TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE)
+   tvis:item:mask           := hb_bitor(TVIF_TEXT, TVIF_IMAGE, TVIF_SELECTEDIMAGE)
    tvis:item:pszText        := ::Caption
    tvis:item:cchTextMax     := MAX_PATH + 1
    tvis:item:iImage         := ::ImageIndex-1
@@ -187,7 +187,7 @@ METHOD SetPosition( nPos ) CLASS TreeViewItem
    tvis:hParent             := ::Owner:hItem
    tvis:hInsertAfter        := IIF( nPos == 1, TVI_FIRST, ::Parent:Items[nPos-1]:hItem )
 
-   tvis:item:mask           := (TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE)
+   tvis:item:mask           := hb_bitor(TVIF_TEXT, TVIF_IMAGE, TVIF_SELECTEDIMAGE)
    tvis:item:pszText        := ::Text
    tvis:item:cchTextMax     := MAX_PATH + 1
    tvis:item:iImage         := ::ImageIndex-1
@@ -275,7 +275,7 @@ METHOD SetImageIndex(n) CLASS TreeViewItem
    LOCAL tvi
    IF ::Parent != NIL .AND. ::Parent:hWnd != NIL .AND. ::hItem != NIL
       tvi := (struct TVITEM)
-      tvi:mask    := (TVIF_IMAGE | TVIF_SELECTEDIMAGE)
+      tvi:mask    := hb_bitor(TVIF_IMAGE, TVIF_SELECTEDIMAGE)
       tvi:hItem   := ::hItem
       tvi:iImage  := n-1
       tvi:iSelectedImage := IIF( ::HotImageIndex == NIL, n-1, ::HotImageIndex-1 )

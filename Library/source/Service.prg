@@ -176,7 +176,7 @@ METHOD __ServiceMain() CLASS Service
 
       ::StopServiceEvent                 := CreateEvent( 0, .F., .F., 0 )
 
-      ::ServiceStatusStruct:dwControlsAccepted := ::ServiceStatusStruct:dwControlsAccepted | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN
+      ::ServiceStatusStruct:dwControlsAccepted := hb_bitor(::ServiceStatusStruct:dwControlsAccepted, SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_SHUTDOWN)
       ::ServiceStatusStruct:dwCurrentState     := SERVICE_RUNNING
       SetServiceStatus( ::ServiceStatusHandle, ::ServiceStatusStruct )
 
@@ -190,7 +190,7 @@ METHOD __ServiceMain() CLASS Service
       SetServiceStatus( ::ServiceStatusHandle, ::ServiceStatusStruct )
       CloseHandle( ::StopServiceEvent )
       ::StopServiceEvent := 0
-      ::ServiceStatusStruct:dwControlsAccepted := ::ServiceStatusStruct:dwControlsAccepted & NOT(SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN)
+      ::ServiceStatusStruct:dwControlsAccepted := ::ServiceStatusStruct:dwControlsAccepted & NOT(hb_bitor(SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_SHUTDOWN))
       ::ServiceStatusStruct:dwCurrentState     := SERVICE_STOPPED
       SetServiceStatus( ::ServiceStatusHandle, ::ServiceStatusStruct )
    ENDIF

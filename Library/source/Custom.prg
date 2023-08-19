@@ -42,8 +42,8 @@ METHOD Init( oParent, cReference ) CLASS CustomControl
    ::ClsName := "CCTL"
    ::Super:Init( oParent )
    ::__IsStandard := .F.
-   ::Style   := (WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
-   ::ExStyle := (WS_EX_NOACTIVATE | WS_EX_CONTROLPARENT)
+   ::Style   := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
+   ::ExStyle := hb_bitor(WS_EX_NOACTIVATE, WS_EX_CONTROLPARENT)
    ::Width   := 200
    ::Height  := 200
    ::__ChgRef := cReference

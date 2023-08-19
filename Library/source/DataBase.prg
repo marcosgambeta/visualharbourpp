@@ -907,7 +907,7 @@ METHOD Create( lIgnoreAO ) CLASS DataRdd
             cFile := ALLTRIM( ::Owner:Path ) + "\" + ::Owner:FileName
             IF !FILE( cFile )
                IF ! ::Owner:DesignMode
-                  Throw( ErrorNew( "DataTable", 21, 1010, ::Owner:FileName, "The specified file could not be found", (EF_CANRETRY | EF_CANDEFAULT) ) )
+                  Throw( ErrorNew( "DataTable", 21, 1010, ::Owner:FileName, "The specified file could not be found", hb_bitor(EF_CANRETRY, EF_CANDEFAULT) ) )
                 ELSE
                   ::Owner:Application:MainForm:MessageBox( "The specified file could not be found", ::Owner:FileName, "Error" )
                ENDIF
@@ -917,7 +917,7 @@ METHOD Create( lIgnoreAO ) CLASS DataRdd
             cFile := ALLTRIM( ::Owner:FileName )
             IF !FILE( cFile )
                IF ! ::Owner:DesignMode
-                  Throw( ErrorNew( "DataTable", 21, 1010, ::Owner:FileName, "The specified file could not be found", (EF_CANRETRY | EF_CANDEFAULT) ) )
+                  Throw( ErrorNew( "DataTable", 21, 1010, ::Owner:FileName, "The specified file could not be found", hb_bitor(EF_CANRETRY, EF_CANDEFAULT) ) )
                 ELSE
                   ::Owner:Application:MainForm:MessageBox( "The specified file could not be found", ::Owner:FileName, "Error" )
                ENDIF

@@ -22,7 +22,7 @@
 #define ETDT_DISABLE        0x00000001
 #define ETDT_ENABLE         0x00000002
 #define ETDT_USETABTEXTURE  0x00000004
-#define ETDT_ENABLETAB      (ETDT_ENABLE | ETDT_USETABTEXTURE)
+#define ETDT_ENABLETAB      hb_bitor(ETDT_ENABLE, ETDT_USETABTEXTURE)
 
 //------------------------------------------------------------------------------------------------
 
@@ -174,7 +174,7 @@ METHOD PreInitDialog() CLASS Dialog
 
    IF ::Template != NIL
 
-      hWnd := GetWindow( ::hWnd, (GW_CHILD | GW_HWNDFIRST ))
+      hWnd := GetWindow( ::hWnd, hb_bitor(GW_CHILD, GW_HWNDFIRST))
       WHILE hWnd != 0
 
          cClass := GetClassName( hWnd )
@@ -220,7 +220,7 @@ METHOD PreInitDialog() CLASS Dialog
       IF ::VertScrollTopMargin > 0
          ::__oDlg := Dialog( Self )
          WITH OBJECT ::__oDlg
-            :Style       := (WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+            :Style       := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
             :ExStyle     := WS_EX_CONTROLPARENT
 
             :Top         := ::VertScrollTopMargin
@@ -317,7 +317,7 @@ RETURN Self
 
 FUNCTION __GetTemplate( oDlg )
    LOCAL dt := (struct DLGTEMPLATEX)
-   dt:style := (oDlg:Style | WS_CLIPCHILDREN)
+   dt:style := hb_bitor(oDlg:Style, WS_CLIPCHILDREN)
    dt:dwExtendedStyle := oDlg:ExStyle
    dt:x  := MulDiv( oDlg:Left,   4, LOWORD( GetDialogBaseUnits() ) )  //Int( ( oDlg:Left * 4 )  /LOWORD(GetDialogBaseUnits()) )
    dt:y  := MulDiv( oDlg:Top,    8, HIWORD( GetDialogBaseUnits() ) )  //Int( ( oDlg:Top * 4 )   /LOWORD(GetDialogBaseUnits()) )

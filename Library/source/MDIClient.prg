@@ -39,7 +39,7 @@ CLASS MDIClient INHERIT Window
 
    DATA FirstChild         EXPORTED
    DATA Parent             EXPORTED
-   DATA Style              EXPORTED INIT (WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   DATA Style              EXPORTED INIT hb_bitor(WS_CHILD, WS_HSCROLL, WS_VSCROLL, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    DATA ExStyle            EXPORTED INIT 0
    DATA ClsName            EXPORTED
    DATA Name               EXPORTED
@@ -150,9 +150,9 @@ METHOD __SetBorder( nBorder ) CLASS MDIClient
 
    IF nBorder <> 0
       IF nBorder == WS_BORDER
-         nStyle := (nStyle | WS_BORDER)
+         nStyle := hb_bitor(nStyle, WS_BORDER)
       ELSE
-         nExStyle := (nExStyle | nBorder)
+         nExStyle := hb_bitor(nExStyle, nBorder)
       ENDIF
    ENDIF
    ::Style := nStyle
@@ -190,7 +190,7 @@ METHOD SetExStyle(nStyle,lAdd) CLASS MDIClient
          ::ExStyle := GetWindowLong( ::hWnd, GWL_EXSTYLE )
       ENDIF
       IF lAdd
-         ::ExStyle := (::ExStyle | nStyle)
+         ::ExStyle := hb_bitor(::ExStyle, nStyle)
        ELSE
          ::ExStyle := (::ExStyle & NOT( nStyle ))
       ENDIF
@@ -221,7 +221,7 @@ METHOD __ControlProc( hWnd, nMsg, nwParam, nlParam ) CLASS MDIClient
            IF ::Parent:BackgroundImage != NIL .AND. !EMPTY( ::Parent:BackgroundImage:ImageName )
               ::CallWindowProc()
               ::InvalidateRect()
-              ::RedrawWindow( , , (RDW_UPDATENOW | RDW_INTERNALPAINT | RDW_ALLCHILDREN) )
+              ::RedrawWindow( , , hb_bitor(RDW_UPDATENOW, RDW_INTERNALPAINT, RDW_ALLCHILDREN) )
            ENDIF
    END
 RETURN CallWindowProc( ::__nProc, hWnd, nMsg, nwParam, nlParam )

@@ -60,7 +60,7 @@ METHOD Init( oParent ) CLASS MonthCalendar
    DEFAULT ::__xCtrlName TO "MonthCalendar"
    ::ClsName    := MONTHCAL_CLASS
    ::Super:Init( oParent )
-   ::Style     := WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS
+   ::Style     := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::Events := {}
    IF oParent:DesignMode
       ::Events := { ;
@@ -102,7 +102,7 @@ METHOD Create() CLASS MonthCalendar
    ::TitleForeColor    := ::xTitleForeColor
    ::TrailingTextColor := ::xTrailingTextColor
    IF !EMPTY( ::Caption )
-      ::SetWindowPos(,0,0,0,0,SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER)
+      ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
    ENDIF
 RETURN Self
 
@@ -142,7 +142,7 @@ RETURN Self
 
 METHOD SetRange( nMinMax ) CLASS MonthCalendar
    LOCAL MinSt, MaxSt
-   DEFAULT nMinMax TO GDTR_MIN | GDTR_MAX
+   DEFAULT nMinMax TO hb_bitor(GDTR_MIN, GDTR_MAX)
 
    MinSt := (struct SYSTEMTIME)
    MaxSt := (struct SYSTEMTIME)

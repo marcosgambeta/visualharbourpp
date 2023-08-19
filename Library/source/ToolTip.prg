@@ -76,7 +76,7 @@ CLASS ToolTip INHERIT Window
    ASSIGN ClipSiblings(l) INLINE ::SetStyle( WS_CLIPSIBLINGS, l )
 
    DATA Tip               EXPORTED AS OBJECT
-   DATA TTStyle           EXPORTED INIT (TTF_SUBCLASS | TTF_IDISHWND | TTF_ABSOLUTE)
+   DATA TTStyle           EXPORTED INIT hb_bitor(TTF_SUBCLASS, TTF_IDISHWND, TTF_ABSOLUTE)
    DATA xMdiContainer     EXPORTED INIT .F.
 
    ACCESS MdiContainer    INLINE    ::xMdiContainer
@@ -115,7 +115,7 @@ METHOD Init( oParent ) CLASS ToolTip
    ::__xCtrlName    := "ToolTip"
    ::ClsName      := TOOLTIPS_CLASS
    ::Super:Init( oParent )
-   ::Style        := (WS_POPUP | WS_BORDER | TTS_NOPREFIX | TTS_ALWAYSTIP)
+   ::Style        := hb_bitor(WS_POPUP, WS_BORDER, TTS_NOPREFIX, TTS_ALWAYSTIP)
    ::ExStyle      := WS_EX_TOPMOST
    ::Left         := CW_USEDEFAULT
    ::Top          := CW_USEDEFAULT
@@ -155,7 +155,7 @@ RETURN( Self )
 
 METHOD SetTTStyle( nStyle, lSet ) CLASS ToolTip
    IF lSet
-      ::TTStyle := (::TTStyle | nStyle)
+      ::TTStyle := hb_bitor(::TTStyle, nStyle)
     ELSE
       ::TTStyle := (::TTStyle & NOT( nStyle ))
    ENDIF

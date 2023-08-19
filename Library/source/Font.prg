@@ -76,7 +76,7 @@ CLASS Font
    METHOD Set()
    METHOD SetPointSize()
    METHOD GetPointSize()
-   METHOD AddResource(c) INLINE AddFontResource( c )//, FR_PRIVATE | FR_NOT_ENUM )
+   METHOD AddResource(c) INLINE AddFontResource( c )//, hb_bitor(FR_PRIVATE, FR_NOT_ENUM) )
    METHOD EnumFamilies()
    METHOD EnumFamiliesProc()
    METHOD Destroy()      INLINE ::Delete()
@@ -107,7 +107,7 @@ METHOD Init( oOwner ) CLASS Font
    ::OutPrecision   := OUT_DEFAULT_PRECIS
    ::ClipPrecision  := CLIP_DEFAULT_PRECIS
    ::Quality        := DEFAULT_QUALITY
-   ::PitchAndFamily := ( DEFAULT_PITCH | FF_DONTCARE )
+   ::PitchAndFamily := hb_bitor(DEFAULT_PITCH, FF_DONTCARE)
 
    ::GetPointSize()
 
@@ -211,7 +211,7 @@ METHOD Choose( oOwner, lSet, nStyle ) CLASS Font
    IF ::Owner != NIL .AND. ::Owner:HasMessage( "ForeColor" )
       cf:rgbColors := ::Owner:ForeColor
    ENDIF
-   cf:Flags := IIF( nStyle != NIL, nStyle, (CF_SCREENFONTS | CF_INITTOLOGFONTSTRUCT | CF_EFFECTS) )
+   cf:Flags := IIF( nStyle != NIL, nStyle, hb_bitor(CF_SCREENFONTS, CF_INITTOLOGFONTSTRUCT, CF_EFFECTS) )
 
    IF ChooseFont( @cf )
       IF cf:lpLogFont:lfItalic <> 0
@@ -294,7 +294,7 @@ METHOD SetPointSize( n ) CLASS Font
    ::xPointSize := n
 
    IF ::DesignMode .AND. ::Owner != NIL  .AND. __objHasMsg( ::Owner, "hWnd" ) .AND. IsWindow( ::Owner:hWnd )
-      ::Owner:SetWindowPos(, 0,0,0,0, (SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER) )
+      ::Owner:SetWindowPos(, 0,0,0,0, hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
    ENDIF
 RETURN Self
 

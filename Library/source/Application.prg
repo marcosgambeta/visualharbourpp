@@ -71,7 +71,7 @@ static nButWidth
 #define SYNCHRONIZE               0x00100000
 #define MUTANT_QUERY_STATE        0x0001
 
-#define MUTANT_ALL_ACCESS  (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|MUTANT_QUERY_STATE)
+#define MUTANT_ALL_ACCESS  hb_bitor(STANDARD_RIGHTS_REQUIRED, SYNCHRONIZE, MUTANT_QUERY_STATE)
 #define MUTEX_ALL_ACCESS MUTANT_ALL_ACCESS
 
 #define VXH_Version      "2016"
@@ -403,7 +403,7 @@ METHOD Init( lIde, __hDllInstance ) CLASS Application
 
    IF !lIde
 
-      //SetThemeAppProperties( STAP_ALLOW_NONCLIENT | STAP_ALLOW_CONTROLS | STAP_ALLOW_WEBCONTENT )
+      //SetThemeAppProperties( hb_bitor(STAP_ALLOW_NONCLIENT, STAP_ALLOW_CONTROLS, STAP_ALLOW_WEBCONTENT) )
 
       __GetSystem():Update()
 
@@ -537,7 +537,7 @@ METHOD SaveResource( ncRes, cFileName ) CLASS Application
    ENDIF
 
    IF ::Resources[n][2] == "BMP"
-      hBmp := LoadImage( ::Instance, ::Resources[n][1], IMAGE_BITMAP, 0, 0, ( LR_DEFAULTCOLOR | LR_DEFAULTSIZE ) )
+      hBmp := LoadImage( ::Instance, ::Resources[n][1], IMAGE_BITMAP, 0, 0, ( hb_bitor(LR_DEFAULTCOLOR, LR_DEFAULTSIZE) ) )
       CreateBMPFile( hBmp, cFileName )
       lRet := FILE( cFileName )
     ELSE
@@ -793,7 +793,7 @@ METHOD Init( cMsg, cCaption, aChoices, nIcon, nDefault ) CLASS __AlertDlg
    hWnd    := GetFocus()
 
    Super:Init( Application:MainForm )
-   ::Style    := ( DS_MODALFRAME | WS_VISIBLE | WS_POPUP | DS_SETFONT | WS_CAPTION )
+   ::Style    := ( hb_bitor(DS_MODALFRAME, WS_VISIBLE, WS_POPUP, DS_SETFONT, WS_CAPTION) )
    ::ExStyle  := IIF( cCaption == NIL, WS_EX_TOOLWINDOW, 0 )
    ::Caption  := cCaption
    ::Message  := cMsg
@@ -812,7 +812,7 @@ METHOD OnInitDialog() CLASS __AlertDlg
    n := 15
    IF ::_Icon != NIL
       o := Label( Self )
-      o:Style   := ( SS_ICON | WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS )
+      o:Style   := ( hb_bitor(SS_ICON, WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
       o:Left    := 15
       o:Top     := 15
       o:Width   := 40
@@ -823,7 +823,7 @@ METHOD OnInitDialog() CLASS __AlertDlg
    ENDIF
 
    o := Label( Self )
-   o:Style   := ( WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS )
+   o:Style   := ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
    o:Caption := ::Message
    o:Left    := n
    o:Top     := 15
@@ -1323,7 +1323,7 @@ FUNCTION ErrDialog( e, aChoices, aStack, cProcStack )
    ENDIF
    __cGpfError := e:cargo
 
-   dt:style           := ( WS_POPUP | DS_SETFONT | WS_CAPTION | DS_SYSMODAL )
+   dt:style           := ( hb_bitor(WS_POPUP, DS_SETFONT, WS_CAPTION, DS_SYSMODAL) )
    dt:dwExtendedStyle := 0
    dt:x               := 0
    dt:y               := 0
@@ -1356,7 +1356,7 @@ FUNCTION __ErrorDlgProc( hWnd, nMsg, nwParam, nlParam )
 
    SWITCH nMsg
       CASE WM_INITDIALOG
-           SetWindowPos( hWnd, HWND_TOPMOST, 0, 0, 0, 0, ( SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE ) )
+           SetWindowPos( hWnd, HWND_TOPMOST, 0, 0, 0, 0, ( hb_bitor(SWP_NOSIZE, SWP_NOMOVE, SWP_NOACTIVATE) ) )
 
            cText := Substr( GetModuleFileName(Application:DllInstance), Rat( "\", GetModuleFileName(Application:DllInstance) ) + 1 )
            cText := Left( cText, Rat("." ,cText )-1 )
@@ -1367,11 +1367,11 @@ FUNCTION __ErrorDlgProc( hWnd, nMsg, nwParam, nlParam )
            GetClientRect( hWnd, @rc )
 
            IF __cGpfError != NIL
-              hGpf := CreateWindowEx( WS_EX_TRANSPARENT, "static", __cGpfError, ( WS_CHILD | WS_VISIBLE | SS_SUNKEN ), 5, 5, rc:right - 10, __nGpfHeight - 2, hWnd, 10, Application:Instance )
+              hGpf := CreateWindowEx( WS_EX_TRANSPARENT, "static", __cGpfError, ( hb_bitor(WS_CHILD, WS_VISIBLE, SS_SUNKEN) ), 5, 5, rc:right - 10, __nGpfHeight - 2, hWnd, 10, Application:Instance )
               SendMessage( hGpf, WM_SETFONT, __hErrorFontBold, MAKELPARAM( 1, 0 ) )
            ENDIF
 
-           hCtrl := CreateWindowEx( WS_EX_TRANSPARENT, "static", "", ( WS_CHILD | WS_VISIBLE | SS_NOTIFY | SS_SIMPLE | SS_SUNKEN ), 5, 5+__nGpfHeight, rc:right - 10, rc:bottom - 55 - __nGpfHeight, hWnd, 101, Application:Instance )
+           hCtrl := CreateWindowEx( WS_EX_TRANSPARENT, "static", "", ( hb_bitor(WS_CHILD, WS_VISIBLE, SS_NOTIFY, SS_SIMPLE, SS_SUNKEN) ), 5, 5+__nGpfHeight, rc:right - 10, rc:bottom - 55 - __nGpfHeight, hWnd, 101, Application:Instance )
            SendMessage( hCtrl, WM_SETFONT, __hErrorFont, MAKELPARAM( 1, 0 ) )
 
            cCaption := "Arguments"      + CRLF +;
@@ -1386,7 +1386,7 @@ FUNCTION __ErrorDlgProc( hWnd, nMsg, nwParam, nlParam )
                        "Current Alias"  + CRLF +;
                        "DOS Error"      + CRLF +;
                        "Windows Error"
-           hCtrl := CreateWindowEx( 0, "static", cCaption, ( WS_CHILD | WS_VISIBLE | SS_NOTIFY ), 10, 8+__nGpfHeight, 100, rc:bottom - 60, hWnd, 102, Application:Instance )
+           hCtrl := CreateWindowEx( 0, "static", cCaption, ( hb_bitor(WS_CHILD, WS_VISIBLE, SS_NOTIFY) ), 10, 8+__nGpfHeight, 100, rc:bottom - 60, hWnd, 102, Application:Instance )
            SendMessage( hCtrl, WM_SETFONT, __hErrorFontBold, MAKELPARAM( 1, 0 ) )
 
 
@@ -1420,7 +1420,7 @@ FUNCTION __ErrorDlgProc( hWnd, nMsg, nwParam, nlParam )
            nTop := 8+__nGpfHeight
            nWidth := rc:right - 112
            FOR n := 1 TO LEN( aLabels )
-               hCtrl := CreateWindowEx( 0, "static", aCaptions[n], ( WS_CHILD | WS_VISIBLE | SS_NOTIFY ), 112, nTop, nWidth, 13, hWnd, 102+n, Application:Instance )
+               hCtrl := CreateWindowEx( 0, "static", aCaptions[n], ( hb_bitor(WS_CHILD, WS_VISIBLE, SS_NOTIFY) ), 112, nTop, nWidth, 13, hWnd, 102+n, Application:Instance )
                SendMessage( hCtrl, WM_SETFONT, __hErrorFont, MAKELPARAM( 1, 0 ) )
                nTop += 13
            NEXT
@@ -1430,18 +1430,18 @@ FUNCTION __ErrorDlgProc( hWnd, nMsg, nwParam, nlParam )
 
            n := 1
            FOR EACH cOpt IN __aErrorOptions
-               hCtrl := CreateWindowEx( 0, "button", cOpt, ( WS_CHILD | WS_VISIBLE | WS_TABSTOP ), nLeft, rc:bottom - 45, nWidth - 4, 25, hWnd, n, Application:Instance )
+               hCtrl := CreateWindowEx( 0, "button", cOpt, ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP) ), nLeft, rc:bottom - 45, nWidth - 4, 25, hWnd, n, Application:Instance )
                SendMessage( hCtrl, WM_SETFONT, __hErrorFont, MAKELPARAM( 1, 0 ) )
                nLeft += nWidth
                n ++
            NEXT
 
-           hStk := CreateWindowEx( 0, "button", "Stack >>", ( WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_OWNERDRAW ), 2, rc:bottom - 17,  rc:right - 4, 15, hWnd, 201, Application:Instance )
+           hStk := CreateWindowEx( 0, "button", "Stack >>", ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_OWNERDRAW) ), 2, rc:bottom - 17,  rc:right - 4, 15, hWnd, 201, Application:Instance )
            SendMessage( hStk, WM_SETFONT, __hErrorFont, MAKELPARAM( 1, 0 ) )
            SetWindowTheme( hStk, NIL, NIL )
 
            nTop := rc:bottom - 17
-           hLst := CreateWindowEx( WS_EX_CLIENTEDGE, "listbox", "", ( WS_CHILD | WS_TABSTOP | LBS_NOTIFY | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_HSCROLL ), 5, nTop, rc:right - 10, 200, hWnd, 202, Application:Instance )
+           hLst := CreateWindowEx( WS_EX_CLIENTEDGE, "listbox", "", ( hb_bitor(WS_CHILD, WS_TABSTOP, LBS_NOTIFY, LBS_HASSTRINGS, LBS_NOINTEGRALHEIGHT, WS_VSCROLL, WS_HSCROLL) ), 5, nTop, rc:right - 10, 200, hWnd, 202, Application:Instance )
            SendMessage( hLst, WM_SETFONT, __hErrorFont, MAKELPARAM( 1, 0 ) )
 
            FOR EACH cText IN __aErrorStack

@@ -78,7 +78,7 @@ ENDCLASS
 
 METHOD Init( oParent ) CLASS Animation
    DEFAULT ::__xCtrlName TO "Animation"
-   ::Style     := ( WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS )
+   ::Style     := ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
    ::ClsName   := ANIMATE_CLASS
    ::Super:Init( oParent )
    ::Width     := 40

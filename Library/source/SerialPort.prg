@@ -136,7 +136,7 @@ METHOD Open() CLASS SerialPort
    IF ::IsOpen
       ::Close()
    ENDIF
-   ::Handle := CreateFile( ::PortName+":", GENERIC_READ | GENERIC_WRITE, 0,, OPEN_EXISTING, 0, )
+   ::Handle := CreateFile( ::PortName+":", hb_bitor(GENERIC_READ, GENERIC_WRITE), 0,, OPEN_EXISTING, 0, )
    IF !GetCommState( ::Handle, @dcb )
       RETURN .F.
    ENDIF

@@ -107,7 +107,7 @@ CLASS TreeView FROM TitleControl
    METHOD OnLButtonUp()
 
    METHOD MoveItem()
-   METHOD ResetFrame() INLINE ::SetWindowPos(,0,0,0,0,(SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER))
+   METHOD ResetFrame() INLINE ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
    METHOD __Enable( lEnable ) INLINE EnableWindow( ::hWnd, lEnable )
 ENDCLASS
 
@@ -116,7 +116,7 @@ ENDCLASS
 METHOD Init( oParent ) CLASS TreeView
    ::ClsName := "SysTreeView32"
    ::Level   := -1
-   ::Style   := (WS_CHILD | WS_VISIBLE | WS_TABSTOP | TVS_HASLINES | TVS_HASBUTTONS | TVS_LINESATROOT | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   ::Style   := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, TVS_HASLINES, TVS_HASBUTTONS, TVS_LINESATROOT, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::Border  := WS_EX_CLIENTEDGE
    DEFAULT ::__xCtrlName TO "TreeView"
 
@@ -184,7 +184,7 @@ RETURN Self
 
 METHOD Create() CLASS TreeView
    IF ! ::DragItems
-      ::Style := (::Style | TVS_DISABLEDRAGDROP)
+      ::Style := hb_bitor(::Style, TVS_DISABLEDRAGDROP)
    ENDIF
    ::Super:Create()
    IF ::xImageList != NIL
@@ -197,7 +197,7 @@ METHOD Create() CLASS TreeView
       ::SetBackColor( ::xBackColor )
    ENDIF
 
-   //::SendMessage( TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER | TVS_CHECKBOXES, TVS_EX_DOUBLEBUFFER | TVS_CHECKBOXES )
+   //::SendMessage( TVM_SETEXTENDEDSTYLE, hb_bitor(TVS_EX_DOUBLEBUFFER, TVS_CHECKBOXES), hb_bitor(TVS_EX_DOUBLEBUFFER, TVS_CHECKBOXES) )
 
 RETURN Self
 
@@ -365,7 +365,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS TreeView
            IF (tvht:flags & TVHT_ONITEMSTATEICON) == TVHT_ONITEMSTATEICON
               PostMessage( ::hWnd, UM_CHECKSTATECHANGE, 0, tvht:hItem )
            ELSE
-              tvht:flags := (TVHT_ONITEM | TVHT_ONITEMICON)
+              tvht:flags := hb_bitor(TVHT_ONITEM, TVHT_ONITEMICON)
               GetCursorPos( @tvht:pt )
               ScreenToClient( ::hWnd, @tvht:pt )
 

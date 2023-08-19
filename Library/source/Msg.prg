@@ -20,7 +20,7 @@ Function MsgInfo(cText,cTitle)
       cTitle:="Information"
    ENDIF
 
-   MessageBox( GetActiveWindow() , cStr(cText), cStr(cTitle), (MB_OK | MB_ICONINFORMATION) )
+   MessageBox( GetActiveWindow() , cStr(cText), cStr(cTitle), hb_bitor(MB_OK, MB_ICONINFORMATION) )
 
 RETURN NIL
 
@@ -32,7 +32,7 @@ Function MsgAlert(cText,cTitle)
       cTitle:="Attention"
    ENDIF
 
-   MessageBox( GetActiveWindow() , cStr(cText), cStr(cTitle), (MB_OK | MB_ICONEXCLAMATION) )
+   MessageBox( GetActiveWindow() , cStr(cText), cStr(cTitle), hb_bitor(MB_OK, MB_ICONEXCLAMATION) )
 
 RETURN NIL
 
@@ -44,7 +44,7 @@ Function MsgStop(cText,cTitle)
       cTitle:="Stop"
    ENDIF
 
-   MessageBox( GetActiveWindow() , cStr(cText), cStr(cTitle), (MB_OK | MB_ICONSTOP) )
+   MessageBox( GetActiveWindow() , cStr(cText), cStr(cTitle), hb_bitor(MB_OK, MB_ICONSTOP) )
 
 RETURN NIL
 
@@ -56,7 +56,7 @@ Function MsgYesNo( cText, cTitle )
       cTitle:="Select an option"
    ENDIF
 
-RETURN MessageBox( GetActiveWindow(), cStr(cText), cStr(cTitle), (MB_YESNO | MB_ICONQUESTION) ) == IDYES
+RETURN MessageBox( GetActiveWindow(), cStr(cText), cStr(cTitle), hb_bitor(MB_YESNO, MB_ICONQUESTION) ) == IDYES
 
 
 //----------------------------------------------------------------------------------------------------//
@@ -66,5 +66,5 @@ Function MsgRetryCancel( cText, cTitle )
       cTitle:="Select an option"
    ENDIF
 
-RETURN MessageBox( GetActiveWindow(), cStr(cText), cStr(cTitle), (MB_RETRYCANCEL | MB_ICONQUESTION)  ) == IDRETRY
+RETURN MessageBox( GetActiveWindow(), cStr(cText), cStr(cTitle), hb_bitor(MB_RETRYCANCEL, MB_ICONQUESTION)  ) == IDRETRY
 

@@ -35,7 +35,7 @@ METHOD Init( oParent ) CLASS FreeImage
    LOCAL cSupp := ""
    ::__xCtrlName  := "FreeImage"
    ::ClsName      := "PanelBox"
-   ::Style        := WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS
+   ::Style        := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ExStyle      := WS_EX_CONTROLPARENT
 
    ::FreeImageRenderer:Init( Self )
@@ -462,7 +462,7 @@ METHOD LoadResource( cResource, cType ) CLASS FreeImageRenderer
     ELSE
 
       IF cType == "BMP"
-         hBmp := LoadImage( hInst, cResource, IMAGE_BITMAP, 0, 0, (LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_CREATEDIBSECTION) )
+         hBmp := LoadImage( hInst, cResource, IMAGE_BITMAP, 0, 0, hb_bitor(LR_DEFAULTCOLOR, LR_DEFAULTSIZE, LR_CREATEDIBSECTION) )
        ELSE
          hBmp := LoadImage( hInst, cResource, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE )
       ENDIF

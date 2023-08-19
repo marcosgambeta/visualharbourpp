@@ -98,13 +98,13 @@ METHOD Init( cMsg, aChoices, lModal, nBackColor, nForeColor, lVert, cFace, nPoin
       ::ExStyle := WS_EX_TOOLWINDOW
       oParent := ObjFromHandle( GetActiveWindow() )
     ELSE
-      ::ExStyle := ( WS_EX_TOOLWINDOW | WS_EX_TOPMOST )
+      ::ExStyle := ( hb_bitor(WS_EX_TOOLWINDOW, WS_EX_TOPMOST) )
       oParent := NIL
    ENDIF
 
    Super:Init( oParent )
    ::Modal    := lModal
-   ::Style    := ( DS_MODALFRAME | WS_VISIBLE | WS_POPUP | DS_SETFONT | WS_CAPTION )
+   ::Style    := ( hb_bitor(DS_MODALFRAME, WS_VISIBLE, WS_POPUP, DS_SETFONT, WS_CAPTION) )
    ::Message  := cMsg
    ::MsgHeight:= nMsgHeight
    ::aChoices := aChoices

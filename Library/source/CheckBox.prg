@@ -70,7 +70,7 @@ CLASS CheckBox INHERIT Control
 
 
    METHOD Init()           CONSTRUCTOR
-   METHOD SetParent( oParent ) INLINE ::Super:SetParent( oParent ), ::RedrawWindow( , , ( RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW ) )
+   METHOD SetParent( oParent ) INLINE ::Super:SetParent( oParent ), ::RedrawWindow( , , ( hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) ) )
    METHOD Create()
 
    METHOD DrawFrame()
@@ -87,13 +87,13 @@ CLASS CheckBox INHERIT Control
 
    METHOD __SetSize()
    //METHOD __SetTransp(lSet)    INLINE IIF( lSet, ::Parent:__RegisterTransparentControl( Self ), ::Parent:__UnregisterTransparentControl( Self ) )
-   METHOD ResetFrame() INLINE    ::SetWindowPos(,0,0,0,0, ( SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER ) )
+   METHOD ResetFrame() INLINE    ::SetWindowPos(,0,0,0,0, ( hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) ) )
    METHOD OnParentCommand()
 ENDCLASS
 
 METHOD Init( oParent ) CLASS CheckBox
    DEFAULT ::__xCtrlName TO "CheckBox"
-   DEFAULT ::Style TO ( WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_AUTOCHECKBOX | WS_CLIPCHILDREN | WS_CLIPSIBLINGS )
+   DEFAULT ::Style TO ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_AUTOCHECKBOX, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
    ::ClsName := "button"
    ::Super:Init( oParent )
    ::Width  := 100
@@ -195,18 +195,18 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS CheckBox
                            ENDIF
 
                       CASE nStatus == BST_CHECKED
-                           nStatus := IIF( lDisabled, ( DFCS_INACTIVE | DFCS_CHECKED ), DFCS_CHECKED )
+                           nStatus := IIF( lDisabled, ( hb_bitor(DFCS_INACTIVE, DFCS_CHECKED) ), DFCS_CHECKED )
                            IF ::Application:OsVersion:dwMajorVersion > 4 .AND. ::Application:ThemeActive
                               nStatus := IIF( lDisabled, CBS_CHECKEDDISABLED, IIF( lHot, CBS_CHECKEDHOT, CBS_CHECKEDNORMAL ) )
                            ENDIF
 
                       CASE nStatus == BST_INDETERMINATE
-                           nStatus := IIF( lDisabled, ( DFCS_INACTIVE | DFCS_BUTTON3STATE | DFCS_CHECKED ), ( DFCS_BUTTON3STATE | DFCS_CHECKED ) )
+                           nStatus := IIF( lDisabled, ( hb_bitor(DFCS_INACTIVE, DFCS_BUTTON3STATE, DFCS_CHECKED) ), ( hb_bitor(DFCS_BUTTON3STATE, DFCS_CHECKED) ) )
                            IF ::Application:OsVersion:dwMajorVersion > 4 .AND. ::Application:ThemeActive
                               nStatus := IIF( lDisabled, CBS_MIXEDDISABLED, IIF( lHot, CBS_MIXEDHOT, CBS_MIXEDNORMAL ) )
                            ENDIF
                    ENDCASE
-                   nFlags := ( nFlags | nStatus )
+                   nFlags := ( hb_bitor(nFlags, nStatus) )
 
                    IF ::Application:OsVersion:dwMajorVersion > 4 .AND. ::Application:ThemeActive
                       DrawThemeBackground( ::System:hButtonTheme, cd:hDC, BP_CHECKBOX, nStatus, aRect, aRect )
@@ -228,7 +228,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS CheckBox
                       cd:rc:top --
                    ENDIF
 
-                   DrawText( cd:hDC, ::Text, cd:rc, ( ::TextAlignment | ::VertAlignment | DT_SINGLELINE ) )
+                   DrawText( cd:hDC, ::Text, cd:rc, ( hb_bitor(::TextAlignment, ::VertAlignment, DT_SINGLELINE) ) )
                    IF nColor != NIL
                       SetTextColor( cd:hDC, nColor )
                    ENDIF
@@ -292,7 +292,7 @@ METHOD DrawFrame( hDC, aRect, nAlign, nWidth, nHeight, nStatus, lDraw ) CLASS Ch
               ENDIF
 
       ENDCASE
-      nFlags := ( nFlags | nStatus )
+      nFlags := ( hb_bitor(nFlags, nStatus) )
    ENDIF
    DO CASE
       CASE nAlign == DT_LEFT
@@ -317,7 +317,7 @@ RETURN aRect
 
 METHOD SetCheckStyle( nStyle ) CLASS CheckBox
    LOCAL nCurStyle
-   ::Style := ( ::Style & NOT( BS_AUTOCHECKBOX ) & NOT( BS_AUTO3STATE ) )
+   ::Style := hb_bitand(::Style, NOT(BS_AUTOCHECKBOX), NOT(BS_AUTO3STATE))
    SWITCH nStyle
       CASE 1
           nCurStyle := BS_AUTOCHECKBOX
@@ -326,7 +326,7 @@ METHOD SetCheckStyle( nStyle ) CLASS CheckBox
           nCurStyle := BS_AUTO3STATE
           EXIT
    END
-   ::Style := ( ::Style | BS_CHECKBOX | nCurStyle )
+   ::Style := ( hb_bitor(::Style, BS_CHECKBOX, nCurStyle) )
    IF ::hWnd != NIL
       SetWindowLong( ::hWnd, GWL_STYLE, ::Style )
       ::SetState( ::xState )

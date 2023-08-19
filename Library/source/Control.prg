@@ -96,7 +96,7 @@ CLASS Control INHERIT Window
    METHOD OnEnterSizeMove()
    METHOD OnExitSizeMove()
 
-   METHOD Redraw( aRect ) INLINE ::RedrawWindow( aRect, , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT | RDW_ALLCHILDREN) ),::UpdateWindow()
+   METHOD Redraw( aRect ) INLINE ::RedrawWindow( aRect, , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT, RDW_ALLCHILDREN) ),::UpdateWindow()
    METHOD __Enable( lEnable )
    METHOD GetBkBrush()
    METHOD OnDestroy()          INLINE IIF( ::__hParBrush != NIL, DeleteObject( ::__hParBrush ),), Super:OnDestroy()
@@ -122,9 +122,9 @@ METHOD __SetBorder( nBorder ) CLASS Control
 
    IF nBorder <> 0
       IF nBorder == WS_BORDER
-         nStyle := (nStyle | WS_BORDER)
+         nStyle := hb_bitor(nStyle, WS_BORDER)
       ELSE
-         nExStyle := (nExStyle | nBorder)
+         nExStyle := hb_bitor(nExStyle, nBorder)
       ENDIF
    ENDIF
    ::Style := nStyle
@@ -133,8 +133,8 @@ METHOD __SetBorder( nBorder ) CLASS Control
    ::SetWindowLong( GWL_STYLE, ::Style )
    ::SetWindowLong( GWL_EXSTYLE, ::ExStyle )
    IF ::IsWindowVisible()
-      ::SetWindowPos(,0,0,0,0,(SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER))
-      ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW ))
+      ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
+      ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW))
    ENDIF
 RETURN nBorder
 
@@ -316,7 +316,7 @@ METHOD Show( nShow ) CLASS Control
    IF ::BottomSplitter != NIL
       ::BottomSplitter:Show()
    ENDIF
-   ::Style := (::Style | WS_VISIBLE)
+   ::Style := hb_bitor(::Style, WS_VISIBLE)
    ::Parent:SendMessage( WM_SIZE, 0, MAKELONG( ::Parent:ClientWidth, ::Parent:ClientHeight ) )
 RETURN Self
 
@@ -497,7 +497,7 @@ CLASS CommonControls INHERIT Control
    PROPERTY CCS_NoParentAlign SET ::SetProperty( CCS_NOPARENTALIGN, v ) DEFAULT .F.
    PROPERTY CCS_Vert          SET ::SetProperty( CCS_VERT, v )          DEFAULT .F.
 
-   METHOD SetProperty( nProp, lSet ) INLINE  ::Style := IIF( lSet, (::Style | nProp), (::Style & NOT( nProp )) )
+   METHOD SetProperty( nProp, lSet ) INLINE  ::Style := IIF( lSet, hb_bitor(::Style, nProp), (::Style & NOT( nProp )) )
 
 ENDCLASS
 
@@ -508,7 +508,7 @@ ENDCLASS
 METHOD Init( oParent ) CLASS UserControl
    DEFAULT ::__xCtrlName TO "UserControl"
    DEFAULT ::ClsName     TO "UserControl"
-   ::Style := (WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   ::Style := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    DEFAULT ::xLeft   TO 0
    DEFAULT ::xTop    TO 0
    DEFAULT ::xWidth  TO 200
@@ -557,7 +557,7 @@ CLASS TitleControl INHERIT Control
    METHOD Redock()
    METHOD DrawClose()
    METHOD DrawPin()
-   METHOD SetActive( l ) INLINE IIF( ::__lActive != l, ( ::__lActive := l, ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT) ), ::UpdateWindow() ), )
+   METHOD SetActive( l ) INLINE IIF( ::__lActive != l, ( ::__lActive := l, ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) ), ::UpdateWindow() ), )
    METHOD ResetFrame() VIRTUAL
    METHOD __OnClose()
    METHOD OnPaint()
@@ -648,7 +648,7 @@ METHOD OnNCPaint( nwParam, nlParam ) CLASS TitleControl
       hOldFont := SelectObject( hDC, ::System:hFont )
       SetBkMode( hDC, TRANSPARENT )
 
-      _DrawText( hDC, ::xText, { IIF( ::MenuArrow .AND. ::__aArrowRect != NIL, ::__aArrowRect[3]+2, ::__aCaptionRect[1]+5 ), ::__aCaptionRect[2], ::__aCaptionRect[3], ::__aCaptionRect[4] }, (DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_WORD_ELLIPSIS) )
+      _DrawText( hDC, ::xText, { IIF( ::MenuArrow .AND. ::__aArrowRect != NIL, ::__aArrowRect[3]+2, ::__aCaptionRect[1]+5 ), ::__aCaptionRect[2], ::__aCaptionRect[3], ::__aCaptionRect[4] }, hb_bitor(DT_LEFT, DT_SINGLELINE, DT_VCENTER, DT_WORD_ELLIPSIS) )
 
       nWidth := 0
       IF ::AllowClose
@@ -762,7 +762,7 @@ METHOD OnNCLButtonDown( nwParam, nlParam ) CLASS TitleControl
       ENDIF
       IF aRect != NIL
          hRegion := CreateRectRgn( aRect[1], aRect[2], aRect[3], aRect[4] )
-         hdc := GetDCEx( ::hWnd, hRegion, (DCX_WINDOW | DCX_PARENTCLIP | DCX_CLIPSIBLINGS | DCX_VALIDATE ))
+         hdc := GetDCEx( ::hWnd, hRegion, hb_bitor(DCX_WINDOW, DCX_PARENTCLIP, DCX_CLIPSIBLINGS, DCX_VALIDATE))
          n := 0
          IF !::IsChild
             n := 1
@@ -865,7 +865,7 @@ METHOD Redock() CLASS TitleControl
          o:Position := ::BackInfo[4]:Position
          o:Create()
       ENDIF
-      ::SetWindowPos(, ::xLeft, ::xTop, ::xWidth, ::xHeight, (SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOSENDCHANGING) )
+      ::SetWindowPos(, ::xLeft, ::xTop, ::xWidth, ::xHeight, hb_bitor(SWP_DRAWFRAME, SWP_FRAMECHANGED, SWP_NOSENDCHANGING) )
 
       IF ! Empty( ::Parent:__aDock )
          hDef := BeginDeferWindowPos( LEN( ::Parent:__aDock ) )

@@ -69,7 +69,7 @@ METHOD Init( oParent ) CLASS CoolBar
    InitCommonControlsEx(ICC_COOL_CLASSES)
    ::ClsName           := REBARCLASSNAME
    DEFAULT ::__xCtrlName TO "CoolBar"
-   ::Style             := (WS_CHILD | WS_VISIBLE | WS_BORDER | RBS_BANDBORDERS | RBS_VARHEIGHT | CCS_NODIVIDER | CCS_NOPARENTALIGN | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   ::Style             := hb_bitor(WS_CHILD, WS_VISIBLE, WS_BORDER, RBS_BANDBORDERS, RBS_VARHEIGHT, CCS_NODIVIDER, CCS_NOPARENTALIGN, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::Super:Init( oParent )
    ::Caption           := ""
    ::Width             := oParent:ClientWidth
@@ -187,7 +187,7 @@ METHOD __SetTheming( lSet ) CLASS CoolBar
           Band:BandChild:Theming := lSet
        ENDIF
    NEXT
-   ::SetWindowPos(,0,0,0,0,(SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER))
+   ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
 RETURN Self
 
 //----------------------------------------------------------------------------------------------------
@@ -401,10 +401,10 @@ ENDCLASS
 METHOD SetStyle( nStyle, Value ) CLASS CoolBarBand
    DEFAULT Value TO .T.
    IF Value
-      ::oStruct:fStyle := (::oStruct:fStyle | nStyle)
+      ::oStruct:fStyle := hb_bitor(::oStruct:fStyle, nStyle)
    ELSE
       ::oStruct:fStyle := (::oStruct:fStyle & NOT( nStyle ) )
-      ::oStruct:fStyle := (::oStruct:fStyle | nStyle)
+      ::oStruct:fStyle := hb_bitor(::oStruct:fStyle, nStyle)
    ENDIF
    ::oStruct:fMask := RBBIM_STYLE
    IF ::lCreated
@@ -421,8 +421,8 @@ METHOD Init( oParent ) CLASS CoolBarBand
    ::oStruct:cbSize     := ::oStruct:sizeof()
    ::oStruct:hwndChild  := 0
    ::oStruct:wID        := LEN( ::Parent:Bands )
-   ::oStruct:fMask      := (RBBIM_STYLE | RBBIM_ID)
-   ::oStruct:fStyle     := (RBBS_NOVERT | RBBS_GRIPPERALWAYS)
+   ::oStruct:fMask      := hb_bitor(RBBIM_STYLE, RBBIM_ID)
+   ::oStruct:fStyle     := hb_bitor(RBBS_NOVERT, RBBS_GRIPPERALWAYS)
    ::oStruct:wID        := LEN( oParent:Bands )
 
    ::ClsName            := "CoolBarBand"
@@ -662,7 +662,7 @@ RETURN rc:Array
 METHOD GetBandInfo() CLASS CoolBarBand
    LOCAL rbb := (struct REBARBANDINFO)
    rbb:cbSize     := rbb:sizeof()
-   rbb:fMask      := (RBBIM_STYLE | RBBIM_ID | RBBIM_STYLE | RBBIM_CHILD | RBBIM_SIZE | RBBIM_CHILDSIZE | RBBIM_IDEALSIZE | RBBIM_IMAGE | RBBIM_LPARAM | RBBIM_HEADERSIZE)
+   rbb:fMask      := hb_bitor(RBBIM_STYLE, RBBIM_ID, RBBIM_STYLE, RBBIM_CHILD, RBBIM_SIZE, RBBIM_CHILDSIZE, RBBIM_IDEALSIZE, RBBIM_IMAGE, RBBIM_LPARAM, RBBIM_HEADERSIZE)
    SendMessage( ::Parent:hWnd, RB_GETBANDINFO, ::Index, @rbb )
 RETURN rbb
 

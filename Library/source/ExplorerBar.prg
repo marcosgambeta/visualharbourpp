@@ -134,8 +134,8 @@ CLASS ExplorerBar INHERIT Control
    METHOD Init() CONSTRUCTOR
    METHOD Create()
    METHOD OnPaint()
-   //METHOD OnSize(n,l)      INLINE Super:OnSize(n,l), ::RedrawWindow( , , RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT ), NIL
-   METHOD OnVertScroll()   INLINE ::RedrawWindow( , , RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT ), AEVAL( ::Children, {|o| o:Redraw() } ), NIL
+   //METHOD OnSize(n,l)      INLINE Super:OnSize(n,l), ::RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) ), NIL
+   METHOD OnVertScroll()   INLINE ::RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) ), AEVAL( ::Children, {|o| o:Redraw() } ), NIL
    METHOD OnEraseBkGnd()   INLINE 1
    METHOD OnThemeChanged()
    METHOD OnDestroy()      INLINE Super:OnDestroy(), ImageListDestroy( ::__hImageListTitle ), ImageListDestroy( ::__hImageListButton ), ::CloseThemeData(), NIL
@@ -153,7 +153,7 @@ METHOD Init( oParent ) CLASS ExplorerBar
    ::__IsStandard  := .F.
    ::__IsControl   := .T.
    ::IsContainer   := .T.
-   ::Style         := WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS
+   ::Style         := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ExStyle       := WS_EX_CONTROLPARENT
    ::VertScroll    := .T.
    ::HorzScroll    := .F.
@@ -188,13 +188,13 @@ METHOD OnThemeChanged( oObj, lClean ) CLASS ExplorerBar
       ImageListDestroy( ::__hImageListTitle )
    ENDIF
    IF ::Application:IsThemedXP
-      ::__hImageListTitle := ImageListCreate( ::System:ExplorerBar:headernormal:iHeaderBmpWidth, ::System:ExplorerBar:headernormal:iHeaderBmpHeight, ILC_COLORDDB | ILC_MASK, 1, 0 )
+      ::__hImageListTitle := ImageListCreate( ::System:ExplorerBar:headernormal:iHeaderBmpWidth, ::System:ExplorerBar:headernormal:iHeaderBmpHeight, hb_bitor(ILC_COLORDDB, ILC_MASK), 1, 0 )
       IF ::System:ExplorerBar:headernormal:hAlphaBmpListHeader != 0
          ImageListAddMasked( ::__hImageListTitle, ::System:ExplorerBar:headernormal:hAlphaBmpListHeader, C_BLACK )
          ImageListAddMasked( ::__hImageListTitle, ::System:ExplorerBar:headerspecial:hAlphaBmpListHeader, C_BLACK )
       ENDIF
 
-      ::__hImageListButton := ImageListCreate( ::System:ExplorerBar:headernormal:iBmpArrowWidth, ::System:ExplorerBar:headernormal:iBmpArrowHeight, ILC_COLORDDB | ILC_MASK, 1, 0 )
+      ::__hImageListButton := ImageListCreate( ::System:ExplorerBar:headernormal:iBmpArrowWidth, ::System:ExplorerBar:headernormal:iBmpArrowHeight, hb_bitor(ILC_COLORDDB, ILC_MASK), 1, 0 )
       IF ::System:ExplorerBar:headernormal:hAlphaBmpArrowUp[1] != 0
          ImageListAddMasked( ::__hImageListButton, ::System:ExplorerBar:headernormal:hAlphaBmpArrowUp[1], C_BLACK )
          ImageListAddMasked( ::__hImageListButton, ::System:ExplorerBar:headernormal:hAlphaBmpArrowUp[2], C_BLACK )
@@ -336,7 +336,7 @@ METHOD Create() CLASS Expando
    ::xLeft   := ::System:ExplorerBar:headernormal:rcTLPadding:left
    ::xTop    := ::System:ExplorerBar:headernormal:rcTLPadding:top + n
    ::xWidth  := ::System:ExplorerBar:headernormal:iHeaderBmpWidth
-   ::Style   := WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_OWNERDRAW | WS_CLIPCHILDREN | WS_GROUP
+   ::Style   := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_OWNERDRAW, WS_CLIPCHILDREN, WS_GROUP)
    ::ExStyle := WS_EX_CONTROLPARENT
    Super:Create()
    ::Font:Height    := oHeader:iFontSize
@@ -418,7 +418,7 @@ METHOD __OnParentSize( x ) CLASS Expando
       ::xWidth -= /*::System:ExplorerBar:headernormal:iHeaderBmpWidth -*/ GetSystemMetrics( SM_CXVSCROLL )
    ENDIF
    ::MoveWindow( , ::OriginalRect[2] - ::Parent:VertScrollPos, ::xWidth )
-   ::RedrawWindow( , , RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_INTERNALPAINT | RDW_ALLCHILDREN )
+   ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT, RDW_ALLCHILDREN) )
 RETURN 0
 
 METHOD OnMouseMove( nwParam, nlParam ) CLASS Expando
@@ -480,7 +480,7 @@ view cx
    hMemDC     := CreateCompatibleDC( hDC )
    hMemBitmap := CreateCompatibleBitmap( hDC, ::Parent:Width, ::Parent:Height )
    hOldBitmap := SelectObject( hMemDC, hMemBitmap)
-   SendMessage( ::Parent:hWnd, WM_PRINT, hMemDC, PRF_CLIENT | PRF_ERASEBKGND )
+   SendMessage( ::Parent:hWnd, WM_PRINT, hMemDC, hb_bitor(PRF_CLIENT, PRF_ERASEBKGND) )
 
    nIconX := 0
    nIconY := 0
@@ -559,7 +559,7 @@ view cx
    ENDIF
    SetBkMode( hMemDC, TRANSPARENT )
    SetTextColor( hMemDC, IIF( ::__MouseIn, oHeader:crHeaderHot, oHeader:crHeaderNormal ) )
-   _DrawText( hMemDC, ::Caption, { x + nIconX + IIF( nIconX == 0, oHeader:rcTLPadding:right, 0 ), y, cx, y + nHeight }, DT_VCENTER | DT_SINGLELINE )
+   _DrawText( hMemDC, ::Caption, { x + nIconX + IIF( nIconX == 0, oHeader:rcTLPadding:right, 0 ), y, cx, y + nHeight }, hb_bitor(DT_VCENTER, DT_SINGLELINE) )
    IF nIconX > 0
       ::Parent:ImageList:DrawImage( hMemDC, ::ImageIndex, x, y-nIconY, ILD_TRANSPARENT )
    ENDIF

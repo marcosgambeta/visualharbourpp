@@ -174,7 +174,7 @@ ENDCLASS
 METHOD SetFlags( nFlag, lSet ) CLASS MSendMail
    DEFAULT lSet TO .T.
    IF lSet
-      ::__Flags := (::__Flags | nFlag)
+      ::__Flags := hb_bitor(::__Flags, nFlag)
     ELSE
       ::__Flags := (::__Flags & NOT( nFlag ))
    ENDIF

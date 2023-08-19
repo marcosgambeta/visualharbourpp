@@ -87,7 +87,7 @@ METHOD Init( oParent ) CLASS OptionBar
 
    ::ClsName      := "OptionBar"
    DEFAULT ::__xCtrlName TO "OptionBar"
-   ::Style        := WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS
+   ::Style        := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::xWidth       := 150
    ::xHeight      := 400
    ::Super:Init( oParent )
@@ -141,8 +141,8 @@ METHOD Create() CLASS OptionBar
    END
    ::lCreated := .T.
 
-   ::SetWindowPos(,0,0,0,0,SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER)
-   ::RedrawWindow( , , RDW_FRAME | RDW_NOERASE | RDW_NOINTERNALPAINT | RDW_INVALIDATE | RDW_UPDATENOW | RDW_NOCHILDREN )
+   ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
+   ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_NOERASE, RDW_NOINTERNALPAINT, RDW_INVALIDATE, RDW_UPDATENOW, RDW_NOCHILDREN) )
 
    ::SetWindowTheme(, "BUTTON" )
 

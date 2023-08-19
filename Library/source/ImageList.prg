@@ -93,7 +93,7 @@ RETURN SELF
 //----------------------------------------------------------------------------------------------------
 
 METHOD Create() CLASS ImageList
-   LOCAL oComp, aImage, cEvent, nStyle := (::Palette | ILC_MASK)
+   LOCAL oComp, aImage, cEvent, nStyle := hb_bitor(::Palette, ILC_MASK)
 
    IF VALTYPE( ::Form ) == "O"
       FOR EACH oComp IN ::Form:Components
@@ -264,9 +264,9 @@ METHOD DrawDisabled( hDC, nIndex, x, y, hBrush ) CLASS ImageList
    LOCAL nStyle := DST_ICON, hIcon := ImageListGetIcon( ::Handle, nIndex-1, ILD_NORMAL )
    IF hBrush == NIL
       hBrush := 0
-      nStyle := (nStyle | DSS_DISABLED)
+      nStyle := hb_bitor(nStyle, DSS_DISABLED)
     ELSE
-      nStyle := (nStyle | DSS_MONO)
+      nStyle := hb_bitor(nStyle, DSS_MONO)
    ENDIF
    DrawState( hDC, hBrush, hIcon, 0, x, y, 0, 0, nStyle )
    DestroyIcon( hIcon )
@@ -285,7 +285,7 @@ METHOD DrawIndirect( hDC, nIndex, x, y, xBmp, yBmp, lDisabled, nFlags, nRop ) CL
    DEFAULT nFlags TO ILD_TRANSPARENT
 
    IF lDisabled
-      nFlags := (nFlags | ILS_SHADOW)
+      nFlags := hb_bitor(nFlags, ILS_SHADOW)
    ENDIF
 
    ildp:cbSize  := ildp:sizeof()
@@ -330,7 +330,7 @@ ENDCLASS
 METHOD Init( oParent, oImageList ) CLASS __ImageListComboBox
    ::ImageList := oImageList
    ::Super:Init( oParent )
-   ::Style     := (WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_VSCROLL | CBS_HASSTRINGS | CBS_OWNERDRAWFIXED | CBS_DROPDOWNLIST | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   ::Style     := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_VSCROLL, CBS_HASSTRINGS, CBS_OWNERDRAWFIXED, CBS_DROPDOWNLIST, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
 RETURN Self
 
 METHOD Create() CLASS __ImageListComboBox

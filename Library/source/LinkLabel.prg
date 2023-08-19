@@ -54,7 +54,7 @@ CLASS LinkLabel INHERIT Control
    METHOD OnKillFocus()        INLINE ::__lFocused  := .F., ::InvalidateRect(), NIL
    METHOD OnEraseBkGnd( hDC )  INLINE ::PaintLabel( hDC ), 1
    METHOD OnPaint()
-   METHOD SetParent( oParent ) INLINE ::Super:SetParent( oParent ), ::RedrawWindow( , , (RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW) )
+   METHOD SetParent( oParent ) INLINE ::Super:SetParent( oParent ), ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
    METHOD SetImageIndex()
    METHOD PaintLabel()
 ENDCLASS
@@ -63,7 +63,7 @@ ENDCLASS
 
 METHOD Init( oParent ) CLASS LinkLabel
    ::__xCtrlName := "LinkLabel"
-   ::Style := (WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_OWNERDRAW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   ::Style := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_OWNERDRAW, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ClsName := "button"
    ::xCursor := IDC_HAND
    ::Super:Init( oParent )
@@ -142,7 +142,7 @@ METHOD PaintLabel( hDC ) CLASS LinkLabel
    GetClientRect( ::hWnd, @rc )
    IF ! (::Parent:ClsName IN {"StatusBarPanel"}) .AND. ::Parent:ImageList != NIL .AND. ::ImageIndex > 0
       IF ::__lFocused
-         ::Parent:ImageList:DrawImage( hDC, ::ImageIndex, 0, 0, (ILD_TRANSPARENT | ILD_FOCUS), ::BackColor )
+         ::Parent:ImageList:DrawImage( hDC, ::ImageIndex, 0, 0, hb_bitor(ILD_TRANSPARENT, ILD_FOCUS), ::BackColor )
        ELSE
          ::Parent:ImageList:DrawImage( hDC, ::ImageIndex, 0, 0, ILD_TRANSPARENT )
       ENDIF
@@ -162,7 +162,7 @@ METHOD PaintLabel( hDC ) CLASS LinkLabel
    SetTextColor( hDC, nColor )
    rc:Left+=2
 
-   DrawText( hDC, ::Text, rc, ((::Alignment-1)|DT_WORDBREAK) )
+   DrawText( hDC, ::Text, rc, hb_bitor((::Alignment-1), DT_WORDBREAK) )
    IF ::__lFocused .AND. ::FocusRect
       rc:Left-=2
       DrawFocusRect( hDC, rc)

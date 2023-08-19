@@ -57,7 +57,7 @@ METHOD Init( oParent ) CLASS RichTextBox
    ::Height      := 80
    ::xWantReturn := .T.
    ::xMultiLine  := .T.
-   ::Style       := WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | ES_WANTRETURN | ES_MULTILINE
+   ::Style       := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS, ES_WANTRETURN, ES_MULTILINE)
    ::ClsName     := RICHEDIT_CLASS
 RETURN Self
 

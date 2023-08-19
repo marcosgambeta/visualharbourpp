@@ -47,7 +47,7 @@ METHOD Init( oParent, cCaption, nId, nLeft, nTop, nWidth, nHeight, nStyle, lCrea
    ::ClassStyle:= NIL
 
    ::Super:Init( oParent, cCaption, nId, nLeft, nTop, nWidth, nHeight, nStyle )
-   ::Style     := ( WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS )
+   ::Style     := ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
 
    ::__IsStandard:= .F.
    ::ClassStyle:=CS_VREDRAW+CS_HREDRAW

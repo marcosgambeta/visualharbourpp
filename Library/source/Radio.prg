@@ -71,7 +71,7 @@ ENDCLASS
 
 METHOD Init( oParent ) CLASS RadioButton
    DEFAULT ::__xCtrlName TO "RadioButton"
-   DEFAULT ::Style TO (WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_AUTORADIOBUTTON | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   DEFAULT ::Style TO hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_AUTORADIOBUTTON, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ClsName   := "Button"
    ::Super:Init( oParent )
    ::Width     := 100
@@ -152,13 +152,13 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS RadioButton
                     ELSE
                       nState := DFCS_BUTTONRADIO
                       IF lPressed
-                         nState := (nState | DFCS_PUSHED)
+                         nState := hb_bitor(nState, DFCS_PUSHED)
                       ENDIF
                       IF lHot
-                         nState := (nState | DFCS_HOT)
+                         nState := hb_bitor(nState, DFCS_HOT)
                       ENDIF
                       IF lDisabled
-                         nState := (nState | DFCS_INACTIVE)
+                         nState := hb_bitor(nState, DFCS_INACTIVE)
                       ENDIF
                       _DrawFrameControl( aRect, DFC_BUTTON, nState )
                    ENDIF
@@ -172,7 +172,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS RadioButton
 
                    cd:rc:left += 17
                    SetBkMode( cd:hdc, TRANSPARENT )
-                   DrawText( cd:hDC, ::Caption, cd:rc, (DT_LEFT | DT_VCENTER | DT_SINGLELINE) )
+                   DrawText( cd:hDC, ::Caption, cd:rc, hb_bitor(DT_LEFT, DT_VCENTER, DT_SINGLELINE) )
 
                    IF nColor != NIL
                       SetTextColor( cd:hDC, nColor )

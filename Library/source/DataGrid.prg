@@ -326,7 +326,7 @@ CLASS DataGrid INHERIT TitleControl
    METHOD ToggleSelection()
 
    METHOD ResetSearch()    INLINE ::KillTimer( 10 ), ::__cSearch := ""
-   METHOD ResetFrame()     INLINE ::SetWindowPos(,0,0,0,0,(SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER))
+   METHOD ResetFrame()     INLINE ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
 ENDCLASS
 
 METHOD Init( oParent ) CLASS DataGrid
@@ -334,7 +334,7 @@ METHOD Init( oParent ) CLASS DataGrid
    ::ClsName                 := "DataGrid"
    ::__SysBackColor          := GetSysColor( COLOR_WINDOW )
    ::BackColor               := GetSysColor( COLOR_WINDOW )
-   ::Style                   := (WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
+   ::Style                   := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::Border                  := WS_BORDER
    ::Super:Init( oParent )
    ::Width                   := 340
@@ -439,11 +439,11 @@ METHOD __DrawMultiText( hDC, aText, aData, nRight, zLeft, nWImg, nAlign, y, lHea
       rc:top    := aText[2]
       rc:right  := aText[3]
       rc:bottom := aText[4]
-      DrawText( hDC, aData[1], @rc, ( IIF( nAlign == ALIGN_CENTER, DT_CENTER,0) | DT_CALCRECT|DT_WORDBREAK ) )
+      DrawText( hDC, aData[1], @rc, hb_bitor(IIF(nAlign == ALIGN_CENTER, DT_CENTER, 0), DT_CALCRECT, DT_WORDBREAK) )
       aText[2]  := ( aText[4]-rc:bottom ) / 2
       aText[4]  := aText[2] + rc:bottom
 
-      _DrawText( hDC, aData[1], aText, ( IIF( nAlign == ALIGN_CENTER, DT_CENTER,0) | DT_WORDBREAK ) )
+      _DrawText( hDC, aData[1], aText, hb_bitor(IIF(nAlign == ALIGN_CENTER, DT_CENTER, 0), DT_WORDBREAK) )
     ELSE
       FOR z := 1 TO LEN( aData )
           aAlign := _GetTextExtentExPoint( hDC, ALLTRIM(aData[z]), aText[3]-aText[1]-nWimg, @iLen )
@@ -607,7 +607,7 @@ METHOD CreateDragImage(y) CLASS DataGrid
    LOCAL hImageList, hMemBitmap, nTop
    nTop       := ::__GetHeaderHeight() + ( ::ItemHeight*(::RowPos-1) )
    hMemBitmap := GetScreenBitmap( { 0, nTop, ::ClientWidth, nTop + ::ItemHeight }, ::hWnd )
-   hImageList := ImageListCreate( ::ClientWidth, ::ItemHeight, (ILC_COLORDDB | ILC_MASK), 1, 0 )
+   hImageList := ImageListCreate( ::ClientWidth, ::ItemHeight, hb_bitor(ILC_COLORDDB, ILC_MASK), 1, 0 )
    ImageListAdd( hImageList, hMemBitmap )
    DeleteObject( hMemBitmap )
    ::__nDragTop := y-nTop
@@ -860,7 +860,7 @@ METHOD __SetDataSource( oSource ) CLASS DataGrid
 
    oSource := __ChkComponent( Self, oSource )
 
-   IF ( hWnd := GetWindow( ::hWnd, (GW_CHILD | GW_HWNDFIRST) ) ) > 0
+   IF ( hWnd := GetWindow( ::hWnd, hb_bitor(GW_CHILD, GW_HWNDFIRST) ) ) > 0
       DestroyWindow( hWnd )
    ENDIF
 
@@ -1516,7 +1516,7 @@ METHOD OnLButtonDown( nwParam, xPos, yPos ) CLASS DataGrid
                      SystemParametersInfo( SPI_GETDROPSHADOW, 0, @nShadow, 0)
                      ::__lMouseDown := .T.
                      ::Children[ ::__SelCol ]:DrawHeader(,,,,.T.,.T.)
-                     ::Children[ ::__SelCol ]:HeaderMenu:Show( pt:x+if( nShadow==1, 5, 0 ), pt:y, (TPM_RIGHTALIGN | TPM_TOPALIGN) )
+                     ::Children[ ::__SelCol ]:HeaderMenu:Show( pt:x+if( nShadow==1, 5, 0 ), pt:y, hb_bitor(TPM_RIGHTALIGN, TPM_TOPALIGN) )
                      ::__lMouseDown := .F.
                      RETURN NIL
                   ENDIF
@@ -2285,7 +2285,7 @@ METHOD __DisplayData( nRow, nCol, nRowEnd, nColEnd, hMemDC, lHover, lPressed, lH
               ENDIF
 
               IF nRep > 1
-                 _ExtTextOut( hMemDC, aText[1], y, ( ETO_CLIPPED | ETO_OPAQUE ), {aText[1],aText[2],nRight,aText[4]}, "")
+                 _ExtTextOut( hMemDC, aText[1], y, hb_bitor(ETO_CLIPPED, ETO_OPAQUE), {aText[1],aText[2],nRight,aText[4]}, "")
 
                ELSE
 
@@ -2407,7 +2407,7 @@ METHOD __DisplayData( nRow, nCol, nRowEnd, nColEnd, hMemDC, lHover, lPressed, lH
       SetBkColor( hMemDC, nBackGrid )
       SetTextColor( hMemDC, nForeGrid )
 
-      _ExtTextOut( hMemDC, x, y, (ETO_CLIPPED | ETO_OPAQUE), { x, y, ::ClientWidth, ::ClientHeight }," ")
+      _ExtTextOut( hMemDC, x, y, hb_bitor(ETO_CLIPPED, ETO_OPAQUE), { x, y, ::ClientWidth, ::ClientHeight }," ")
    ENDIF
 
    SelectObject( hMemDC, hOldFont )
@@ -2469,14 +2469,14 @@ METHOD __DrawRepresentation( hDC, nRep, aRect, cText, nBkCol, nTxCol, nAlign, zL
               ENDIF
 
          CASE xVal == BST_INDETERMINATE
-              nStatus := (DFCS_BUTTON3STATE | DFCS_CHECKED)
+              nStatus := hb_bitor(DFCS_BUTTON3STATE, DFCS_CHECKED)
               IF lXP
                  nStatus := IIF( ::__lHot, CBS_MIXEDHOT, CBS_MIXEDNORMAL )
               ENDIF
 
       ENDCASE
 
-      nFlags := (nFlags | nStatus)
+      nFlags := hb_bitor(nFlags, nStatus)
 
       IF lXP
          aClip  := { aRect[1], aRect[2], aRect[3], aRect[4] }
@@ -2508,7 +2508,7 @@ METHOD __DrawRepresentation( hDC, nRep, aRect, cText, nBkCol, nTxCol, nAlign, zL
        ELSE
          nStatus := DFCS_BUTTONPUSH
          IF ::__lMouseDown  .AND. i == ::ColPos
-            nStatus := (nStatus | DFCS_PUSHED)
+            nStatus := hb_bitor(nStatus, DFCS_PUSHED)
          ENDIF
          _DrawFrameControl( hDC, aRect, DFC_BUTTON, nStatus )
       ENDIF
@@ -2518,7 +2518,7 @@ METHOD __DrawRepresentation( hDC, nRep, aRect, cText, nBkCol, nTxCol, nAlign, zL
       IF ! EMPTY( ::Children[i]:ButtonText )
          cText := ::Children[i]:ButtonText
       ENDIF
-      _DrawText( hDC, cText, aRect, (DT_CENTER | DT_VCENTER | DT_SINGLELINE) )
+      _DrawText( hDC, cText, aRect, hb_bitor(DT_CENTER, DT_VCENTER, DT_SINGLELINE) )
 
    ENDIF
 
@@ -2846,7 +2846,7 @@ METHOD __UpdateVScrollBar( lRedraw, lForce ) CLASS DataGrid
        ELSE
          nMax  := 100
          nPos  := ::DataSource:OrdKeyRelPos()*100
-         nFlags := (SIF_POS | SIF_RANGE)
+         nFlags := hb_bitor(SIF_POS, SIF_RANGE)
          IF ::GetRecordCount() <= nPage
             nMax := 0
          ENDIF
@@ -3826,7 +3826,7 @@ METHOD AutoAddColumns( lEdit, aExclude ) CLASS DataGrid
              ENDCASE
 
              IF lEdit
-                oCol:ControlAccessKey := (GRID_CHAR | GRID_LCLICK)
+                oCol:ControlAccessKey := hb_bitor(GRID_CHAR, GRID_LCLICK)
                 oCol:OnSave := {|xData| ::DataSource:Fields:Put( xData, ::System:TypeCast( Alltrim(aField[1], aField[2] ) ) ) }
              ENDIF
           ENDIF
@@ -4315,7 +4315,7 @@ METHOD Create() CLASS GridColumn
    TRY
       IF ::AutoEdit
          ::Control := {|o| IIF( ValType(::CellData) $ "MC", EditBox(o), MaskEdit(o) ) }
-         ::ControlAccessKey := (GRID_CHAR | GRID_LCLICK)
+         ::ControlAccessKey := hb_bitor(GRID_CHAR, GRID_LCLICK)
       ENDIF
    CATCH
    END
@@ -4355,7 +4355,7 @@ METHOD CreateDragImage( nLeft ) CLASS GridColumn
 
    hMemBitmap := GetScreenBitmap( {nLeft,0,nLeft+nWidth, ::Parent:ClientHeight}, ::Parent:hWnd )
 
-   hImageList := ImageListCreate( nWidth, ::Parent:ClientHeight, (ILC_COLORDDB | ILC_MASK), 1, 0 )
+   hImageList := ImageListCreate( nWidth, ::Parent:ClientHeight, hb_bitor(ILC_COLORDDB, ILC_MASK), 1, 0 )
    ImageListAdd( hImageList, hMemBitmap )
 
    DeleteObject( hMemBitmap )
@@ -4661,7 +4661,7 @@ METHOD __SetAutoEdit( lEdit ) CLASS GridColumn
    IF lEdit != ::AutoEdit
       IF lEdit
          ::Control := {|o| IIF( ValType(::CellData) $ "MC", EditBox(o), MaskEdit(o) ) }
-         ::ControlAccessKey := (GRID_CHAR | GRID_LCLICK)
+         ::ControlAccessKey := hb_bitor(GRID_CHAR, GRID_LCLICK)
        ELSE
          ::Control := NIL
          ::ControlAccessKey := NIL

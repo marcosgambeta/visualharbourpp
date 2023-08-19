@@ -30,7 +30,7 @@ ENDCLASS
 METHOD SetStyle( nStyle, lAdd ) CLASS CommonDialogs
    DEFAULT lAdd TO .T.
    IF lAdd
-      ::Style := (::Style | nStyle)
+      ::Style := hb_bitor(::Style, nStyle)
     ELSE
       ::Style := (::Style & NOT( nStyle ))
    ENDIF
@@ -56,7 +56,7 @@ CLASS ColorDialog INHERIT CommonDialogs
 ENDCLASS
 
 METHOD Init( oParent ) CLASS ColorDialog
-   ::Style := (CC_ANYCOLOR | CC_RGBINIT | CC_SOLIDCOLOR | CC_FULLOPEN ) //| CC_ENABLEHOOK
+   ::Style := hb_bitor(CC_ANYCOLOR, CC_RGBINIT, CC_SOLIDCOLOR, CC_FULLOPEN) //| CC_ENABLEHOOK
    ::__xCtrlName := "ColorDialog"
    ::ClsName     := "ColorDialog"
    ::ComponentType := "CommonDialog"
@@ -90,7 +90,7 @@ CLASS FolderBrowserDialog INHERIT CommonDialogs
 ENDCLASS
 
 METHOD Init( oParent ) CLASS FolderBrowserDialog
-   ::Style := (BIF_NEWDIALOGSTYLE | BIF_BROWSEINCLUDEURLS)
+   ::Style := hb_bitor(BIF_NEWDIALOGSTYLE, BIF_BROWSEINCLUDEURLS)
    ::__xCtrlName := "FolderBrowserDialog"
    ::ClsName     := "FolderBrowserDialog"
    ::ComponentType := "CommonDialog"
@@ -119,7 +119,7 @@ RETURN 0
 METHOD SetShowNewFolderButton( nStyle, lAdd ) CLASS FolderBrowserDialog
    DEFAULT lAdd TO .T.
    IF !lAdd
-      ::Style := (::Style | nStyle)
+      ::Style := hb_bitor(::Style, nStyle)
     ELSE
       ::Style := (::Style & NOT( nStyle ))
    ENDIF
@@ -157,7 +157,7 @@ CLASS OpenFileDialog INHERIT CommonDialogs
 ENDCLASS
 
 METHOD Init( oParent ) CLASS OpenFileDialog
-   ::Style := (OFN_EXPLORER | OFN_ALLOWMULTISELECT | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY)
+   ::Style := hb_bitor(OFN_EXPLORER, OFN_ALLOWMULTISELECT, OFN_PATHMUSTEXIST, OFN_FILEMUSTEXIST, OFN_HIDEREADONLY)
    ::__xCtrlName := "OpenFileDialog"
    ::ClsName     := "OpenFileDialog"
    ::ComponentType := "CommonDialog"
@@ -210,7 +210,7 @@ METHOD Show() CLASS OpenFileDialog
    ofn:FlagsEx     := 0
    IF !::ShowPlacesBar
       ofn:FlagsEx  := OFN_EX_NOPLACESBAR
-      ofn:Flags := (ofn:Flags | OFN_ENABLEHOOK)
+      ofn:Flags := hb_bitor(ofn:Flags, OFN_ENABLEHOOK)
    ENDIF
    IF GetOpenFileName( @ofn )
       ::FilterIndex := ofn:nFilterIndex
@@ -263,7 +263,7 @@ CLASS SaveFileDialog INHERIT CommonDialogs
 ENDCLASS
 
 METHOD Init( oParent ) CLASS SaveFileDialog
-   ::Style := (OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_NODEREFERENCELINKS | OFN_OVERWRITEPROMPT)
+   ::Style := hb_bitor(OFN_EXPLORER, OFN_PATHMUSTEXIST, OFN_HIDEREADONLY, OFN_NODEREFERENCELINKS, OFN_OVERWRITEPROMPT)
    ::__xCtrlName := "SaveFileDialog"
    ::ClsName     := "SaveFileDialog"
    ::ComponentType := "CommonDialog"
@@ -310,7 +310,7 @@ METHOD Show() CLASS SaveFileDialog
 
    IF !::ShowPlacesBar
       ofn:FlagsEx  := OFN_EX_NOPLACESBAR
-      ofn:Flags := (ofn:Flags | OFN_ENABLEHOOK)
+      ofn:Flags := hb_bitor(ofn:Flags, OFN_ENABLEHOOK)
    ENDIF
 
    IF GetSaveFileName( @ofn )
@@ -356,7 +356,7 @@ CLASS PrintDialog INHERIT CommonDialogs
 ENDCLASS
 
 METHOD Init( oParent ) CLASS PrintDialog
-   ::Style := (PD_NOCURRENTPAGE | PD_DISABLEPRINTTOFILE | PD_NOSELECTION | PD_NOPAGENUMS)
+   ::Style := hb_bitor(PD_NOCURRENTPAGE, PD_DISABLEPRINTTOFILE, PD_NOSELECTION, PD_NOPAGENUMS)
    ::__xCtrlName := "PrintDialog"
    ::ClsName     := "PrintDialog"
    ::ComponentType := "CommonDialog"
@@ -414,7 +414,7 @@ CLASS FontDialog INHERIT CommonDialogs
 ENDCLASS
 
 METHOD Init( oParent ) CLASS FontDialog
-   ::Style          := (CF_SCREENFONTS | CF_INITTOLOGFONTSTRUCT | CF_EFFECTS)
+   ::Style          := hb_bitor(CF_SCREENFONTS, CF_INITTOLOGFONTSTRUCT, CF_EFFECTS)
    ::__xCtrlName    := "FontDialog"
    ::ClsName        := "FontDialog"
    ::ComponentType  := "CommonDialog"
@@ -484,7 +484,7 @@ ENDCLASS
 
 METHOD Init( oParent ) CLASS PageSetup
    LOCAL n
-   ::Style := (PSD_DEFAULTMINMARGINS | PSD_MARGINS)
+   ::Style := hb_bitor(PSD_DEFAULTMINMARGINS, PSD_MARGINS)
    ::__xCtrlName := "PageSetup"
    ::ClsName     := "PageSetup"
    ::ComponentType := "CommonDialog"
@@ -654,7 +654,7 @@ RETURN nButton
 METHOD __SetFlags( nFlags, lAdd ) CLASS TaskDialog
    DEFAULT lAdd TO .T.
    IF lAdd
-      ::__Flags := (::__Flags | nFlags)
+      ::__Flags := hb_bitor(::__Flags, nFlags)
     ELSE
       ::__Flags := (::__Flags & NOT( nFlags ))
    ENDIF
@@ -663,7 +663,7 @@ RETURN self
 METHOD __SetBttns( nButton, lAdd ) CLASS TaskDialog
    DEFAULT lAdd TO .T.
    IF lAdd
-      ::__ComBttns := (::__ComBttns | nButton)
+      ::__ComBttns := hb_bitor(::__ComBttns, nButton)
     ELSE
       ::__ComBttns := (::__ComBttns & NOT( nButton ))
    ENDIF
