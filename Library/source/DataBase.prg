@@ -228,7 +228,7 @@ CLASS DataTable INHERIT Component
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner, hConnection ) CLASS DataTable
+METHOD DataTable:Init( oOwner, hConnection )
    DEFAULT ::__xCtrlName TO "DataTable"
    DEFAULT ::ClsName     TO "DataTable"
    ::ComponentType := "DataSource"
@@ -239,7 +239,7 @@ METHOD Init( oOwner, hConnection ) CLASS DataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Close( lNotify ) CLASS DataTable
+METHOD DataTable:Close( lNotify )
    IF ::Connector != NIL
       ::Connector:Close()
    ENDIF
@@ -258,7 +258,7 @@ METHOD Close( lNotify ) CLASS DataTable
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD EnableFieldCtrl( lEnable ) CLASS DataTable
+METHOD DataTable:EnableFieldCtrl( lEnable )
    LOCAL n, cField
    FOR n := 1 TO LEN( ::Structure )
        cField := ::Structure[n][1]
@@ -269,7 +269,7 @@ METHOD EnableFieldCtrl( lEnable ) CLASS DataTable
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD SavePos() CLASS DataTable
+METHOD DataTable:SavePos()
    AADD( ::__aSavedPos, { ::OrdSetFocus(),;
                           ::Recno(),;
                           (::Area)->( OrdScope( TOPSCOPE ) ),;
@@ -278,7 +278,7 @@ METHOD SavePos() CLASS DataTable
 RETURN LEN( ::__aSavedPos )
 
 //-------------------------------------------------------------------------------------------------------
-METHOD RestPos() CLASS DataTable
+METHOD DataTable:RestPos()
    LOCAL n := LEN( ::__aSavedPos )
    IF n > 0
       ::OrdSetFocus( ::__aSavedPos[n][1] )
@@ -291,7 +291,7 @@ METHOD RestPos() CLASS DataTable
 RETURN LEN( ::__aSavedPos )
 
 //-------------------------------------------------------------------------------------------------------
-METHOD NewInstance( lSetCurPos ) CLASS DataTable
+METHOD DataTable:NewInstance( lSetCurPos )
    LOCAL n, oNewTable := DataTable( ::Owner, ::Connection )
    n := 1
    WHILE Select( ::Alias+xStr(n) ) > 0
@@ -316,7 +316,7 @@ METHOD NewInstance( lSetCurPos ) CLASS DataTable
    ENDIF
 RETURN oNewTable
 //-------------------------------------------------------------------------------------------------------
-METHOD Blank() CLASS DataTable
+METHOD DataTable:Blank()
    LOCAL xValue, n
    ::__lNew  := .T.
    ::__aData := Array( LEN( ::Structure ) )
@@ -352,7 +352,7 @@ METHOD Blank() CLASS DataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Save() CLASS DataTable
+METHOD DataTable:Save()
    LOCAL n, cField, oCtrl
    IF ::bSave != NIL .AND. ! Eval( ::bSave, Self )
       ::__lNew := .F.
@@ -386,7 +386,7 @@ METHOD Save() CLASS DataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD FieldPut( n, xVal ) CLASS DataTable
+METHOD DataTable:FieldPut( n, xVal )
    IF Len( ::__aData ) >= n
       ::__aData[n] := xVal
     ELSE
@@ -395,7 +395,7 @@ METHOD FieldPut( n, xVal ) CLASS DataTable
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD FieldGet( n ) CLASS DataTable
+METHOD DataTable:FieldGet( n )
    LOCAL xVal
    IF Len( ::__aData ) >= n .AND. ::__aData[n] != NIL
       xVal := ::__aData[n]
@@ -426,7 +426,7 @@ METHOD FieldGet( n ) CLASS DataTable
 RETURN xVal
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Load( lAvoidNew ) CLASS DataTable
+METHOD DataTable:Load( lAvoidNew )
    LOCAL n, cField, oCtrl, xData
    DEFAULT lAvoidNew TO .F.
    IF !lAvoidNew
@@ -455,7 +455,7 @@ METHOD Load( lAvoidNew ) CLASS DataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD FromAlias( cAlias )
+METHOD DataTable:FromAlias( cAlias )
    IF cAlias != NIL .AND. (cAlias)->( Used() )
       IF ::Fields != NIL
          ::Fields := NIL
@@ -469,7 +469,7 @@ METHOD FromAlias( cAlias )
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Create( lIgnoreAO ) CLASS DataTable
+METHOD DataTable:Create( lIgnoreAO )
    LOCAL lChanged, n, cFileName, cPath, cMemo, cData
    IF ValType( ::Socket ) == "C" .AND. Ascan( ::Form:__hObjects:Keys, {|c| Upper(c) == Upper(::Socket) } ) > 0
       ::Socket := ::Form:__hObjects[ ::Socket ]
@@ -535,7 +535,7 @@ METHOD Create( lIgnoreAO ) CLASS DataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD CreateTable( aStruc, cFile ) CLASS DataTable
+METHOD DataTable:CreateTable( aStruc, cFile )
    DEFAULT cFile  TO ::FileName
    DEFAULT aStruc TO ::Structure
    IF ! Empty( cFile ) .AND. ! File( cFile ) .AND. ! Empty( aStruc )
@@ -548,7 +548,7 @@ METHOD CreateTable( aStruc, cFile ) CLASS DataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD CreateFields() CLASS DataTable
+METHOD DataTable:CreateFields()
    LOCAL aField, cField
 
    ::__hClass := __ClsNew( "DATA_" + ::Alias, 0, 0, { Data():ClassH } )
@@ -565,7 +565,7 @@ METHOD CreateFields() CLASS DataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD DestroyFields() CLASS DataTable
+METHOD DataTable:DestroyFields()
    LOCAL aField, cField
    IF ::Structure != NIL
       FOR EACH aField IN ::Structure
@@ -580,7 +580,7 @@ METHOD DestroyFields() CLASS DataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD CreateOrder( cOrderBagName, cTag, cKey, cFor, bFor, bWhile, bEval, nEvery, nRecNo, nNext, nRecord, lRest, lUnique, lDescend, lAll ) CLASS DataTable
+METHOD DataTable:CreateOrder( cOrderBagName, cTag, cKey, cFor, bFor, bWhile, bEval, nEvery, nRecNo, nNext, nRecord, lRest, lUnique, lDescend, lAll )
    LOCAL n, cFileName, cPath
 
    IF (::Area)->( OrdNumber( cTag, cOrderBagName ) ) == 0 .OR. ! Upper(cKey) == Upper((::Area)->( IndexKey( OrdNumber( cTag, cOrderBagName ) ) ))
@@ -607,13 +607,13 @@ METHOD CreateOrder( cOrderBagName, cTag, cKey, cFor, bFor, bWhile, bEval, nEvery
 RETURN .T.
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Open() CLASS DataTable
+METHOD DataTable:Open()
    DEFAULT ::Connector TO DataRdd( Self )
    ::Create(.T.)
 RETURN ::lCreated
 
 //-------------------------------------------------------------------------------------------------------
-METHOD CheckAlias() CLASS DataTable
+METHOD DataTable:CheckAlias()
    LOCAL n, aField
    LOCAL hClass, cField
 
@@ -648,7 +648,7 @@ RETURN ::xAlias
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD __SetAlias( cAlias ) CLASS DataTable
+METHOD DataTable:__SetAlias( cAlias )
    LOCAL lCreate := .F.
    IF ! ::__lMemory
       IF EMPTY( cAlias )
@@ -667,7 +667,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD SetFileName( cFileName ) CLASS DataTable
+METHOD DataTable:SetFileName( cFileName )
    IF EMPTY( cFileName )
       cFileName := NIL
    ENDIF
@@ -706,13 +706,13 @@ ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Init( o ) CLASS Data
+METHOD Data:Init( o )
    ::Parent := o
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Put(xVal, cName) CLASS Data
+METHOD Data:Put(xVal, cName)
    IF xVal != NIL
       (::Parent:Area)->&cName := xVal
     ELSE
@@ -812,11 +812,11 @@ CLASS DataRdd
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner ) CLASS DataRdd
+METHOD DataRdd:Init( oOwner )
    ::Owner := oOwner
 RETURN Self
 
-METHOD SetFilter( cFilter ) CLASS DataRdd
+METHOD DataRdd:SetFilter( cFilter )
    IF cFilter != NIL
       IF ValType( cFilter ) == "C"
          (::Owner:Area)->( dbSetFilter( &("{||" + cFilter + "}"), cFilter ) )
@@ -829,7 +829,7 @@ METHOD SetFilter( cFilter ) CLASS DataRdd
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD OrdKeyRelPos(n) CLASS DataRdd
+METHOD DataRdd:OrdKeyRelPos(n)
    LOCAL nRelPos := 0
    IF ::Owner:IsOpen
       nRelPos := (::Owner:Area)->( OrdKeyRelPos(n) )
@@ -848,20 +848,20 @@ METHOD OrdKeyRelPos(n) CLASS DataRdd
 RETURN nRelPos
 
 //-------------------------------------------------------------------------------------------------------
-METHOD OrdKeyNo() CLASS DataRdd
+METHOD DataRdd:OrdKeyNo()
    LOCAL nPos := (::Owner:Area)->( OrdKeyNo() )
    DEFAULT nPos TO (::Owner:Area)->( Recno() )
 RETURN nPos
 
 //-------------------------------------------------------------------------------------------------------
-METHOD OrdKeyNoRaw() CLASS DataRdd
+METHOD DataRdd:OrdKeyNoRaw()
    LOCAL nPos := (::Owner:Area)->( dbOrderInfo( DBOI_KEYNORAW ) )
    DEFAULT nPos TO ::OrdKeyNo()
 RETURN nPos
 
 
 //-------------------------------------------------------------------------------------------------------
-METHOD SetRelation( oData, xKey, lAdditive ) CLASS DataRdd
+METHOD DataRdd:SetRelation( oData, xKey, lAdditive )
    LOCAL bKey, cKey
    DEFAULT lAdditive TO FALSE
 
@@ -885,7 +885,7 @@ METHOD SetRelation( oData, xKey, lAdditive ) CLASS DataRdd
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Create( lIgnoreAO ) CLASS DataRdd
+METHOD DataRdd:Create( lIgnoreAO )
    LOCAL nAlias, cAlias, oErr
    LOCAL cEvent, n, cFile, lDef := .T.
    DEFAULT lIgnoreAO TO .F.
@@ -1040,14 +1040,14 @@ METHOD Create( lIgnoreAO ) CLASS DataRdd
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Scatter() CLASS DataRdd
+METHOD DataRdd:Scatter()
    ::Owner:aScatter := ARRAY( LEN( ::Owner:Structure ) )
    aEval( ::Owner:aScatter, {|a,n| (a), ::Owner:aScatter[n] := (::Owner:Area)->( FieldGet(n) ) } )
    ::Owner:Load( .T. )
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Gather() CLASS DataRdd
+METHOD DataRdd:Gather()
    aEval( ::Owner:aScatter, {|a,n| (a), (::Owner:Area)->( FieldPut(n, ::Owner:aScatter[n] ) ) } )
 RETURN Self
 
@@ -1124,11 +1124,11 @@ CLASS SocketRdd
    METHOD OrdBagExt()                         INLINE ::Request( "OrdBagExt" )
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS SocketRdd
+METHOD SocketRdd:Init( oOwner )
    ::Owner := oOwner
 RETURN Self
 
-METHOD Create() CLASS SocketRdd
+METHOD SocketRdd:Create()
    LOCAL nSecs := SECONDS()
    WHILE ! ::Owner:Socket:Connected .AND. SECONDS() - nSecs < 30
       ::Owner:Socket:Connect()
@@ -1142,7 +1142,7 @@ METHOD Create() CLASS SocketRdd
    ::Owner:CreateFields()
 RETURN Self
 
-METHOD SetRelation( oData, xKey, lAdditive ) CLASS SocketRdd
+METHOD SocketRdd:SetRelation( oData, xKey, lAdditive )
    LOCAL bKey, cKey
    DEFAULT lAdditive TO FALSE
 
@@ -1163,7 +1163,7 @@ METHOD SetRelation( oData, xKey, lAdditive ) CLASS SocketRdd
    ENDIF
 RETURN Self
 
-METHOD Request( cFuncName, aParams ) CLASS SocketRdd
+METHOD SocketRdd:Request( cFuncName, aParams )
    LOCAL cData, cRecData, hSock, nSecs
    LOCAL lRet := .F., n, cSendStr := "SOCKETRDD|Request|"+::Owner:Alias+"|"+cFuncName
    DEFAULT aParams TO {}
@@ -1241,11 +1241,11 @@ CLASS RddSQL
 */
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS RddSQL
+METHOD RddSQL:Init( oOwner )
    ::Owner := oOwner
 RETURN Self
 
-METHOD Create() CLASS RddSQL
+METHOD RddSQL:Create()
    IF ::Owner:SqlConnector != NIL .AND. ::Owner:SqlConnector:Sql != NIL
       ::Owner:Structure := ::Owner:SqlConnector:Sql:GetStruct( ::Owner:FileName )
       ::Owner:CreateFields()
@@ -1262,7 +1262,7 @@ CLASS Database INHERIT Component
    METHOD Init() CONSTRUCTOR
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS Database
+METHOD Database:Init( oOwner )
    ::__xCtrlName   := "Database"
    ::ClsName       := "Database"
    ::ComponentType := "Database"
@@ -1279,14 +1279,14 @@ CLASS SqlTable INHERIT DataTable
    METHOD Create()
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS SqlTable
+METHOD SqlTable:Init( oOwner )
    ::__xCtrlName   := "SqlTable"
    ::ClsName       := "SqlTable"
    ::Super:Init( oOwner )
    ::ComponentType := "DataSource"
 RETURN Self
 
-METHOD Create( lIgnoreAO ) CLASS SqlTable
+METHOD SqlTable:Create( lIgnoreAO )
    ::Connector := RddSQL( Self )
    ::Connector:Create( lIgnoreAO )
 RETURN Self

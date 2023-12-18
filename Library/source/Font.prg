@@ -83,7 +83,7 @@ CLASS Font
 ENDCLASS
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner ) CLASS Font
+METHOD Font:Init( oOwner )
    ::Owner := oOwner
    IF ::ncm == NIL
       ::ncm := (struct NONCLIENTMETRICS)
@@ -115,7 +115,7 @@ METHOD Init( oOwner ) CLASS Font
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS Font
+METHOD Font:Create()
    LOCAL cFont, lf := (struct LOGFONT)
 
    IF ::FaceName != NIL
@@ -159,7 +159,7 @@ METHOD Create() CLASS Font
    ENDIF
 RETURN Self
 
-METHOD Delete() CLASS Font
+METHOD Font:Delete()
    IF ::Handle != NIL
       IF ::Owner != NIL .AND. __objHasMsg( ::Owner, "hWnd" )
          SendMessage( ::Owner:hWnd, WM_SETFONT, NIL, MAKELPARAM( 1, 0 ) )
@@ -171,7 +171,7 @@ RETURN .T.
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD Set( oOwner ) CLASS Font
+METHOD Font:Set( oOwner )
    DEFAULT oOwner TO ::Owner
    ::Owner := oOwner
    IF oOwner:ClsName != "FontDialog"
@@ -184,7 +184,7 @@ METHOD Set( oOwner ) CLASS Font
    ENDIF
 RETURN Self
 
-METHOD Choose( oOwner, lSet, nStyle ) CLASS Font
+METHOD Font:Choose( oOwner, lSet, nStyle )
    LOCAL cf := (struct CHOOSEFONT)
 
    DEFAULT lSet TO .T.
@@ -249,7 +249,7 @@ RETURN cf
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD Modify() CLASS Font
+METHOD Font:Modify()
    LOCAL lf
    IF ::Owner == NIL .OR. ( __objHasMsg( ::Owner, "hWnd" ) .AND. IsWindow( ::Owner:hWnd ) )
       IF ::Delete()
@@ -277,17 +277,17 @@ METHOD Modify() CLASS Font
    ENDIF
 RETURN Self
 
-METHOD EnumFamilies( cFamily ) CLASS Font
+METHOD Font:EnumFamilies( cFamily )
    EnumFontFamilies( ::Owner:Drawing:hDC, cFamily, WinCallBackPointer( HB_ObjMsgPtr( Self, "EnumFamiliesProc" ), Self ), NIL )
 RETURN Self
 
-METHOD EnumFamiliesProc( lpelf ) CLASS Font
+METHOD Font:EnumFamiliesProc( lpelf )
    LOCAL lf := (struct ENUMLOGFONT*) lpelf
 RETURN 1
 
 //-----------------------------------------------------------------------------
 
-METHOD SetPointSize( n ) CLASS Font
+METHOD Font:SetPointSize( n )
    LOCAL hDC := GetDC(0)
    ::Height := -MulDiv( n, GetDeviceCaps( hDC, LOGPIXELSY ), 72 )
    ReleaseDC( 0, hDC )
@@ -299,7 +299,7 @@ METHOD SetPointSize( n ) CLASS Font
 RETURN Self
 
 
-METHOD GetPointSize() CLASS Font
+METHOD Font:GetPointSize()
    LOCAL tm, n, hDC
    hDC := GetDC(0)
    GetTextMetrics( hDC, @tm )

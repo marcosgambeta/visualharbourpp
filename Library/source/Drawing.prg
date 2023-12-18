@@ -65,13 +65,13 @@ ENDCLASS
 
 //------------------------------------------------------------------------------------------------
 
-METHOD Init( oOwner ) CLASS Drawing
+METHOD Drawing:Init( oOwner )
    ::Owner := oOwner
 RETURN Self
 
 //------------------------------------------------------------------------------------------------
 
-METHOD RefreshDC() CLASS Drawing
+METHOD Drawing:RefreshDC()
    IF ::xhDC == NIL
       ::GetDC()
    ENDIF
@@ -79,7 +79,7 @@ RETURN Self
 
 //------------------------------------------------------------------------------------------------
 
-METHOD GetTextExtentPoint32( cText ) CLASS Drawing
+METHOD Drawing:GetTextExtentPoint32( cText )
    LOCAL hFont, aExt
    DEFAULT cText TO ::Owner:Caption
    IF ::Owner:Font != NIL .AND. ::Owner:Font:Handle != NIL
@@ -93,7 +93,7 @@ RETURN aExt
 
 //------------------------------------------------------------------------------------------------
 
-METHOD GetTextExtentExPoint( cText, nMaxWidth, nFit ) CLASS Drawing
+METHOD Drawing:GetTextExtentExPoint( cText, nMaxWidth, nFit )
    LOCAL hFont, aExt
    IF ::Owner:Font != NIL .AND. ::Owner:Font:Handle != NIL
       hFont := SelectObject( ::hDC, ::Owner:Font:Handle )
@@ -106,14 +106,14 @@ RETURN aExt
 
 //------------------------------------------------------------------------------------------------
 
-METHOD GetTextMetrics() CLASS Drawing
+METHOD Drawing:GetTextMetrics()
    LOCAL cBuffer, tm := (struct TEXTMETRIC)
    cBuffer := GetTextMetrics( ::hDC, @tm )
 RETURN tm
 
 //------------------------------------------------------------------------------------------------
 
-METHOD GetClipBox( aRect ) CLASS Drawing
+METHOD Drawing:GetClipBox( aRect )
    LOCAL nRet
    DEFAULT aRect TO {,,,}
    nRet := GetClipBox( ::hDC, @aRect )
@@ -121,7 +121,7 @@ RETURN nRet
 
 //------------------------------------------------------------------------------------------------
 
-METHOD Destroy() CLASS Drawing
+METHOD Drawing:Destroy()
    IF ::xhDC != NIL
       IF ::cPaint == NIL
          ::ReleaseDC()
@@ -134,7 +134,7 @@ RETURN Self
 
 //------------------------------------------------------------------------------------------------
 
-METHOD BeginPaint() CLASS Drawing
+METHOD Drawing:BeginPaint()
    LOCAL cPaint
    ::Destroy()
    ::xhDC := _BeginPaint( ::Owner:hWnd, @cPaint )
@@ -143,7 +143,7 @@ RETURN Self
 
 //------------------------------------------------------------------------------------------------
 
-METHOD FillRect( aRect, hBrush ) CLASS Drawing
+METHOD Drawing:FillRect( aRect, hBrush )
    DEFAULT aRect  TO { 0, 0, ::Owner:Width, ::Owner:Height }
    DEFAULT hBrush TO IIF( ::Owner:BkBrush != NIL, ::Owner:BkBrush, ::Owner:ClassBrush )
    _FillRect( ::hDC, aRect, hBrush )
@@ -151,7 +151,7 @@ RETURN Self
 
 //------------------------------------------------------------------------------------------------
 
-METHOD Rectangle( nLeft, nTop, nRight, nBottom, nColor, hBrush, nPen ) CLASS Drawing
+METHOD Drawing:Rectangle( nLeft, nTop, nRight, nBottom, nColor, hBrush, nPen )
    LOCAL hOldBrush, hOldPen, hPen, aRect := ::Owner:GetRectangle()
 
    DEFAULT nLeft     TO aRect[1]
@@ -182,13 +182,13 @@ RETURN Self
 
 //------------------------------------------------------------------------------------------------
 
-METHOD DrawFrameControl( aRect, nStyle, nFlags ) CLASS Drawing
+METHOD Drawing:DrawFrameControl( aRect, nStyle, nFlags )
    DEFAULT aRect  TO { 0, 0, ::Owner:Width, ::Owner:Height }
    _DrawFrameControl( ::hDC, aRect, nStyle, nFlags )
 RETURN Self
 
 
-METHOD EnumFonts( cFaceName ) CLASS Drawing
+METHOD Drawing:EnumFonts( cFaceName )
    s_oSelf := Self
    ::__aFonts := {}
    _EnumFonts( ::hDC, cFaceName, "VXHENUMFONTS" )

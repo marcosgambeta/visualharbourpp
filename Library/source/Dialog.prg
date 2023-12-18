@@ -54,7 +54,7 @@ ENDCLASS
 
 //------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent, aParameters, cProjectName ) CLASS Dialog
+METHOD Dialog:Init( oParent, aParameters, cProjectName )
    DEFAULT ::__xCtrlName TO "Dialog"
    DEFAULT ::ClsName   TO "Dialog"
    ::Super:Init( oParent, aParameters, cProjectName )
@@ -63,7 +63,7 @@ METHOD Init( oParent, aParameters, cProjectName ) CLASS Dialog
    ::Height  := 700
 RETURN Self
 
-METHOD PostInitDialog() CLASS Dialog
+METHOD Dialog:PostInitDialog()
    LOCAL nRet, oObj
    nRet := ExecuteEvent( "OnCreate", Self )
 
@@ -139,7 +139,7 @@ RETURN nRet
 
 //------------------------------------------------------------------------------------------------
 
-METHOD PreInitDialog() CLASS Dialog
+METHOD Dialog:PreInitDialog()
    LOCAL oCtrl, cClass, hWnd, nStyle, nLeft, nTop, nWidth, nHeight
    ::siv := (struct SCROLLINFO)
    ::siv:cbSize := ::siv:sizeof()
@@ -241,7 +241,7 @@ RETURN Self
 
 //------------------------------------------------------------------------------------------------
 
-METHOD Create( hParent ) CLASS Dialog
+METHOD Dialog:Create( hParent )
    LOCAL nRet, cProcStack := ""
 
    IF ::__hParent != NIL
@@ -304,7 +304,7 @@ RETURN SELF
 
 //------------------------------------------------------------------------------------------------
 
-METHOD ReCreate() CLASS Dialog
+METHOD Dialog:ReCreate()
    LOCAL Child
    ::hWnd := NIL
    ::Create()
@@ -326,7 +326,7 @@ FUNCTION __GetTemplate( oDlg )
 RETURN dt
 
 //------------------------------------------------------------------------------------------------
-METHOD Close(n) CLASS Dialog
+METHOD Dialog:Close(n)
    LOCAL nRet
    DEFAULT n TO IDCANCEL
    ::Template := NIL
@@ -343,7 +343,7 @@ METHOD Close(n) CLASS Dialog
 RETURN nRet
 
 //------------------------------------------------------------------------------------------------
-METHOD SetObject( cName, nId )
+METHOD Dialog:SetObject( cName, nId )
    EXTERNAL Button, Label
    LOCAL oCtrl
    oCtrl := &cName( Self )
@@ -352,7 +352,7 @@ METHOD SetObject( cName, nId )
    oCtrl:__SubClass()
 RETURN Self
 
-METHOD SetDialogRect() CLASS Dialog
+METHOD Dialog:SetDialogRect()
    LOCAL rc
    IF VALTYPE( ::Template ) == "C"
       RETURN ::GetWindowRect()

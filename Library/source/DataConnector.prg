@@ -42,7 +42,7 @@ CLASS SqlConnector INHERIT Component
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner ) CLASS SqlConnector
+METHOD SqlConnector:Init( oOwner )
    DEFAULT oOwner TO ::Application
    ::Connected     := .F.
    ::ConnectionID  := 0
@@ -54,7 +54,7 @@ METHOD Init( oOwner ) CLASS SqlConnector
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS SqlConnector
+METHOD SqlConnector:Create()
    LOCAL cStr, cLib
    IF ::DesignMode
       IF ::Server > 0
@@ -77,11 +77,11 @@ RETURN Self
 
 
 //-------------------------------------------------------------------------------------------------------
-METHOD BuildString() CLASS SqlConnector
+METHOD SqlConnector:BuildString()
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Connect( cConnString ) CLASS SqlConnector
+METHOD SqlConnector:Connect( cConnString )
    LOCAL nCnn, cEvent, nServer
 
    DEFAULT cConnString TO ::ConnectionString
@@ -118,7 +118,7 @@ METHOD Connect( cConnString ) CLASS SqlConnector
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Disconnect() CLASS SqlConnector
+METHOD SqlConnector:Disconnect()
    If valtype( ::Sql ) == "O"         // reconnect ?
       ::Sql:End()
    EndIf
@@ -129,28 +129,28 @@ METHOD Disconnect() CLASS SqlConnector
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Commit() CLASS SqlConnector
+METHOD SqlConnector:Commit()
    IF ::Connected
       ::Sql:Commit()
    ENDIF
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD RollBack() CLASS SqlConnector
+METHOD SqlConnector:RollBack()
    If ::Connected
       ::Sql:RollBack()
    EndIf
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Execute( cCommand ) CLASS SqlConnector
+METHOD SqlConnector:Execute( cCommand )
    If ::Connected
       ::Sql:Execute( cCommand )
    EndIf
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Exec( cCommand, lMsg, lFetch, aArray, cFile, cAlias, nMaxRecords, lNoRecno, cRecnoName, cDeletedName, lTranslate ) CLASS SqlConnector
+METHOD SqlConnector:Exec( cCommand, lMsg, lFetch, aArray, cFile, cAlias, nMaxRecords, lNoRecno, cRecnoName, cDeletedName, lTranslate )
    If ::Connected
       ::Sql:Exec( cCommand, lMsg, lFetch, aArray, cFile, cAlias, nMaxRecords, lNoRecno, cRecnoName, cDeletedName, lTranslate )
    EndIf
@@ -158,7 +158,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Fetch( aLine ) CLASS SqlConnector
+METHOD SqlConnector:Fetch( aLine )
    If ::Connected
       ::Sql:Fetch( aLine )
    EndIf
@@ -166,7 +166,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD FieldGet( nField, aField, cFromWhere, nFieldJoin, nHandle, lTranslate ) CLASS SqlConnector
+METHOD SqlConnector:FieldGet( nField, aField, cFromWhere, nFieldJoin, nHandle, lTranslate )
    If ::Connected
       ::Sql:FieldGet( nField, aField, cFromWhere, nFieldJoin, nHandle, lTranslate )
    EndIf
@@ -174,7 +174,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Getline( aFields, lTranslate, nHandle, nStart ) CLASS SqlConnector
+METHOD SqlConnector:Getline( aFields, lTranslate, nHandle, nStart )
    If ::Connected
       ::Sql:Getline( aFields, lTranslate, nHandle, nStart )
    EndIf
@@ -182,7 +182,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD GetStruct( cTable ) CLASS SqlConnector
+METHOD SqlConnector:GetStruct( cTable )
    If ::Connected
       ::Sql:GetStruct( cTable )
    EndIf

@@ -86,7 +86,7 @@ CLASS FolderTree INHERIT TreeView
    METHOD __SetFolder( cPath ) INLINE IIF( ::hWnd != NIL, ( ::ResetContent(), IIF( cPath == ::SysFolder, cPath := NIL, ), FolderTreeInit( ::hWnd, ::SysFolder, cPath ) ), )
 ENDCLASS
 
-METHOD GetSysFolder() CLASS FolderTree
+METHOD FolderTree:GetSysFolder()
    LOCAL tvi, cFolder
    tvi := (struct TVITEM)
    tvi:hItem := SendMessage( ::hWnd, TVM_GETNEXTITEM, TVGN_CARET, 0 )
@@ -103,12 +103,12 @@ METHOD GetSysFolder() CLASS FolderTree
    ENDIF
 RETURN cFolder
 
-METHOD Init( oParent ) CLASS FolderTree
+METHOD FolderTree:Init( oParent )
    ::__xCtrlName := "FolderTree"
    ::Super:Init( oParent )
 RETURN Self
 
-METHOD Create() CLASS FolderTree
+METHOD FolderTree:Create()
    Super:Create()
    ::__SetExpTheme()
    RedrawWindow( ::hWnd, , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
@@ -117,7 +117,7 @@ METHOD Create() CLASS FolderTree
    FolderTreeInit( ::hWnd, ::SysFolder, IIF( EMPTY( ::Folder ), NIL, ::Folder ) )
 RETURN Self
 
-METHOD __SetExpTheme( lSet ) CLASS FolderTree
+METHOD FolderTree:__SetExpTheme( lSet )
    DEFAULT lSet TO ::xExplorer
    ::HasLines := ! lSet
    IF lSet
@@ -126,7 +126,7 @@ METHOD __SetExpTheme( lSet ) CLASS FolderTree
    SetWindowTheme( ::hWnd, IIF( lSet, "explorer", "treeview" ) )
 RETURN Self
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS FolderTree
+METHOD FolderTree:OnParentNotify( nwParam, nlParam, hdr )
    Super:OnParentNotify( nwParam, nlParam, hdr )
    IF hdr:hwndFrom == ::hWnd
 
@@ -144,7 +144,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS FolderTree
    ENDIF
 RETURN NIL
 
-METHOD Update() CLASS FolderTree
+METHOD FolderTree:Update()
    LOCAL oItem, hItem
    hItem := ::GetRoot()
    WHILE hItem != 0
@@ -188,7 +188,7 @@ CLASS FolderList INHERIT ListView
    METHOD PopulateFromTree()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS FolderList
+METHOD FolderList:Init( oParent )
    ::__xCtrlName := "FolderList"
    ::Super:Init( oParent )
    IF ::DesignMode
@@ -197,7 +197,7 @@ METHOD Init( oParent ) CLASS FolderList
    ENDIF
 RETURN Self
 
-METHOD Create() CLASS FolderList
+METHOD FolderList:Create()
    ::Style := hb_bitor(::Style, LVS_SHAREIMAGELISTS)
    Super:Create()
    RedrawWindow( ::hWnd, , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW) )
@@ -211,7 +211,7 @@ METHOD Create() CLASS FolderList
    ENDIF
 RETURN Self
 
-METHOD OnUserMsg( hWnd, nMsg, nwParam, nlParam ) CLASS FolderList
+METHOD FolderList:OnUserMsg( hWnd, nMsg, nwParam, nlParam )
    (hWnd, nwParam, nlParam)
    IF nMsg == WM_USER + 15 .AND. ::__nCurFolderID != NIL
       FolderListPopulateByID( ::hWnd, ::__nCurFolderID  )
@@ -220,7 +220,7 @@ METHOD OnUserMsg( hWnd, nMsg, nwParam, nlParam ) CLASS FolderList
 RETURN NIL
 
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS FolderList
+METHOD FolderList:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL nSubItem
 
    IF hdr:code == LVN_GETDISPINFO
@@ -254,7 +254,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS FolderList
    ENDIF
 RETURN 0
 
-METHOD __SetFolder( cFolder ) CLASS FolderList
+METHOD FolderList:__SetFolder( cFolder )
    LOCAL nSpecialFolder
    IF VALTYPE( cFolder ) == "N"
       nSpecialFolder := cFolder
@@ -263,7 +263,7 @@ METHOD __SetFolder( cFolder ) CLASS FolderList
    ::PopulateByID( FolderIDFromFolderName( cFolder, nSpecialFolder ) )
 RETURN Self
 
-METHOD PopulateByID( nID ) CLASS FolderList
+METHOD FolderList:PopulateByID( nID )
    LOCAL lRoot, cFolder
    IF nID != NIL
       cFolder := FolderFromIDList( nID )
@@ -278,7 +278,7 @@ METHOD PopulateByID( nID ) CLASS FolderList
    ENDIF
 RETURN Self
 
-METHOD Populate( nlParam ) CLASS FolderList
+METHOD FolderList:Populate( nlParam )
 //   ::PopulateByID( FolderTreeIDList( nlParam ) )
    LOCAL nID
    IF ::__LastRegEntry != NIL
@@ -289,7 +289,7 @@ METHOD Populate( nlParam ) CLASS FolderList
    ::__LastRegEntry := RegisterNotifyFolderID( ::hWnd, nID, WM_USER + 15 )
 RETURN Self
 
-METHOD PopulateFromTree( nlParam ) CLASS FolderList
+METHOD FolderList:PopulateFromTree( nlParam )
    LOCAL nID
    IF ::__LastRegEntry != NIL
       UnregisterNotify( ::__LastRegEntry )

@@ -16,7 +16,7 @@ CLASS DataSet INHERIT Component
 ENDCLASS
 
 //--------------------------------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner ) CLASS DataSet
+METHOD DataSet:Init( oOwner )
    ::__xCtrlName   := "DataSet"
    ::ClsName       := "DataSet"
    ::ComponentType := "DataSource"
@@ -36,7 +36,7 @@ CLASS DataRow
 ENDCLASS
 
 //--------------------------------------------------------------------------------------------------------------------------------
-METHOD New( Parent, aFields ) CLASS DataRow
+METHOD DataRow:New( Parent, aFields )
    LOCAL cField, aColumns := Array( Len( aFields ) )
    ::Parent := Parent
    FOR EACH cField IN aFields
@@ -46,7 +46,7 @@ METHOD New( Parent, aFields ) CLASS DataRow
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------------------------------
-METHOD GetRow( nIndex ) CLASS DataRow
+METHOD DataRow:GetRow( nIndex )
    LOCAl aColumns := ::pvtColumns
    ::Parent:FillRow( nIndex )
 RETURN Self
@@ -64,13 +64,13 @@ CLASS DataColumn
 ENDCLASS
 
 //--------------------------------------------------------------------------------------------------------------------------------
-METHOD New( Parent, cName ) CLASS DataColumn
+METHOD DataColumn:New( Parent, cName )
    ::Parent := Parent
    ::Name   := Upper( cName )
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------------------------------
-METHOD GetColumn( xIndex ) CLASS DataColumn
+METHOD DataColumn:GetColumn( xIndex )
    IF ValType( xIndex ) == 'C'
       xIndex := aScan( ::Parent:pvtColumns, {|_1| Upper( xIndex ) == _1:Name } )
    ENDIF

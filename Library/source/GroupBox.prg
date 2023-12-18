@@ -65,7 +65,7 @@ CLASS GroupBox INHERIT Control
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS GroupBox
+METHOD GroupBox:Init( oParent )
    ::__xCtrlName := "GroupBox"
    ::ClsName   := "GroupBox"
    DEFAULT ::Style TO hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
@@ -82,7 +82,7 @@ METHOD Init( oParent ) CLASS GroupBox
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetSysColor() CLASS GroupBox
+METHOD GroupBox:GetSysColor()
    LOCAL nColor
    IF ::Application:IsThemedXP .AND. ::Theming
       nColor := GetThemeColor( ::System:hButtonTheme, BP_GROUPBOX, GBS_NORMAL, TMT_TEXTCOLOR )
@@ -92,7 +92,7 @@ METHOD GetSysColor() CLASS GroupBox
 RETURN nColor
 
 //-----------------------------------------------------------------------------------------------
-METHOD __CreateBkBrush() CLASS GroupBox
+METHOD GroupBox:__CreateBkBrush()
    LOCAL aRect, hDC, hMemBitmap, hOldBitmap, hMemDC, hBrush
    IF ::xBackColor == NIL
       ::GetClientRect()
@@ -123,7 +123,7 @@ METHOD __CreateBkBrush() CLASS GroupBox
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnPaint() CLASS GroupBox
+METHOD GroupBox:OnPaint()
    LOCAL hDC, hFont, hBrush, hMemDC, hMemBitmap, hOldBitmap, sz := (struct SIZE), aRect
 
    ::__CreateBkBrush()

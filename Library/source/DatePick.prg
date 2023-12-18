@@ -98,7 +98,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS DateTimePicker
+METHOD DateTimePicker:Init( oParent )
    InitCommonControlsEx( ICC_DATE_CLASSES )
    ::xHeight := 20
    ::xWidth  := 90
@@ -129,7 +129,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS DateTimePicker
+METHOD DateTimePicker:Create()
    LOCAL aRange
    ExecuteEvent( "OnInit", Self )
 
@@ -182,10 +182,10 @@ METHOD Create() CLASS DateTimePicker
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnNCPaint() CLASS DateTimePicker
+METHOD DateTimePicker:OnNCPaint()
 RETURN 0
 
-METHOD GetSystemTime( nIndex ) CLASS DateTimePicker
+METHOD DateTimePicker:GetSystemTime( nIndex )
    LOCAL st := (struct SYSTEMTIME)
    SendMessage( ::hWnd, DTM_GETSYSTEMTIME, 0, @st )
    IF nIndex == 1
@@ -197,7 +197,7 @@ RETURN st
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnKeyDown( nwParam, nlParam ) CLASS DateTimePicker
+METHOD DateTimePicker:OnKeyDown( nwParam, nlParam )
    LOCAL nRet := ExecuteEvent( "OnKeyDown", Self, nwParam, nlParam )
    IF ValType( nRet ) != "N" .AND. ::BlankDate
       ::xBlankDate := .F.
@@ -208,7 +208,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetSystemTime() CLASS DateTimePicker
+METHOD DateTimePicker:SetSystemTime()
    LOCAL st := (struct SYSTEMTIME)
 
    IF Empty( ::xDate )
@@ -229,7 +229,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetRange( nMinMax ) CLASS DateTimePicker
+METHOD DateTimePicker:SetRange( nMinMax )
    LOCAL MinSt, MaxSt
    DEFAULT nMinMax TO GDTR_MIN+GDTR_MAX
    MinSt := (struct SYSTEMTIME)
@@ -257,7 +257,7 @@ METHOD SetRange( nMinMax ) CLASS DateTimePicker
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetCustomFormat( cCustomFormat ) CLASS DateTimePicker
+METHOD DateTimePicker:SetCustomFormat( cCustomFormat )
    IF ::xFormat == 20
       ::SendMessage( DTM_SETFORMAT, 0, cCustomFormat )
     ELSE
@@ -265,7 +265,7 @@ METHOD SetCustomFormat( cCustomFormat ) CLASS DateTimePicker
    ENDIF
 RETURN Self
 
-METHOD SetFormat( nFormat ) CLASS DateTimePicker
+METHOD DateTimePicker:SetFormat( nFormat )
    LOCAL xValue
    IF nFormat < 20
       IF ::xFormat == 20
@@ -288,11 +288,11 @@ METHOD SetFormat( nFormat ) CLASS DateTimePicker
    ENDIF
 RETURN Self
 
-METHOD OnChar( nKey ) CLASS DateTimePicker
+METHOD DateTimePicker:OnChar( nKey )
    ::__nLast := nKey
 RETURN Self
 
-METHOD OnParentNotify( nwParam, nlParam ) CLASS DateTimePicker
+METHOD DateTimePicker:OnParentNotify( nwParam, nlParam )
    LOCAL nRet, nmd, pt := (struct POINT)
    (nwParam)
    DO CASE

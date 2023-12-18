@@ -31,7 +31,7 @@ CLASS FreeImage INHERIT TitleControl, FreeImageRenderer
 ENDCLASS
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS FreeImage
+METHOD FreeImage:Init( oParent )
    LOCAL cSupp := ""
    ::__xCtrlName  := "FreeImage"
    ::ClsName      := "PanelBox"
@@ -52,14 +52,14 @@ METHOD Init( oParent ) CLASS FreeImage
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS FreeImage
+METHOD FreeImage:Create()
    ::FreeImageRenderer:Create()
    ::TitleControl:Create()
    ::__SetImageName( ::xImageName )
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD __CreateBkBrush( hDC ) CLASS FreeImage
+METHOD FreeImage:__CreateBkBrush( hDC )
    LOCAL hMemBitmap, hOldBitmap, hMemDC, hBrush, nLeftBorder, nBorder, lDC := hDC != NIL
    IF ! lDC
       hDC := GetDC( ::hWnd )
@@ -104,7 +104,7 @@ METHOD __CreateBkBrush( hDC ) CLASS FreeImage
 RETURN NIL
 
 //--------------------------------------------------------------------------------------------------------
-METHOD OnEraseBkGnd( hDC ) CLASS FreeImage
+METHOD FreeImage:OnEraseBkGnd( hDC )
    ::__CreateBkBrush( hDC )
    _FillRect( hDC, {0, 0, ::ClientWidth, ::ClientHeight}, ::BkBrush )
 RETURN 1
@@ -172,7 +172,7 @@ CLASS FreeImageRenderer
 ENDCLASS
 
 //--------------------------------------------------------------------------------------------------------
-METHOD SetMargins( cMargins ) CLASS FreeImageRenderer
+METHOD FreeImageRenderer:SetMargins( cMargins )
    LOCAL oApp, n, aMargins := hb_atokens( cMargins, "," )
    oApp := __GetApplication()
    ::LeftMargin   := 0
@@ -212,20 +212,20 @@ METHOD SetMargins( cMargins ) CLASS FreeImageRenderer
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner ) CLASS FreeImageRenderer
+METHOD FreeImageRenderer:Init( oOwner )
    ::Owner := oOwner
    __SetInitialValues( Self )
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS FreeImageRenderer
+METHOD FreeImageRenderer:Create()
    IF !EMPTY( ::ImageName )
       ::__SetImageName( @::xImageName )
    ENDIF
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Rescale() CLASS FreeImageRenderer
+METHOD FreeImageRenderer:Rescale()
    LOCAL cx, cy, nRatio, iy, nHeight, nWidth, tmp
 
    cx := FreeImageGetWidth( ::hDIB )
@@ -260,7 +260,7 @@ METHOD Rescale() CLASS FreeImageRenderer
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD LoadFromString( cData ) CLASS FreeImageRenderer
+METHOD FreeImageRenderer:LoadFromString( cData )
    ::xImageName := NIL
 
    ::__cData := cData
@@ -284,7 +284,7 @@ METHOD LoadFromString( cData ) CLASS FreeImageRenderer
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Draw( hMemDC, hBitmap ) CLASS FreeImageRenderer
+METHOD FreeImageRenderer:Draw( hMemDC, hBitmap )
    LOCAL cx, cy, hDIBMemBitmap, display_dib, hDib, nRatio, iy, nHeight, nWidth, hTmp
    LOCAL hMemBitmap1, hOldBitmap1, hMemDC1, x, y
    IF ::hDIB == NIL
@@ -445,7 +445,7 @@ METHOD Draw( hMemDC, hBitmap ) CLASS FreeImageRenderer
 RETURN NIL
 
 //--------------------------------------------------------------------------------------------------------
-METHOD LoadResource( cResource, cType ) CLASS FreeImageRenderer
+METHOD FreeImageRenderer:LoadResource( cResource, cType )
    LOCAL lOK := .F., hBmp, hInst
    hInst := ::Owner:AppInstance
    IF cType != "BMP" .AND. cType != "ICO"
@@ -482,7 +482,7 @@ METHOD LoadResource( cResource, cType ) CLASS FreeImageRenderer
 RETURN lOK
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Update() CLASS FreeImageRenderer
+METHOD FreeImageRenderer:Update()
    IF ::__cData == NIL
       ::__SetImageName( @::xImageName )
    ENDIF
@@ -492,7 +492,7 @@ METHOD Update() CLASS FreeImageRenderer
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD __SetImageName( cFile ) CLASS FreeImageRenderer
+METHOD FreeImageRenderer:__SetImageName( cFile )
    LOCAL cType, cPrev
    IF VALTYPE( cFile ) == "A"
       cFile := IIF( ::DesignMode .AND. VALTYPE( cFile[1] ) == "C", cFile[1], cFile[2] )

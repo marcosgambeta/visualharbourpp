@@ -144,7 +144,7 @@ ENDCLASS
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS ExplorerBar
+METHOD ExplorerBar:Init( oParent )
    LOCAL aRect := ARRAY(4)
    ::__xCtrlName   := "ExplorerBar"
    ::ClassBrush    := GetStockObject( WHITE_BRUSH )
@@ -169,19 +169,19 @@ METHOD Init( oParent ) CLASS ExplorerBar
    ::MinWidth := ::xWidth
 RETURN Self
 
-METHOD __AddTaskPanel() CLASS ExplorerBar
+METHOD ExplorerBar:__AddTaskPanel()
    ::Application:Project:SetAction( { { DG_ADDCONTROL, 0, 0, 0, .T., Self, "Expando",,,1, {}, } }, ::Application:Project:aUndo )
 RETURN( Self )
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS ExplorerBar
+METHOD ExplorerBar:Create()
    ::OnThemeChanged( Self, .F. )
    Super:Create()
    ::OpenThemeData()
 RETURN Self
 
-METHOD OnThemeChanged( oObj, lClean ) CLASS ExplorerBar
+METHOD ExplorerBar:OnThemeChanged( oObj, lClean )
    DEFAULT lClean TO .T.
    (oObj)
    IF lClean .AND. ::__hImageListTitle != NIL
@@ -212,7 +212,7 @@ METHOD OnThemeChanged( oObj, lClean ) CLASS ExplorerBar
    ENDIF
 RETURN Self
 
-METHOD OnPaint( hDC, hMemDC ) CLASS ExplorerBar
+METHOD ExplorerBar:OnPaint( hDC, hMemDC )
    LOCAL hMemBitmap, hOldBitmap, rc := (struct RECT)
    hDC := ::BeginPaint()
 
@@ -302,7 +302,7 @@ CLASS Expando INHERIT Button
    METHOD IsWindowEnabled()     INLINE IsWindowEnabled( ::hWnd ) .AND. IsWindowEnabled( ::Parent:hWnd )
 ENDCLASS
 
-METHOD Init( oParent ) CLASS Expando
+METHOD Expando:Init( oParent )
    ::__xCtrlName := "Expando"
    Super:Init( oParent )
    ::IsContainer   := .T.
@@ -313,7 +313,7 @@ METHOD Init( oParent ) CLASS Expando
    ::__Position    := LEN( ::Parent:Children ) + 1
 RETURN Self
 
-METHOD Create() CLASS Expando
+METHOD Expando:Create()
    LOCAL oHeader, oTask, n := 0
 
    AADD( ::Parent:__aDock, Self )
@@ -351,7 +351,7 @@ METHOD Create() CLASS Expando
    //ENDIF
 RETURN Self
 
-METHOD OnThemeChanged() CLASS Expando
+METHOD Expando:OnThemeChanged()
    LOCAL oHeader, oTask
 
    IF ::Special
@@ -365,7 +365,7 @@ METHOD OnThemeChanged() CLASS Expando
    ::InvalidateRect()
 RETURN Self
 
-METHOD Expand( lExpand, lForce ) CLASS Expando
+METHOD Expando:Expand( lExpand, lForce )
    LOCAL n := ::__Position + 1
    DEFAULT lExpand TO !::xExpanded
    DEFAULT lForce  TO .F.
@@ -397,7 +397,7 @@ METHOD Expand( lExpand, lForce ) CLASS Expando
    ENDIF
 RETURN 0
 
-METHOD OnSize( nwParam, nlParam ) CLASS Expando
+METHOD Expando:OnSize( nwParam, nlParam )
    LOCAL n
    Super:OnSize( nwParam, nlParam )
    ::InvalidateRect()
@@ -412,7 +412,7 @@ METHOD OnSize( nwParam, nlParam ) CLASS Expando
    NEXT
 RETURN 0
 
-METHOD __OnParentSize( x ) CLASS Expando
+METHOD Expando:__OnParentSize( x )
    ::xWidth := x - ( ::System:ExplorerBar:headernormal:rcTLPadding:left + ::System:ExplorerBar:headernormal:rcTLPadding:right ) //::System:ExplorerBar:headernormal:iHeaderBmpWidth
    IF ! ::DesignMode .AND. ::Parent:Height < ::Parent:OriginalRect[4] .AND. ( x - GetSystemMetrics( SM_CXVSCROLL ) ) < ::System:ExplorerBar:headernormal:iHeaderBmpWidth + ::System:ExplorerBar:headernormal:rcTLPadding:right + ::System:ExplorerBar:headernormal:rcTLPadding:left
       ::xWidth -= /*::System:ExplorerBar:headernormal:iHeaderBmpWidth -*/ GetSystemMetrics( SM_CXVSCROLL )
@@ -421,7 +421,7 @@ METHOD __OnParentSize( x ) CLASS Expando
    ::RedrawWindow( , , hb_bitor(RDW_FRAME, RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT, RDW_ALLCHILDREN) )
 RETURN 0
 
-METHOD OnMouseMove( nwParam, nlParam ) CLASS Expando
+METHOD Expando:OnMouseMove( nwParam, nlParam )
    LOCAL y, nHeight := IIF( ::Parent:ImageList != NIL .AND. ::ImageIndex > 0 .AND. ::Parent:ImageList:IconHeight > ::HeaderHeight, ::Parent:ImageList:IconHeight, ::HeaderHeight )
    ::Super:OnMouseMove( nwParam, nlParam )
    y := HIWORD( nlParam )
@@ -436,7 +436,7 @@ METHOD OnMouseMove( nwParam, nlParam ) CLASS Expando
    ENDIF
 RETURN NIL
 
-METHOD OnMouseLeave() CLASS Expando
+METHOD Expando:OnMouseLeave()
    IF ::__MouseIn
       ::Cursor := NIL
       ::__MouseIn := .F.
@@ -444,7 +444,7 @@ METHOD OnMouseLeave() CLASS Expando
    ENDIF
 RETURN NIL
 
-METHOD OnPaint( hDC, hMemDC ) CLASS Expando
+METHOD Expando:OnPaint( hDC, hMemDC )
    LOCAL x := 0, y := 0, cx, cy, nHeight := ::HeaderHeight
    LOCAL aArrow, nArrow, hPen, hPen1, oHeader, hTitle, hMemBitmap, hOldBitmap, hBrush, nImage, hButton, nButton, nMargin, hFont, oTask, nIconX, nIconY
    LOCAL hOldPen, hOldBrush, nLeft, nTop, nRight, nBottom
@@ -579,7 +579,7 @@ view cx
    ::EndPaint()
 RETURN 0
 
-METHOD __SetSizePos( nPos, nVal ) CLASS Expando
+METHOD Expando:__SetSizePos( nPos, nVal )
    IF nPos > 2 .AND. nVal < 0
       nVal := 0
    ENDIF

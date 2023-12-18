@@ -26,7 +26,7 @@ ENDCLASS
 
 //------------------------------------------------------------------------------------------------
 
-METHOD Init() CLASS DeskTop
+METHOD DeskTop:Init()
 
    ::ClsName := "DeskTop"
    ::TaskBar := TaskBar( Self )
@@ -38,7 +38,7 @@ RETURN Self
 
 //------------------------------------------------------------------------------------------------
 
-METHOD GetClientRect() CLASS DeskTop
+METHOD DeskTop:GetClientRect()
 
    ::Super:GetClientRect()
    ::TaskBar:OnWindowPosChanged()

@@ -197,7 +197,7 @@ CLASS EditBox INHERIT Control
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS EditBox
+METHOD EditBox:Init( oParent )
    DEFAULT ::__xCtrlName TO "EditBox"
    ::ClsName   := "Edit"
    ::ThemeName := "EDIT"
@@ -283,7 +283,7 @@ METHOD Init( oParent ) CLASS EditBox
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetMenuArrow() CLASS EditBox
+METHOD EditBox:__SetMenuArrow()
    IF ::xLayout == 0 .AND. ::xMenuArrow
       ::xLayout := 1
    ENDIF
@@ -294,7 +294,7 @@ METHOD __SetMenuArrow() CLASS EditBox
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Create() CLASS EditBox
+METHOD EditBox:Create()
    LOCAL pWi, n, oImageList
    ::Super:Create()
    pWi := ::GetWindowInfo()
@@ -324,14 +324,14 @@ METHOD Create() CLASS EditBox
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnEraseBkGnd() CLASS EditBox
+METHOD EditBox:OnEraseBkGnd()
    IF ::Transparent
       RETURN 1
    ENDIF
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetCueBanner( cText, lFocus ) CLASS EditBox
+METHOD EditBox:SetCueBanner( cText, lFocus )
    DEFAULT cText TO ::xCueBanner
    IF ! ::DesignMode
       IF VALTYPE( cText )=="C" .AND. LEFT( cText, 2 ) == "{|"
@@ -348,13 +348,13 @@ RETURN Self
 
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetAutoScroll( nIndex, lSet ) CLASS EditBox
+METHOD EditBox:__SetAutoScroll( nIndex, lSet )
    ::SetStyle( nIndex, lSet )
    //::SetWindowPos(, 0, 0, 0, 0, hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __UpdateDataGrid() CLASS EditBox
+METHOD EditBox:__UpdateDataGrid()
    LOCAL nRecs, cData, nOrder
 
    IF ::__oDataGrid == NIL
@@ -429,7 +429,7 @@ METHOD __UpdateDataGrid() CLASS EditBox
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnKillFocus() CLASS EditBox
+METHOD EditBox:OnKillFocus()
    ::InvalidateRect(,.F.)
    IF ::__oDataGrid != NIL .AND. ::__oDataGrid:Height > 0 .AND. ! ( ::LastKey IN {VK_UP,VK_DOWN,VK_ESCAPE,VK_RETURN} )
       ::__ChkGridKeys( NIL, VK_RETURN, .F. )
@@ -437,7 +437,7 @@ METHOD OnKillFocus() CLASS EditBox
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD __ChkGridKeys( o, nKey, lFocus ) CLASS EditBox
+METHOD EditBox:__ChkGridKeys( o, nKey, lFocus )
    IF nKey == VK_UP
       IF o:GetPosition() == 1
          ::SetFocus()
@@ -458,7 +458,7 @@ METHOD __ChkGridKeys( o, nKey, lFocus ) CLASS EditBox
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnLButtonDown() CLASS EditBox
+METHOD EditBox:OnLButtonDown()
    IF ! ( GetFocus() == ::hWnd ) .AND. ::FullSelectOnClick
       ::CallWindowProc()
       ::PostMessage( EM_SETSEL, 0, -1 )
@@ -466,7 +466,7 @@ METHOD OnLButtonDown() CLASS EditBox
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnGetDlgCode() CLASS EditBox
+METHOD EditBox:OnGetDlgCode()
    LOCAL n, nRet
    IF ::wParam == VK_RETURN .AND. ::Parent:ClsName != "DataGrid"
       IF ( n := HSCAN( ::Form:__hObjects, {|a,o| (a), o:__xCtrlName == "Button" .AND. o:IsWindowVisible() .AND. o:DefaultButton } ) ) > 0
@@ -482,14 +482,14 @@ METHOD OnGetDlgCode() CLASS EditBox
 RETURN IIF( ::Multiline .AND. ::wParam == VK_ESCAPE, 0, NIL )
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetLayout() CLASS EditBox
+METHOD EditBox:__SetLayout()
    IF ::IsWindow() .AND. ::DesignMode
       ::SetWindowPos(,0,0,0,0,SWP_FRAMECHANGED+SWP_NOMOVE+SWP_NOSIZE+SWP_NOZORDER )
    ENDIF
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetImageIndex(n) CLASS EditBox
+METHOD EditBox:__SetImageIndex(n)
    IF ::DesignMode .AND. n > 0 .AND. ::xLayout == 1
       ::Layout := 2
       IF ::DesignMode
@@ -499,7 +499,7 @@ METHOD __SetImageIndex(n) CLASS EditBox
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetCase( nCase ) CLASS EditBox
+METHOD EditBox:SetCase( nCase )
    SWITCH nCase
       CASE 1
          ::SetStyle( ES_LOWERCASE, .F. )
@@ -518,7 +518,7 @@ METHOD SetCase( nCase ) CLASS EditBox
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetAlignment( n ) CLASS EditBox
+METHOD EditBox:SetAlignment( n )
    LOCAL x
    ::xAlignment := n
    FOR x := 1 TO LEN( ::EnumAlignment )
@@ -530,7 +530,7 @@ METHOD SetAlignment( n ) CLASS EditBox
 RETURN n
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetSelColor( nColor ) CLASS EditBox
+METHOD EditBox:__SetSelColor( nColor )
    IF ::SelBkBrush != NIL
       DeleteObject( ::SelBkBrush )
       ::SelBkBrush := NIL
@@ -544,7 +544,7 @@ METHOD __SetSelColor( nColor ) CLASS EditBox
 RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnCtlColorStatic( nwParam ) CLASS EditBox
+METHOD EditBox:OnCtlColorStatic( nwParam )
    LOCAL hBkGnd := ::GetBkBrush()
 
    IF ::ForeColor != NIL .AND. ::ForeColor != ::__SysForeColor
@@ -559,12 +559,12 @@ METHOD OnCtlColorStatic( nwParam ) CLASS EditBox
 RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
-METHOD __SetContextMenu() CLASS EditBox
+METHOD EditBox:__SetContextMenu()
    //::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER) )
 RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnMouseMove( nwParam, nlParam ) CLASS EditBox
+METHOD EditBox:OnMouseMove( nwParam, nlParam )
    ::Super:OnMouseMove( nwParam, nlParam )
    IF ::xLayout > 1 .AND. ::__BkCursor != NIL
       ::__hCursor := IIF( ::__BkCursor == 0, NIL, ::__BkCursor )
@@ -573,7 +573,7 @@ METHOD OnMouseMove( nwParam, nlParam ) CLASS EditBox
 RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnNCMouseMove() CLASS EditBox
+METHOD EditBox:OnNCMouseMove()
    LOCAL oImageList
    ::Super:OnNCMouseMove()
    IF ::xLayout > 1 .AND. ::__BkCursor == NIL
@@ -589,7 +589,7 @@ METHOD OnNCMouseMove() CLASS EditBox
 RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnNCCalcSize( nwParam, nlParam ) CLASS EditBox
+METHOD EditBox:OnNCCalcSize( nwParam, nlParam )
    LOCAL n, nccs, oImageList
    (nwParam)
    ::__nImageSize := 0
@@ -652,7 +652,7 @@ METHOD OnNCCalcSize( nwParam, nlParam ) CLASS EditBox
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnNCPaint() CLASS EditBox
+METHOD EditBox:OnNCPaint()
    LOCAL aRect, nWidth := 0, hBrush, hdc, nLeft, nTop, hRegion, nStyle, n := 3, hOldPen, nColor, hOldBrush
    LOCAL oImageList
 
@@ -746,7 +746,7 @@ METHOD OnNCPaint() CLASS EditBox
 RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnNCLButtonDown( nwParam, nlParam ) CLASS EditBox
+METHOD EditBox:OnNCLButtonDown( nwParam, nlParam )
    LOCAL nStyle, hRegion, hdc, nAlign, n := 3
    LOCAL rc, pt, x, y, aPt := {LOWORD( nlParam ),HIWORD( nlParam )}
 
@@ -848,7 +848,7 @@ METHOD OnNCLButtonDown( nwParam, nlParam ) CLASS EditBox
 RETURN nwParam
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnNCLButtonUp( nwParam, nlParam ) CLASS EditBox
+METHOD EditBox:OnNCLButtonUp( nwParam, nlParam )
    LOCAL xRet, nStyle, hRegion, hdc, n := 3
    LOCAL aPt := {LOWORD( nlParam ),HIWORD( nlParam )}
 
@@ -884,7 +884,7 @@ METHOD OnNCLButtonUp( nwParam, nlParam ) CLASS EditBox
 RETURN nwParam
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnNCHitTest( x, y ) CLASS EditBox
+METHOD EditBox:OnNCHitTest( x, y )
    LOCAL aPt := {x,y}, n := 3
 
    IF ::Button .OR. ::__aArrowPos[2] > 0 .OR. ::__aImagePos[2] > 0
@@ -897,7 +897,7 @@ METHOD OnNCHitTest( x, y ) CLASS EditBox
 RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnCtlColorEdit( nwParam ) CLASS EditBox
+METHOD EditBox:OnCtlColorEdit( nwParam )
    LOCAL hBrush, oParent, nFore, nBack, n
 
    nFore := ::ForeColor
@@ -947,7 +947,7 @@ METHOD OnCtlColorEdit( nwParam ) CLASS EditBox
 RETURN hBrush
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetCueBanner() CLASS EditBox
+METHOD EditBox:GetCueBanner()
    LOCAL cWText := Replicate( chr(0), 2048 )
    IF SendMessage( ::hWnd, EM_GETCUEBANNER, 0, @cWText )
       RETURN cWText
@@ -955,19 +955,19 @@ METHOD GetCueBanner() CLASS EditBox
 RETURN(NIL)
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetLine( nLine, cLine ) CLASS EditBox
+METHOD EditBox:GetLine( nLine, cLine )
    LOCAL nLen := Int( Len( cline ) / 2  )
    cLine := I2Bin( nLen )+ Replicate( chr(0), (nLen-1)*2 )
 RETURN SendMessage( ::hWnd, EM_GETLINE, nLine, @cLine )
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetEditRect() CLASS EditBox
+METHOD EditBox:GetEditRect()
    LOCAL rc := (struct RECT)
    SendMessage( ::hWnd, EM_GETRECT, 0, @rc )
 RETURN {rc:Left, rc:Top, rc:Right, rc:Bottom }
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetSel( nStart, nEnd ) CLASS EditBox
+METHOD EditBox:GetSel( nStart, nEnd )
    LOCAL cStart
    LOCAL cEnd
    LOCAL nRet
@@ -986,7 +986,7 @@ RETURN nRet
 
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetRect( aRect, lRelative ) CLASS EditBox
+METHOD EditBox:SetRect( aRect, lRelative )
    LOCAL rc := (struct RECT)
 
    rc:Left   := aRect[1]
@@ -998,7 +998,7 @@ METHOD SetRect( aRect, lRelative ) CLASS EditBox
 RETURN SendMessage( ::hwnd, EM_SETRECT, lRelative, rc )
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetRectNP( aRect, lRelative ) CLASS EditBox
+METHOD EditBox:SetRectNP( aRect, lRelative )
    LOCAL rc := (struct RECT)
 
    rc:Left   := aRect[1]
@@ -1010,7 +1010,7 @@ METHOD SetRectNP( aRect, lRelative ) CLASS EditBox
 RETURN SendMessage( ::hWnd, EM_SETRECTNP, lRelative, rc )
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetTabStops( nTabs, aTabs ) CLASS EditBox
+METHOD EditBox:SetTabStops( nTabs, aTabs )
    LOCAL cSize := ""
    LOCAL n
    FOR EACH n IN aTabs
@@ -1019,7 +1019,7 @@ METHOD SetTabStops( nTabs, aTabs ) CLASS EditBox
 RETURN ::SendMessage( EM_SETTABSTOPS, nTabs, cSize )
 
 //-----------------------------------------------------------------------------------------------
-METHOD ShowBalloonTip( cTitle, cText, nIcon ) CLASS EditBox
+METHOD EditBox:ShowBalloonTip( cTitle, cText, nIcon )
    LOCAL ebt := (STRUCT EDITBALLOONTIP)
    ebt:cbStruct := ebt:SizeOf()
 
@@ -1034,7 +1034,7 @@ METHOD ShowBalloonTip( cTitle, cText, nIcon ) CLASS EditBox
 RETURN SendMessage( ::hWnd, EM_SHOWBALLOONTIP, 0, ebt )
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnParentCommand( nId, nCode, nlParam ) CLASS EditBox
+METHOD EditBox:OnParentCommand( nId, nCode, nlParam )
    LOCAL nRet
    (nId)
    (nlParam)
@@ -1076,7 +1076,7 @@ METHOD OnParentCommand( nId, nCode, nlParam ) CLASS EditBox
 RETURN IIF( nRet == NIL, 0, nRet )
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnKeyDown( nKey ) CLASS EditBox
+METHOD EditBox:OnKeyDown( nKey )
    LOCAL h, lShift, bChanged
 #ifdef VXH_PROFESSIONAL
    LOCAL pt
@@ -1166,7 +1166,7 @@ METHOD OnKeyDown( nKey ) CLASS EditBox
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnChar( nKey ) CLASS EditBox
+METHOD EditBox:OnChar( nKey )
    LOCAL lProc := .F., aKeys := {VK_BACK}, bChanged
    IF ::DataSource != NIL .AND. ( ( nKey >= 32 .AND. nKey <= 168 ) .OR. ( nKey >= 224 .AND. nKey <= 253 ) .OR. ( nKey IN aKeys ) )
       ::CallWindowProc()
@@ -1195,7 +1195,7 @@ METHOD OnChar( nKey ) CLASS EditBox
 RETURN IIF( lProc, 0, NIL )
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnUndo() CLASS EditBox
+METHOD EditBox:OnUndo()
    LOCAL bChanged
    IF ! ::ReadOnly
       IF ::Parent:HasMessage( "bChanged" ) .AND. ::Parent:bChanged != NIL
@@ -1212,7 +1212,7 @@ METHOD OnUndo() CLASS EditBox
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnPaste() CLASS EditBox
+METHOD EditBox:OnPaste()
    LOCAL bChanged
    IF ! ::ReadOnly
       IF ::Parent:HasMessage( "bChanged" ) .AND. ::Parent:bChanged != NIL
@@ -1229,7 +1229,7 @@ METHOD OnPaste() CLASS EditBox
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnCut() CLASS EditBox
+METHOD EditBox:OnCut()
    LOCAL bChanged
    IF ! ::ReadOnly
       IF ::Parent:HasMessage( "bChanged" ) .AND. ::Parent:bChanged != NIL
@@ -1261,7 +1261,7 @@ CLASS FloatCalendar INHERIT Window
    METHOD FloatGetDlgCode() INLINE DLGC_WANTMESSAGE
 ENDCLASS
 
-METHOD Init( oParent ) CLASS FloatCalendar
+METHOD FloatCalendar:Init( oParent )
    ::__IsControl  := .F.
    ::__IsStandard := .F.
 
@@ -1285,7 +1285,7 @@ METHOD Init( oParent ) CLASS FloatCalendar
 
 RETURN Self
 
-METHOD Create() CLASS FloatCalendar
+METHOD FloatCalendar:Create()
    LOCAL pt := (struct POINT)
    Super:Create()
 
@@ -1308,7 +1308,7 @@ METHOD Create() CLASS FloatCalendar
    ::Show()
 RETURN Self
 
-METHOD FloatOnSelect() CLASS FloatCalendar
+METHOD FloatCalendar:FloatOnSelect()
    LOCAL bChanged
    ::Cargo:Text := IIF( ValType( ::Cargo:Text ) == "D", ::Calendar:Date, DTOC( ::Calendar:Date ) )
 
