@@ -37,7 +37,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent, cReference ) CLASS CustomControl
+METHOD CustomControl:Init( oParent, cReference )
    DEFAULT ::__xCtrlName TO "CustomControl"
    ::ClsName := "CCTL"
    ::Super:Init( oParent )
@@ -49,7 +49,7 @@ METHOD Init( oParent, cReference ) CLASS CustomControl
    ::__ChgRef := cReference
 RETURN Self
 
-METHOD Create() CLASS CustomControl
+METHOD CustomControl:Create()
    #ifdef VXH_PROFESSIONAL
     LOCAL hFile, nLine, aChildren, cLine, cFile, aErrors, aEditors, nLeft, nTop, cName, cReference, nWidth, nHeight
    #endif

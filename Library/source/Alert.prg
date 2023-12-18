@@ -37,7 +37,7 @@ CLASS AlertDialog INHERIT Dialog
    METHOD OnCommand( nId ) INLINE ::Close( nId )
 ENDCLASS
 
-METHOD Init( cMsg, aChoices, lModal, nBackColor, nForeColor, lVert, cFace, nPointSize, nDefault ) CLASS AlertDialog
+METHOD AlertDialog:Init( cMsg, aChoices, lModal, nBackColor, nForeColor, lVert, cFace, nPointSize, nDefault )
    LOCAL n, aMsg, hFont, hOldFont, i
    LOCAL hDC, nWidth, nMsgHeight, aSize, oParent
 
@@ -115,7 +115,7 @@ METHOD Init( cMsg, aChoices, lModal, nBackColor, nForeColor, lVert, cFace, nPoin
    //SetFocus( hWnd )
 RETURN Self
 
-METHOD OnInitDialog() CLASS AlertDialog
+METHOD AlertDialog:OnInitDialog()
    LOCAL n, i, o, nLeft, nWidth, nTop, aMsg, aSize, oButton
 
    o := Label( Self )

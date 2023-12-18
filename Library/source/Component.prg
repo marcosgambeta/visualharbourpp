@@ -50,7 +50,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD __GetInstance() CLASS Component
+METHOD Component:__GetInstance()
    LOCAL hInstance
    IF ::Owner != NIL
       IF ::Form:DllInstance != NIL
@@ -65,7 +65,7 @@ RETURN hInstance
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oOwner ) CLASS Component
+METHOD Component:Init( oOwner )
    ::__IsControl  := .F.
    ::__lCopyCut   := .F.
    DEFAULT ::__xCtrlName TO "Component"
@@ -101,7 +101,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Destroy() CLASS Component
+METHOD Component:Destroy()
    LOCAL n, cCtrl, oObj, cType := ::ComponentType
    IF ::Name != NIL
       TRY
@@ -132,7 +132,7 @@ METHOD Destroy() CLASS Component
    ENDIF
 RETURN .F.
 
-METHOD RenameComponents( oForm, cName, cOldName )
+METHOD Component:RenameComponents( oForm, cName, cOldName )
    LOCAL oWait, oObj, cCtrl, cType := ::ComponentType
    DEFAULT oForm TO ::Owner
 
@@ -155,7 +155,7 @@ METHOD RenameComponents( oForm, cName, cOldName )
 RETURN .T.
 
 
-METHOD __SetCtrlName( cName ) CLASS Component
+METHOD Component:__SetCtrlName( cName )
    LOCAL n, cOldName := ::xName
 
    Super:__SetCtrlName( cName )

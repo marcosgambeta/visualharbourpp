@@ -38,7 +38,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent, cCaption, nId, nLeft, nTop, nWidth, nHeight, nStyle, lCreate ) CLASS CaptionBar
+METHOD CaptionBar:Init( oParent, cCaption, nId, nLeft, nTop, nWidth, nHeight, nStyle, lCreate )
 
    DEFAULT lCreate TO .F.
 
@@ -71,7 +71,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS CaptionBar
+METHOD CaptionBar:Create()
    IF VALTYPE( ::Icon ) == "C"
       ::Icon := LoadIcon( ::AppInstance, ::Icon )
    ENDIF
@@ -85,7 +85,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD PaintText() CLASS CaptionBar
+METHOD CaptionBar:PaintText()
    ::Drawing:FillRect()
    ::GetClientRect()
    ::Drawing:SelectObject( ::Font:Handle )
@@ -97,7 +97,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD OnPaint() CLASS CaptionBar
+METHOD CaptionBar:OnPaint()
    LOCAL y := (::Height/2)-(::IconSize[2]/2)
    ::PaintText()
    ::Drawing:DrawIcon( 5, 0, ::Icon )
@@ -114,7 +114,7 @@ RETURN 0
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD OnNCHitTest(x,y) CLASS CaptionBar
+METHOD CaptionBar:OnNCHitTest(x,y)
    LOCAL aPt := {x,y}
    _ScreenToClient( ::hWnd, @aPt )
    IF !_PtInRect( {0, 0, ::LeftMargin+::TextWidth+20,::ClientHeight}, aPt )
@@ -125,7 +125,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD OnTimer() CLASS CaptionBar
+METHOD CaptionBar:OnTimer()
    LOCAL aPt, nPos
    ::KillTimer( 1 )
 
@@ -144,7 +144,7 @@ RETURN 0
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD OnMouseMove( nwParam, nlParam) CLASS CaptionBar
+METHOD CaptionBar:OnMouseMove( nwParam, nlParam)
    LOCAL x := LOWORD( nlParam )
    (nwParam)
    IF x <= ::LeftMargin+::TextWidth+20
@@ -163,7 +163,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD OnLButtonDown(nwParam,x) CLASS CaptionBar
+METHOD CaptionBar:OnLButtonDown(nwParam,x)
    (nwParam)
    IF x <= ::LeftMargin+::TextWidth+20
       ::Pushed := !::Pushed
@@ -173,6 +173,6 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD OnLButtonUp() CLASS CaptionBar
+METHOD CaptionBar:OnLButtonUp()
    ::InvalidateRect( {0, 0, ::LeftMargin+::TextWidth+20,::ClientHeight}, .F. )
 RETURN NIL

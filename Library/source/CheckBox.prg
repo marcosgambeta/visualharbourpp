@@ -91,7 +91,7 @@ CLASS CheckBox INHERIT Control
    METHOD OnParentCommand()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS CheckBox
+METHOD CheckBox:Init( oParent )
    DEFAULT ::__xCtrlName TO "CheckBox"
    DEFAULT ::Style TO ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_AUTOCHECKBOX, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
    ::ClsName := "button"
@@ -105,7 +105,7 @@ METHOD Init( oParent ) CLASS CheckBox
    ::bGetValue := {||::Checked()}
 RETURN Self
 
-METHOD __SetSize( lAuto ) CLASS CheckBox
+METHOD CheckBox:__SetSize( lAuto )
    LOCAL aSize
    IF lAuto
       aSize := ::Drawing:GetTextExtentPoint32( ::Text )
@@ -115,7 +115,7 @@ METHOD __SetSize( lAuto ) CLASS CheckBox
    ENDIF
 RETURN Self
 
-METHOD Create() CLASS CheckBox
+METHOD CheckBox:Create()
    LOCAL aSize
    ::Super:Create()
    IF ::AutoSize
@@ -127,7 +127,7 @@ METHOD Create() CLASS CheckBox
    ::SetState( ::xState )
 RETURN Self
 
-METHOD OnParentCommand() CLASS CheckBox
+METHOD CheckBox:OnParentCommand()
    LOCAL bChanged
    IF ::Parent:HasMessage( "bChanged" ) .AND. ::Parent:bChanged != NIL
       bChanged := ::Parent:bChanged
@@ -139,7 +139,7 @@ METHOD OnParentCommand() CLASS CheckBox
    ENDIF
 RETURN NIL
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS CheckBox
+METHOD CheckBox:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL nRet, cd, aRect, lDisabled, lSelected, lFocus, nColor, lHot
    LOCAL sz, nStatus, hBkGnd, nFlags := DFCS_BUTTONCHECK
    (nwParam)
@@ -268,7 +268,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS CheckBox
    ENDCASE
 RETURN NIL
 
-METHOD DrawFrame( hDC, aRect, nAlign, nWidth, nHeight, nStatus, lDraw ) CLASS CheckBox
+METHOD CheckBox:DrawFrame( hDC, aRect, nAlign, nWidth, nHeight, nStatus, lDraw )
    LOCAL nFlags := DFCS_BUTTONCHECK
    DEFAULT lDraw TO TRUE
    IF nStatus != NIL
@@ -315,7 +315,7 @@ METHOD DrawFrame( hDC, aRect, nAlign, nWidth, nHeight, nStatus, lDraw ) CLASS Ch
    ENDIF
 RETURN aRect
 
-METHOD SetCheckStyle( nStyle ) CLASS CheckBox
+METHOD CheckBox:SetCheckStyle( nStyle )
    LOCAL nCurStyle
    ::Style := hb_bitand(::Style, NOT(BS_AUTOCHECKBOX), NOT(BS_AUTO3STATE))
    SWITCH nStyle
@@ -333,7 +333,7 @@ METHOD SetCheckStyle( nStyle ) CLASS CheckBox
    ENDIF
 RETURN Self
 
-METHOD OnCtlColorStatic( nwParam ) CLASS CheckBox
+METHOD CheckBox:OnCtlColorStatic( nwParam )
    LOCAL hBkGnd := ::GetBkBrush()
    IF ::ForeColor != NIL
       SetTextColor( nwParam, ::ForeColor )
@@ -341,7 +341,7 @@ METHOD OnCtlColorStatic( nwParam ) CLASS CheckBox
    SetBkMode( nwParam, TRANSPARENT )
 RETURN hBkGnd
 
-METHOD SetState( nState ) CLASS CheckBox
+METHOD CheckBox:SetState( nState )
    IF VALTYPE( nState ) == "L"
       nState := IIF( nState, BST_CHECKED, BST_UNCHECKED )
    ENDIF

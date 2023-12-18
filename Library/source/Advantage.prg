@@ -59,7 +59,7 @@ CLASS AdsDataTable INHERIT DataTable
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
-METHOD NewInstance( lSetCurPos ) CLASS AdsDataTable
+METHOD AdsDataTable:NewInstance( lSetCurPos )
    LOCAL n, oNewTable := AdsDataTable( ::Owner, ::Connection )
 
    n := 1
@@ -87,7 +87,7 @@ METHOD NewInstance( lSetCurPos ) CLASS AdsDataTable
 RETURN oNewTable
 
 //-------------------------------------------------------------------------------------------------------
-METHOD CreateTable( aStruc, cFile ) CLASS AdsDataTable
+METHOD AdsDataTable:CreateTable( aStruc, cFile )
    LOCAL n, aTables, cTableName
    DEFAULT cFile  TO ::FileName
    DEFAULT aStruc TO ::Structure
@@ -118,7 +118,7 @@ METHOD CreateTable( aStruc, cFile ) CLASS AdsDataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Create( lIgnoreAO ) CLASS AdsDataTable
+METHOD AdsDataTable:Create( lIgnoreAO )
    LOCAL lChanged, n, cFileName, cPath, cMemo, cData, cTable, aIndex
    IF ValType( ::Socket ) == "C" .AND. Ascan( ::Form:__hObjects:Keys, {|c| Upper(c) == Upper(::Socket) } ) > 0
       ::Socket := ::Form:__hObjects[ ::Socket ]
@@ -222,7 +222,7 @@ METHOD Create( lIgnoreAO ) CLASS AdsDataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Save() CLASS AdsDataTable
+METHOD AdsDataTable:Save()
    LOCAL n, xValue
    IF ::bSave != NIL .AND. ! Eval( ::bSave, Self )
       ::__lNew := .F.
@@ -262,7 +262,7 @@ METHOD Save() CLASS AdsDataTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD SetData(n) CLASS AdsDataTable
+METHOD AdsDataTable:SetData(n)
    IF ::Structure[n][2] == "BINARY" .AND. ! Empty( ::__aData[n] )
       ::File2Blob( ::__aData[n], ::Structure[n][1] )
     ELSEIF ::Structure[n][2] != "A"
@@ -271,7 +271,7 @@ METHOD SetData(n) CLASS AdsDataTable
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD FieldPut( nField, xVal ) CLASS AdsDataTable
+METHOD AdsDataTable:FieldPut( nField, xVal )
    IF ::Structure[nField][2] != "A"
       IF Len( ::__aData ) >= nField
          ::__aData[nField] := xVal
@@ -300,7 +300,7 @@ FUNCTION AdsNull2Blank( lAnyRDD )
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD CreateOrder( cOrderBagName, cTag, cKey, cFor, bFor, bWhile, bEval, nEvery, nRecNo, nNext, nRecord, lRest, lUnique, lDescend, lAll ) CLASS AdsDataTable
+METHOD AdsDataTable:CreateOrder( cOrderBagName, cTag, cKey, cFor, bFor, bWhile, bEval, nEvery, nRecNo, nNext, nRecord, lRest, lUnique, lDescend, lAll )
    LOCAL n, cFileName, cPath
 
    IF Left( ::FileName, 2 ) != "\\" .AND. (::Area)->( OrdNumber( cTag, cOrderBagName ) ) == 0 .OR. ! Upper(cKey) == Upper((::Area)->( IndexKey( OrdNumber( cTag, cOrderBagName ) ) ))
@@ -349,7 +349,7 @@ METHOD CreateOrder( cOrderBagName, cTag, cKey, cFor, bFor, bWhile, bEval, nEvery
    ENDIF
 RETURN .T.
 
-METHOD RecLock( nSecs ) CLASS AdsDataTable
+METHOD AdsDataTable:RecLock( nSecs )
    LOCAL lForever, aInfo
    DEFAULT nSecs TO 5
 
@@ -385,7 +385,7 @@ METHOD RecLock( nSecs ) CLASS AdsDataTable
    ENDIF
 RETURN .F.
 
-METHOD GetLockOwner( nRec ) CLASS AdsDataTable
+METHOD AdsDataTable:GetLockOwner( nRec )
    local aInfo, cTableName := (::Area)->(dbInfo(DBI_FULLPATH))
    IF AdsMgConnect( cTableName ) != 0
       RETURN NIL
@@ -416,14 +416,14 @@ CLASS AdsServer INHERIT Component
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner ) CLASS AdsServer
+METHOD AdsServer:Init( oOwner )
    DEFAULT ::__xCtrlName TO "AdsServer"
    DEFAULT ::ClsName     TO "AdsServer"
    ::ComponentType := "DataServer"
    ::Super:Init( oOwner )
 RETURN Self
 
-METHOD Create() CLASS AdsServer
+METHOD AdsServer:Create()
    IF ! ::Owner:DesignMode
       AdsSetServerType( ::Type )
       AdsSetFileType( ::FileType )

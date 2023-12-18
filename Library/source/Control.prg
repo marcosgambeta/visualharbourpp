@@ -108,7 +108,7 @@ CLASS Control INHERIT Window
    METHOD Center()
 ENDCLASS
 
-METHOD __SetBorder( nBorder ) CLASS Control
+METHOD Control:__SetBorder( nBorder )
    LOCAL nExStyle, nStyle
    IF VALTYPE( nBorder ) == "L" // backward compatibility
       nBorder := IIF( nBorder, WS_BORDER, 0 )
@@ -138,7 +138,7 @@ METHOD __SetBorder( nBorder ) CLASS Control
    ENDIF
 RETURN nBorder
 
-METHOD __Enable( lEnable ) CLASS Control
+METHOD Control:__Enable( lEnable )
    IF ::hWnd != NIL .AND. ::__xCtrlName != "Button"
       EnableWindow( ::hWnd, lEnable )
       ::InvalidateRect( , .F. )
@@ -148,7 +148,7 @@ RETURN lEnable
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent, lInitValues ) CLASS Control
+METHOD Control:Init( oParent, lInitValues )
    ::__IsControl  := .T.
    ::__IsStandard := .T.
    ::Super:Init( oParent, lInitValues )
@@ -159,7 +159,7 @@ RETURN Self
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Create( hParent ) CLASS Control
+METHOD Control:Create( hParent )
    LOCAL pt, rc, bEnabled, cWhen
 
    ::__SetBorder( ::xBorder )
@@ -249,7 +249,7 @@ METHOD Create( hParent ) CLASS Control
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Center() CLASS Control
+METHOD Control:Center()
    LOCAL aRect
    IF ::Parent == NIL .OR. ::hWnd == NIL .OR. ::DesignMode
       RETURN Self
@@ -263,7 +263,7 @@ METHOD Center() CLASS Control
 RETURN Self
 
 //------------------------------------------------------------------------------------------------------
-METHOD Hide() CLASS Control
+METHOD Control:Hide()
    IF ::__DockParent != NIL
       RETURN ::__DockParent:Hide()
    ENDIF
@@ -290,7 +290,7 @@ METHOD Hide() CLASS Control
 RETURN Self
 
 //---------------------------------------------------------------------------------------------------
-METHOD Show( nShow ) CLASS Control
+METHOD Control:Show( nShow )
    DEFAULT nShow TO SW_SHOW
    IF ::__DockParent != NIL
       RETURN ::__DockParent:Show( nShow )
@@ -322,7 +322,7 @@ RETURN Self
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD DrawArrow( hDC, aRect ) CLASS Control
+METHOD Control:DrawArrow( hDC, aRect )
    LOCAL nShadow, nColor, hPenShadow, hPenLight, hOldPen, z, i, n, x, y, nArrow := 1, nH := 5, nBackColor
 
    nBackColor := GetSysColor( COLOR_ACTIVECAPTION )
@@ -353,7 +353,7 @@ METHOD DrawArrow( hDC, aRect ) CLASS Control
 RETURN Self
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnSize( nwParam, nlParam ) CLASS Control
+METHOD Control:OnSize( nwParam, nlParam )
    LOCAL x, y
    IF ::Super:OnSize( nwParam, nlParam ) == NIL
       x := LOWORD( nlParam )
@@ -380,7 +380,7 @@ METHOD OnSize( nwParam, nlParam ) CLASS Control
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnEnterSizeMove() CLASS Control
+METHOD Control:OnEnterSizeMove()
    IF ::LeftSplitter != NIL
       ::LeftSplitter:Visible := .F.
    ENDIF
@@ -396,7 +396,7 @@ METHOD OnEnterSizeMove() CLASS Control
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnExitSizeMove() CLASS Control
+METHOD Control:OnExitSizeMove()
    IF ::LeftSplitter != NIL
       ::LeftSplitter:Visible := .T.
    ENDIF
@@ -412,7 +412,7 @@ METHOD OnExitSizeMove() CLASS Control
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnMove( x, y ) CLASS Control
+METHOD Control:OnMove( x, y )
    IF ::Super:OnMove( x, y ) == NIL
       IF ::LeftSplitter != NIL
          ::LeftSplitter:OnParentMove( x, y )
@@ -434,7 +434,7 @@ METHOD OnMove( x, y ) CLASS Control
 RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnSysKeyDown( nwParam, nlParam ) CLASS Control
+METHOD Control:OnSysKeyDown( nwParam, nlParam )
    LOCAL oCtrl, n
    IF nwParam != 18 .AND. LoWord( nlParam )== MOD_ALT .AND. ::Super:OnSysKeyDown( nwParam, nlParam ) == NIL
       FOR EACH oCtrl IN ::Parent:Children
@@ -454,14 +454,14 @@ METHOD OnSysKeyDown( nwParam, nlParam ) CLASS Control
    ENDIF
 RETURN NIL
 
-METHOD GetBkBrush() CLASS Control
+METHOD Control:GetBkBrush()
    LOCAL hBkGnd
    DEFAULT hBkGnd TO ::BkBrush
    DEFAULT hBkGnd TO ::Parent:BkBrush
    DEFAULT hBkGnd TO GetSysColorBrush( COLOR_BTNFACE )
 RETURN hBkGnd
 
-METHOD OnNCPaint() CLASS Control
+METHOD Control:OnNCPaint()
    LOCAL hOldBrush, hPen, hDC
    ::CallWindowProc()
    IF VALTYPE( ::Border ) == "L"
@@ -505,7 +505,7 @@ CLASS UserControl INHERIT Control
    METHOD Init() CONSTRUCTOR
 ENDCLASS
 
-METHOD Init( oParent ) CLASS UserControl
+METHOD UserControl:Init( oParent )
    DEFAULT ::__xCtrlName TO "UserControl"
    DEFAULT ::ClsName     TO "UserControl"
    ::Style := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
@@ -563,7 +563,7 @@ CLASS TitleControl INHERIT Control
    METHOD OnPaint()
 ENDCLASS
 
-METHOD Create() CLASS TitleControl
+METHOD TitleControl:Create()
    ::Super:Create()
    IF ::__nCaptionHeight == 0 .AND. ! EMPTY( ::xText ) .AND. ::xTitleHeight > 0
       ::ResetFrame()
@@ -571,7 +571,7 @@ METHOD Create() CLASS TitleControl
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __OnClose( nwParam, nlParam ) CLASS TitleControl
+METHOD TitleControl:__OnClose( nwParam, nlParam )
    LOCAL nRet := ExecuteEvent( "OnClose", Self )
    ODEFAULT nRet TO ::OnClose( nwParam )
    ODEFAULT nRet TO __Evaluate( ::OnWMClose, Self, nwParam, nlParam )
@@ -580,7 +580,7 @@ RETURN nRet
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD OnNCCalcSize( nwParam, nlParam ) CLASS TitleControl
+METHOD TitleControl:OnNCCalcSize( nwParam, nlParam )
    LOCAL nccs
    (nwParam)
    ::__nCaptionHeight := IIF( EMPTY( ::xText ), 0, ::xTitleHeight )
@@ -595,7 +595,7 @@ RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD OnNCMouseLeave() CLASS TitleControl
+METHOD TitleControl:OnNCMouseLeave()
    ::Super:OnNCMouseLeave()
    IF ::__nCaptionHeight > 0 .AND. ( ::AllowClose .OR. ::AllowUnDock )
       ::__lCloseHover  := .F.
@@ -609,7 +609,7 @@ RETURN NIL
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD OnNCPaint( nwParam, nlParam ) CLASS TitleControl
+METHOD TitleControl:OnNCPaint( nwParam, nlParam )
    LOCAL hOldBrush, hOldPen, hdc, hOldFont, nWidth, n:=0, nLeft, nTop
    ::CallWindowProc()
    IF nwParam != NIL
@@ -682,7 +682,7 @@ RETURN 0
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD OnNCHitTest( x, y ) CLASS TitleControl
+METHOD TitleControl:OnNCHitTest( x, y )
    LOCAL nRes, aPt, hRegion, hdc, n
    IF !EMPTY(::__aCaptionRect) .AND. ::__nCaptionHeight > 0 .AND. ::Super:OnNCHitTest( x, y ) == NIL
       aPt := { x, y }
@@ -740,7 +740,7 @@ RETURN nRes
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD OnNCLButtonDown( nwParam, nlParam ) CLASS TitleControl
+METHOD TitleControl:OnNCLButtonDown( nwParam, nlParam )
    LOCAL hRegion, hdc, aRect, n
 
    ::Super:OnNCLButtonDown( nwParam, nlParam )
@@ -781,7 +781,7 @@ RETURN NIL //nwParam
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD OnNCLButtonUp( nwParam, nlParam ) CLASS TitleControl
+METHOD TitleControl:OnNCLButtonUp( nwParam, nlParam )
    LOCAL pt, aPt := {LOWORD( nlParam ),HIWORD( nlParam )}
 
    ::Super:OnNCLButtonUp( nwParam, nlParam )
@@ -819,7 +819,7 @@ RETURN nwParam
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Redock() CLASS TitleControl
+METHOD TitleControl:Redock()
    LOCAL oControl, hDef, o
    IF __Evaluate( ::OnWMRedock,  Self ) == NIL .AND. ::AllowUnDock
       ::__Docked := .T.
@@ -901,7 +901,7 @@ RETURN Self
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Undock() CLASS TitleControl
+METHOD TitleControl:Undock()
    LOCAL hDef, oChild, pt
 
    IF __Evaluate( ::OnWMUnDock,  Self ) == NIL .AND. ::AllowUnDock
@@ -990,7 +990,7 @@ RETURN Self
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD DrawClose( hDC ) CLASS TitleControl
+METHOD TitleControl:DrawClose( hDC )
    LOCAL hOld
    LOCAL aRect  := ::__aCloseRect
 
@@ -1026,7 +1026,7 @@ METHOD DrawClose( hDC ) CLASS TitleControl
 
 RETURN Self
 
-METHOD DrawPin( hDC, n ) CLASS TitleControl
+METHOD TitleControl:DrawPin( hDC, n )
    LOCAL hOld, nLeft, nRight, nBottom
    LOCAL aRect  := ::__aPinRect
 
@@ -1066,7 +1066,7 @@ METHOD DrawPin( hDC, n ) CLASS TitleControl
 
 RETURN Self
 
-METHOD OnPaint() CLASS TitleControl
+METHOD TitleControl:OnPaint()
    LOCAL hDC, hMemDC, hBitmap, hOldBitmap
    IF ::DesignMode .AND. ::IsContainer
       hDC        := ::BeginPaint()

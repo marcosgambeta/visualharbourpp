@@ -76,7 +76,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS Animation
+METHOD Animation:Init( oParent )
    DEFAULT ::__xCtrlName TO "Animation"
    ::Style     := ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
    ::ClsName   := ANIMATE_CLASS
@@ -87,7 +87,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Open( cFile ) CLASS Animation
+METHOD Animation:Open( cFile )
    IF ::hWnd != NIL
       IF !EMPTY( cFile ) .AND. VALTYPE( cFile ) == "C"
          SendMessage( ::hWnd, ACM_OPEN, ::AppInstance, cFile )
@@ -100,7 +100,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD __SetImageName( cFile ) CLASS Animation
+METHOD Animation:__SetImageName( cFile )
    LOCAL cType, cPrev
    IF VALTYPE( cFile ) == "A"
       cFile := IIF( ::DesignMode .AND. VALTYPE( cFile[1] ) == "C", cFile[1], cFile[2] )
@@ -126,7 +126,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS Animation
+METHOD Animation:Create()
    IF ::DesignMode
       ::Style := ( ::Style & NOT( ACS_AUTOPLAY ) )
    ENDIF
@@ -138,14 +138,14 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnCtlColorStatic( nwParam ) CLASS Animation
+METHOD Animation:OnCtlColorStatic( nwParam )
    LOCAL hBrush := ::BkBrush
    DEFAULT hBrush TO ::Parent:BkBrush
    DEFAULT hBrush TO GetSysColorBrush( COLOR_BTNFACE )
    SetBkColor( nwParam, ::BackColor )
 RETURN hBrush
 
-METHOD OnEraseBkGnd( nwParam ) CLASS Animation
+METHOD Animation:OnEraseBkGnd( nwParam )
    LOCAL hBrush := ::BkBrush
    DEFAULT hBrush TO ::Parent:BkBrush
    DEFAULT hBrush TO GetSysColorBrush( COLOR_BTNFACE )

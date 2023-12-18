@@ -158,7 +158,7 @@ CLASS ActiveX INHERIT ToleAuto, TitleControl
 ENDCLASS
 
 //----------------------------------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS ActiveX
+METHOD ActiveX:Init( oParent )
    ::Parent       := oParent
    ::ClsName      := "AtlAxWin"
    ::Style        := ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS) )
@@ -179,7 +179,7 @@ METHOD Init( oParent ) CLASS ActiveX
 RETURN Self
 
 //----------------------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS ActiveX
+METHOD ActiveX:Create()
    EXTERN CreateActiveX
 
    LOCAL cId, nStatus, oServer, cHandle, cEvent, hEventHandler := {=>}
@@ -263,7 +263,7 @@ METHOD Create() CLASS ActiveX
    //DEFAULT s_hMsgHook TO SetWindowsHookEx( WH_MSGFILTER, ( @__MsgHook() ), NIL, GetCurrentThreadId() )
 RETURN Self
 
-METHOD OnDestroy() CLASS ActiveX
+METHOD ActiveX:OnDestroy()
    SetWindowLong( ::hWnd, GWL_USERDATA, 0 )
 
    __MSGUNHOOKFUNC()
@@ -279,12 +279,12 @@ METHOD OnDestroy() CLASS ActiveX
    ::TitleControl:OnDestroy()
 RETURN NIL
 
-METHOD Configure() CLASS ActiveX
+METHOD ActiveX:Configure()
    ::OnCreate()
    ExecuteEvent( "OnCreate", Self )
 RETURN Self
 
-METHOD __OpExactEqual( oObj ) CLASS ActiveX
+METHOD ActiveX:__OpExactEqual( oObj )
    LOCAL lRet
    TRY
       lRet := oObj:hObj == ::hObj
@@ -293,7 +293,7 @@ METHOD __OpExactEqual( oObj ) CLASS ActiveX
    END
 RETURN lRet
 
-METHOD __GetObjProp( oObj ) CLASS ActiveX
+METHOD ActiveX:__GetObjProp( oObj )
    LOCAL n, cArg, oProperty, xVal, cProp, o, xVal2, lReadOnly
    ::__OleVars := {=>}
 
@@ -354,7 +354,7 @@ METHOD __GetObjProp( oObj ) CLASS ActiveX
       NEXT
 RETURN NIL
 
-METHOD __GetEventList( lVars ) CLASS ActiveX
+METHOD ActiveX:__GetEventList( lVars )
    LOCAL Event, Interface, cArg, Arg
    IF ::DesignMode
 
@@ -413,7 +413,7 @@ METHOD __GetEventList( lVars ) CLASS ActiveX
    ENDIF
 RETURN Self
 
-METHOD SetStyle( nStyle, lAdd ) CLASS ActiveX
+METHOD ActiveX:SetStyle( nStyle, lAdd )
    LOCAL cStyle := ""
    DEFAULT lAdd TO .T.
    IF ::IsWindow()
@@ -451,7 +451,7 @@ METHOD SetStyle( nStyle, lAdd ) CLASS ActiveX
 RETURN self
 
 
-METHOD ShowPropertiesDialog( hWnd, lShow ) CLASS ActiveX
+METHOD ActiveX:ShowPropertiesDialog( hWnd, lShow )
    LOCAL cProp, oItem, lChanged := .F.
    LOCAL IUnknown, IDispatch, oOle, hAtl, xValue
    DEFAULT lShow TO .T.
@@ -528,7 +528,7 @@ METHOD ShowPropertiesDialog( hWnd, lShow ) CLASS ActiveX
 
 RETURN Self
 
-METHOD IsRegistered() CLASS ActiveX
+METHOD ActiveX:IsRegistered()
    LOCAL hKey, cKey, lReg := .F.
    RegOpenKeyEx( HKEY_CLASSES_ROOT, ::ProgID + "\Clsid", 0, SECURITY_ACCESS_MASK, @hKey )
    RegQueryValueEx( hKey, NIL, @cKey )

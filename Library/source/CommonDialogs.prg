@@ -27,7 +27,7 @@ CLASS CommonDialogs INHERIT Component
    METHOD SetStyle()
 ENDCLASS
 
-METHOD SetStyle( nStyle, lAdd ) CLASS CommonDialogs
+METHOD CommonDialogs:SetStyle( nStyle, lAdd )
    DEFAULT lAdd TO .T.
    IF lAdd
       ::Style := hb_bitor(::Style, nStyle)
@@ -55,7 +55,7 @@ CLASS ColorDialog INHERIT CommonDialogs
    METHOD Show()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS ColorDialog
+METHOD ColorDialog:Init( oParent )
    ::Style := hb_bitor(CC_ANYCOLOR, CC_RGBINIT, CC_SOLIDCOLOR, CC_FULLOPEN) //| CC_ENABLEHOOK
    ::__xCtrlName := "ColorDialog"
    ::ClsName     := "ColorDialog"
@@ -63,7 +63,7 @@ METHOD Init( oParent ) CLASS ColorDialog
    Super:Init( oParent )
 RETURN Self
 
-METHOD Show() CLASS ColorDialog
+METHOD ColorDialog:Show()
    LOCAL lRet
    lRet := _ChooseColor( ::Owner:hWnd, @::Color, ::Application:CustomColors, ::Style )//, "VXHCOLORDIALOGPROC" )
 RETURN lRet
@@ -89,7 +89,7 @@ CLASS FolderBrowserDialog INHERIT CommonDialogs
    METHOD SetShowNewFolderButton()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS FolderBrowserDialog
+METHOD FolderBrowserDialog:Init( oParent )
    ::Style := hb_bitor(BIF_NEWDIALOGSTYLE, BIF_BROWSEINCLUDEURLS)
    ::__xCtrlName := "FolderBrowserDialog"
    ::ClsName     := "FolderBrowserDialog"
@@ -97,13 +97,13 @@ METHOD Init( oParent ) CLASS FolderBrowserDialog
    Super:Init( oParent )
 RETURN Self
 
-METHOD Show() CLASS FolderBrowserDialog
+METHOD FolderBrowserDialog:Show()
    LOCAL pCallBack := WinCallBackPointer( HB_ObjMsgPtr( Self, "BrowseForFolderCallBack" ), Self )
    ::SelectedPath := SHBrowseForFolder( ::Owner:hWnd, ::Description, ::Style, ::RootFolder, pCallBack, @::SelectedId )
    VXH_FreeCallBackPointer( pCallBack )
 RETURN ::SelectedPath
 
-METHOD BrowseForFolderCallBack( hWnd, nMsg, lp ) CLASS FolderBrowserDialog
+METHOD FolderBrowserDialog:BrowseForFolderCallBack( hWnd, nMsg, lp )
    LOCAL cBuffer
    SWITCH nMsg
       CASE BFFM_INITIALIZED
@@ -116,7 +116,7 @@ METHOD BrowseForFolderCallBack( hWnd, nMsg, lp ) CLASS FolderBrowserDialog
    END
 RETURN 0
 
-METHOD SetShowNewFolderButton( nStyle, lAdd ) CLASS FolderBrowserDialog
+METHOD FolderBrowserDialog:SetShowNewFolderButton( nStyle, lAdd )
    DEFAULT lAdd TO .T.
    IF !lAdd
       ::Style := hb_bitor(::Style, nStyle)
@@ -156,7 +156,7 @@ CLASS OpenFileDialog INHERIT CommonDialogs
    METHOD __SetInvStyle( n, l ) INLINE ::SetStyle( n, !l )
 ENDCLASS
 
-METHOD Init( oParent ) CLASS OpenFileDialog
+METHOD OpenFileDialog:Init( oParent )
    ::Style := hb_bitor(OFN_EXPLORER, OFN_ALLOWMULTISELECT, OFN_PATHMUSTEXIST, OFN_FILEMUSTEXIST, OFN_HIDEREADONLY)
    ::__xCtrlName := "OpenFileDialog"
    ::ClsName     := "OpenFileDialog"
@@ -167,7 +167,7 @@ METHOD Init( oParent ) CLASS OpenFileDialog
    ENDIF
 RETURN Self
 
-METHOD Show() CLASS OpenFileDialog
+METHOD OpenFileDialog:Show()
    LOCAL n, cFilter
    LOCAL ofn := (struct OPENFILENAME)
 
@@ -262,7 +262,7 @@ CLASS SaveFileDialog INHERIT CommonDialogs
    METHOD __SetInvStyle( n, l ) INLINE ::SetStyle( n, !l )
 ENDCLASS
 
-METHOD Init( oParent ) CLASS SaveFileDialog
+METHOD SaveFileDialog:Init( oParent )
    ::Style := hb_bitor(OFN_EXPLORER, OFN_PATHMUSTEXIST, OFN_HIDEREADONLY, OFN_NODEREFERENCELINKS, OFN_OVERWRITEPROMPT)
    ::__xCtrlName := "SaveFileDialog"
    ::ClsName     := "SaveFileDialog"
@@ -273,7 +273,7 @@ METHOD Init( oParent ) CLASS SaveFileDialog
    ENDIF
 RETURN Self
 
-METHOD Show() CLASS SaveFileDialog
+METHOD SaveFileDialog:Show()
    LOCAL n, cFilter, aFilter, cExt
    LOCAL ofn := (struct OPENFILENAME)
 
@@ -355,7 +355,7 @@ CLASS PrintDialog INHERIT CommonDialogs
    METHOD __SetInvStyle( n, l ) INLINE ::SetStyle( n, !l )
 ENDCLASS
 
-METHOD Init( oParent ) CLASS PrintDialog
+METHOD PrintDialog:Init( oParent )
    ::Style := hb_bitor(PD_NOCURRENTPAGE, PD_DISABLEPRINTTOFILE, PD_NOSELECTION, PD_NOPAGENUMS)
    ::__xCtrlName := "PrintDialog"
    ::ClsName     := "PrintDialog"
@@ -363,7 +363,7 @@ METHOD Init( oParent ) CLASS PrintDialog
    Super:Init( oParent )
 RETURN Self
 
-METHOD Show() CLASS PrintDialog
+METHOD PrintDialog:Show()
    LOCAL pd, nPtr, advnm, dn
 
    pd := (struct PRINTDLG)
@@ -413,7 +413,7 @@ CLASS FontDialog INHERIT CommonDialogs
    METHOD Show()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS FontDialog
+METHOD FontDialog:Init( oParent )
    ::Style          := hb_bitor(CF_SCREENFONTS, CF_INITTOLOGFONTSTRUCT, CF_EFFECTS)
    ::__xCtrlName    := "FontDialog"
    ::ClsName        := "FontDialog"
@@ -426,7 +426,7 @@ METHOD Init( oParent ) CLASS FontDialog
    ENDIF
 RETURN Self
 
-METHOD Show( oParent ) CLASS FontDialog
+METHOD FontDialog:Show( oParent )
    LOCAL lRet
    ::Font:Create()
    lRet := ::Font:Choose( IIF( oParent != NIL, oParent, ::Owner ),, ::Style ) != NIL
@@ -445,7 +445,7 @@ CLASS FontDialogFont
    METHOD Choose() INLINE ::Owner:Show()
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS FontDialogFont
+METHOD FontDialogFont:Init( oOwner )
    ::Owner     := oOwner
    __SetInitialValues( Self )
 RETURN Self
@@ -482,7 +482,7 @@ CLASS PageSetup INHERIT CommonDialogs
    METHOD __SetInvStyle( n, l ) INLINE ::SetStyle( n, !l )
 ENDCLASS
 
-METHOD Init( oParent ) CLASS PageSetup
+METHOD PageSetup:Init( oParent )
    LOCAL n
    ::Style := hb_bitor(PSD_DEFAULTMINMARGINS, PSD_MARGINS)
    ::__xCtrlName := "PageSetup"
@@ -499,7 +499,7 @@ METHOD Init( oParent ) CLASS PageSetup
    Super:Init( oParent )
 RETURN Self
 
-METHOD Show() CLASS PageSetup
+METHOD PageSetup:Show()
    LOCAL nPtr, advnm, dn, nOrientation, nPaperSize, nWidth, nLenght
    nOrientation := ::Orientation
    nPaperSize   := ::PaperSize
@@ -619,14 +619,14 @@ CLASS TaskDialog INHERIT CommonDialogs
    METHOD __SetBttns()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS TaskDialog
+METHOD TaskDialog:Init( oParent )
    ::__xCtrlName   := "TaskDialog"
    ::ClsName       := "TaskDialog"
    ::ComponentType := "CommonDialog"
    Super:Init( oParent )
 RETURN Self
 
-METHOD Show() CLASS TaskDialog
+METHOD TaskDialog:Show()
    LOCAL n, nRet, nButton := 0, nRadio := 0, lChecked := .F.
    IF VALTYPE( ::Buttons ) == "C"
       ::Buttons := hb_aTokens( ::Buttons, "|" )
@@ -651,7 +651,7 @@ METHOD Show() CLASS TaskDialog
    ::VerificationFlagChecked := lChecked
 RETURN nButton
 
-METHOD __SetFlags( nFlags, lAdd ) CLASS TaskDialog
+METHOD TaskDialog:__SetFlags( nFlags, lAdd )
    DEFAULT lAdd TO .T.
    IF lAdd
       ::__Flags := hb_bitor(::__Flags, nFlags)
@@ -660,7 +660,7 @@ METHOD __SetFlags( nFlags, lAdd ) CLASS TaskDialog
    ENDIF
 RETURN self
 
-METHOD __SetBttns( nButton, lAdd ) CLASS TaskDialog
+METHOD TaskDialog:__SetBttns( nButton, lAdd )
    DEFAULT lAdd TO .T.
    IF lAdd
       ::__ComBttns := hb_bitor(::__ComBttns, nButton)
@@ -703,7 +703,7 @@ CLASS ReplaceTextDialog INHERIT CommonDialogs
    METHOD SetFocus() INLINE SetFocus( GetDlgItem( ::hDlg, 1152 ) )
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS ReplaceTextDialog
+METHOD ReplaceTextDialog:Init( oOwner )
    DEFAULT ::__xCtrlName   TO "ReplaceTextDialog"
    DEFAULT ::ClsName       TO "ReplaceTextDialog"
    DEFAULT ::ComponentType TO "CommonDialog"
@@ -711,7 +711,7 @@ METHOD Init( oOwner ) CLASS ReplaceTextDialog
    Super:Init( oOwner )
 RETURN Self
 
-METHOD Show( oOwner, cInit ) CLASS ReplaceTextDialog
+METHOD ReplaceTextDialog:Show( oOwner, cInit )
    LOCAL pfr := (struct FINDREPLACE)
    DEFAULT oOwner TO ::Owner
    DEFAULT cInit  TO ""
@@ -729,7 +729,7 @@ METHOD Show( oOwner, cInit ) CLASS ReplaceTextDialog
    ENDIF
 RETURN NIL
 
-METHOD __WndProc( hWnd, nMsg, nwParam, nlParam ) CLASS ReplaceTextDialog
+METHOD ReplaceTextDialog:__WndProc( hWnd, nMsg, nwParam, nlParam )
    LOCAL pfr
    (hWnd, nlParam)
    DO CASE
@@ -774,7 +774,7 @@ METHOD __WndProc( hWnd, nMsg, nwParam, nlParam ) CLASS ReplaceTextDialog
    ENDCASE
 RETURN 0
 
-METHOD ExecuteEvent( cEvent, hWnd ) CLASS ReplaceTextDialog
+METHOD ReplaceTextDialog:ExecuteEvent( cEvent, hWnd )
    ::FindWhat    := GetDlgItemText( hWnd, 1152 )
    ::ReplaceWith := GetDlgItemText( hWnd, 1153 )
 
@@ -796,7 +796,7 @@ CLASS FindTextDialog INHERIT ReplaceTextDialog
    METHOD Init() CONSTRUCTOR
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS FindTextDialog
+METHOD FindTextDialog:Init( oOwner )
    ::__xCtrlName    := "FindTextDialog"
    ::ClsName        := "FindTextDialog"
    ::ComponentType  := "CommonDialog"

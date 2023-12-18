@@ -386,7 +386,7 @@ CLASS Application
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Init( lIde, __hDllInstance ) CLASS Application
+METHOD Application:Init( lIde, __hDllInstance )
    LOCAL cName, hPrevInstance, cVersion, oOS
 
    DEFAULT lIde TO .F.
@@ -464,7 +464,7 @@ METHOD Init( lIde, __hDllInstance ) CLASS Application
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD OnError( ... ) CLASS Application
+METHOD Application:OnError( ... )
    LOCAL cMsg, uRet, aParams := HB_AParams()
    cMsg := __GetMessage()
 
@@ -478,7 +478,7 @@ METHOD OnError( ... ) CLASS Application
 RETURN uRet
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD __InvalidMember( cMsg ) CLASS Application
+METHOD Application:__InvalidMember( cMsg )
    LOCAL uRet, oErr := ErrorNew()
    oErr:Args          := { Self, cMsg,  }
    oErr:CanDefault    := .F.
@@ -494,7 +494,7 @@ METHOD __InvalidMember( cMsg ) CLASS Application
 RETURN uRet
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD __SetAsProperty( cName, oObj ) CLASS Application
+METHOD Application:__SetAsProperty( cName, oObj )
    LOCAL n
    IF ::__hObjects == NIL .OR. ! ::GenerateMembers
       RETURN Self
@@ -512,7 +512,7 @@ METHOD __SetAsProperty( cName, oObj ) CLASS Application
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetColorScheme(n,lForce) CLASS Application
+METHOD Application:__SetColorScheme(n,lForce)
    LOCAL cScheme
    DEFAULT n TO ::ColorScheme
    DEFAULT lForce TO .F.
@@ -527,7 +527,7 @@ METHOD __SetColorScheme(n,lForce) CLASS Application
 RETURN ::__ColorTable
 
 //------------------------------------------------------------------------------------------------
-METHOD SaveResource( ncRes, cFileName ) CLASS Application
+METHOD Application:SaveResource( ncRes, cFileName )
    LOCAL hFile, cData, n, hBmp, lRet := .F.
 
    IF VALTYPE( ncRes ) == "N"
@@ -551,7 +551,7 @@ METHOD SaveResource( ncRes, cFileName ) CLASS Application
 RETURN lRet
 
 //------------------------------------------------------------------------------------------------
-METHOD Exit() CLASS Application
+METHOD Application:Exit()
    IF VALTYPE( ::MainForm ) == "O" .AND. IsWindow( ::MainForm:hWnd )
       ::MainForm:Destroy()
    ENDIF
@@ -577,7 +577,7 @@ METHOD Exit() CLASS Application
 RETURN NIL
 
 //------------------------------------------------------------------------------------------------
-METHOD AxTranslate( pMsg, cClass ) CLASS Application
+METHOD Application:AxTranslate( pMsg, cClass )
    LOCAL hParent, pUnk, lRet := .F., hWnd := pMsg:hwnd
 
    DEFAULT cClass TO GetClassName( hWnd )
@@ -608,7 +608,7 @@ METHOD AxTranslate( pMsg, cClass ) CLASS Application
 RETURN lRet
 
 //------------------------------------------------------------------------------------------------
-METHOD Run( oWnd ) CLASS Application
+METHOD Application:Run( oWnd )
    IF oWnd != NIL
       ::MainForm := oWnd
    ENDIF
@@ -623,7 +623,7 @@ RETURN 0
 
 //------------------------------------------------------------------------------------------------
 
-METHOD AddAccelerators( hWnd, hAccelTable ) CLASS Application
+METHOD Application:AddAccelerators( hWnd, hAccelTable )
    LOCAL n
    IF ASCAN( ::__Accelerators, { |a| a[1] == hWnd .AND. a[2] == hAccelTable } ) == 0
       IF ( n := ASCAN( ::__Accelerators, { |a| a[1] == 0 } ) ) == 0
@@ -637,7 +637,7 @@ RETURN .F.
 
 //------------------------------------------------------------------------------------------------
 
-METHOD DelAccelerators( hWnd, hAccelTable ) CLASS Application
+METHOD Application:DelAccelerators( hWnd, hAccelTable )
    LOCAL n, x := 1
    IF hWnd == NIL
       IF hAccelTable == NIL
@@ -671,7 +671,7 @@ RETURN .F.
 
 //------------------------------------------------------------------------------------------------
 
-METHOD SaveCustomColors( nKey, cNode, cValue ) CLASS Application
+METHOD Application:SaveCustomColors( nKey, cNode, cValue )
    LOCAL cCust, n, oReg := Registry( nKey, cNode )
    IF oReg:Create()
       cCust := ""
@@ -686,7 +686,7 @@ RETURN NIL
 
 //------------------------------------------------------------------------------------------------
 
-METHOD LoadCustomColors( nKey, cNode, cValue ) CLASS Application
+METHOD Application:LoadCustomColors( nKey, cNode, cValue )
    LOCAL cCust, oReg := Registry( nKey, cNode )
    IF oReg:Create()
       cCust := oReg:GetValue( cValue )
@@ -701,7 +701,7 @@ RETURN NIL
 
 //------------------------------------------------------------------------------------------------
 
-METHOD TranslateAccelerator( Msg ) CLASS Application
+METHOD Application:TranslateAccelerator( Msg )
    LOCAL lRet := .F., n, hWnd
    IF Msg:message == WM_KEYDOWN .AND. ::AccelEnabled
       FOR n := 1 TO LEN( ::__Accelerators )
@@ -723,7 +723,7 @@ RETURN lRet
 
 #define BTTNGAP 3
 
-METHOD MessageBox( cMsg, cCaption, aChoices, nIcon, nDefault ) CLASS Application
+METHOD Application:MessageBox( cMsg, cCaption, aChoices, nIcon, nDefault )
    LOCAL o := __AlertDlg( cMsg, cCaption, aChoices, nIcon, nDefault )
 RETURN o:Result
 
@@ -738,7 +738,7 @@ CLASS __AlertDlg INHERIT Dialog
    METHOD OnCommand( nId ) INLINE ::Close( nId )
 ENDCLASS
 
-METHOD Init( cMsg, cCaption, aChoices, nIcon, nDefault ) CLASS __AlertDlg
+METHOD __AlertDlg:Init( cMsg, cCaption, aChoices, nIcon, nDefault )
    Local n, aMsg, hFont, hOldFont, i, x
    Local hWnd, hDC
    Local nWidth, nMsgHeight
@@ -807,7 +807,7 @@ METHOD Init( cMsg, cCaption, aChoices, nIcon, nDefault ) CLASS __AlertDlg
    SetFocus( hWnd )
 RETURN Self
 
-METHOD OnInitDialog() CLASS __AlertDlg
+METHOD __AlertDlg:OnInitDialog()
    LOCAL n, i, o, nLeft, nTop, oButton
    n := 15
    IF ::_Icon != NIL

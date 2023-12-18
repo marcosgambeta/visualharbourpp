@@ -57,7 +57,7 @@ ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS CoolMenu
+METHOD CoolMenu:Init( oParent )
    ::__xCtrlName        := "CoolMenu"
    ::Super:Init( oParent )
    IF ::DesignMode
@@ -75,7 +75,7 @@ RETURN SELF
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS CoolMenu
+METHOD CoolMenu:Create()
    ::hBackupColor := ::xForeColor
    DEFAULT ::hBackupColor TO GetSysColor( COLOR_BTNTEXT )
    ::Super:Create()
@@ -94,7 +94,7 @@ RETURN SELF
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD GetItem( nId ) CLASS CoolMenu
+METHOD CoolMenu:GetItem( nId )
    LOCAL oSubMenu, oMenu
    FOR EACH oSubMenu IN ::aItems
       IF ( oMenu:=oSubMenu:Menu:GetItem(nId) ) != NIL
@@ -105,7 +105,7 @@ RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD OnSysKeyDown( nwParam ) CLASS Coolmenu
+METHOD CoolMenu:OnSysKeyDown( nwParam )
    LOCAL n, nHot := SendMessage( ::hWnd, TB_GETHOTITEM, 0, 0 )
 
    // close the menu on ALT KEY y it is selected
@@ -129,7 +129,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnSysKeyUp( nwParam, nlParam ) CLASS Coolmenu
+METHOD CoolMenu:OnSysKeyUp( nwParam, nlParam )
    IF nwParam == VK_MENU
       PostMessage( ::Parent:hWnd, WM_SYSKEYUP, nwParam, nlParam )
       RETURN 0
@@ -138,7 +138,7 @@ RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD OnMenuChar( nwParam, nlParam ) CLASS CoolMenu
+METHOD CoolMenu:OnMenuChar( nwParam, nlParam )
    LOCAL nItem, oMenu, n
    oMenu := ::oMenu:GetSubMenu( nlParam )
    nItem := -1
@@ -159,7 +159,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnSysChar( nwParam ) CLASS CoolMenu
+METHOD CoolMenu:OnSysChar( nwParam )
    LOCAL n
 
    FOR n := 1 TO LEN( ::aItems )
@@ -176,7 +176,7 @@ RETURN 0
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD DeleteMenuItem( nId ) CLASS CoolMenu
+METHOD CoolMenu:DeleteMenuItem( nId )
    LOCAL oBtn
    FOR EACH oBtn IN ::aItems
        IF oBtn:Menu:DeleteItem( nId )
@@ -187,7 +187,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD CheckMenuItem( nId, lCheck ) CLASS CoolMenu
+METHOD CoolMenu:CheckMenuItem( nId, lCheck )
    LOCAL oBtn
    FOR EACH oBtn IN ::aItems
        IF oBtn:Menu:CheckItem( nId, lCheck )
@@ -198,7 +198,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD EnableMenuItem( nId, lEnable ) CLASS CoolMenu
+METHOD CoolMenu:EnableMenuItem( nId, lEnable )
    LOCAL oBtn
    FOR EACH oBtn IN ::aItems
        IF oBtn:Menu:EnableItem( nId, lEnable )
@@ -209,7 +209,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnLButtonDown( nwParam ) CLASS CoolMenu
+METHOD CoolMenu:OnLButtonDown( nwParam )
    LOCAL n
    IF nwParam != -1
       SetFocus( ::hWnd )
@@ -235,7 +235,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnParentSysCommand( nwParam,nlParam ) CLASS CoolMenu
+METHOD CoolMenu:OnParentSysCommand( nwParam,nlParam )
    IF nwParam == SC_KEYMENU .AND. !CheckBit( GetKeyState( VK_SPACE ) , 32768 )
       ::PrevFoc := GetFocus()
       IF nlParam > 0
@@ -253,7 +253,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnParentCommand( nId ) CLASS CoolMenu
+METHOD CoolMenu:OnParentCommand( nId )
    LOCAL oMdi
    IF ::Parent:MdiContainer
       oMdi := ::Parent:MDIClient:GetActive()
@@ -312,7 +312,7 @@ CLASS CoolMenuItem INHERIT ToolButton
    METHOD Create()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS CoolMenuItem
+METHOD CoolMenuItem:Init( oParent )
    ::IsMenuItem   := .T.
    ::__IsControl  := .F.
    ::__xCtrlName  := "CoolMenuItem"
@@ -324,7 +324,7 @@ METHOD Init( oParent ) CLASS CoolMenuItem
    ENDIF
 RETURN Self
 
-METHOD Create( nPos ) CLASS CoolMenuItem
+METHOD CoolMenuItem:Create( nPos )
    LOCAL lpMenuInfo := (struct MENUINFO)
 
    DEFAULT ::xCaption TO ::Name

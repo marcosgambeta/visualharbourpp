@@ -91,7 +91,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS Button
+METHOD Button:Init( oParent )
    DEFAULT ::__xCtrlName TO "Button"
    ::ImgInst   := ::Instance
    ::ClsName   := "Button"
@@ -105,7 +105,7 @@ METHOD Init( oParent ) CLASS Button
    ::ShortCutKey   := __MenuStripItemShortCut( Self )
 RETURN Self
 
-METHOD Create() CLASS Button
+METHOD Button:Create()
    IF ::DesignMode
       __DeleteEvents( ::Events,{ "OnCtlColorEdit",;
                                  "OnCtlColorListBox",;
@@ -146,19 +146,19 @@ METHOD Create() CLASS Button
    ::ShortCutKey:SetAccel()
 RETURN Self
 
-METHOD SetBackColor( nColor, lRepaint ) CLASS Button
+METHOD Button:SetBackColor( nColor, lRepaint )
    ::xBackColor := nColor
    ::SetStyle( BS_OWNERDRAW, ::__IsOD )
    Super:SetBackColor( nColor, lRepaint )
 RETURN SELF
 
-METHOD SetForeColor( nColor, lRepaint ) CLASS Button
+METHOD Button:SetForeColor( nColor, lRepaint )
    ::xForeColor := nColor
    ::SetStyle( BS_OWNERDRAW, ::__IsOD )
    Super:SetForeColor( nColor, lRepaint )
 RETURN SELF
 
-METHOD SetImageIndex( n ) CLASS Button
+METHOD Button:SetImageIndex( n )
    DEFAULT n TO ::xImageIndex
    ::SetStyle( BS_OWNERDRAW, ::__IsOD )
    IF ::IsWindow()
@@ -170,7 +170,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD GetState() CLASS Button
+METHOD Button:GetState()
 
    LOCAL nState
    IF ::hWnd != NIL
@@ -198,7 +198,7 @@ RETURN nState
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetState( nState ) CLASS Button
+METHOD Button:SetState( nState )
    // Patch
    IF ::DesignMode
       __SetInitialValues( Self, "State" )
@@ -211,7 +211,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD DrawFrame( hDC, aRect, nAlign, nWidth, nStatus ) CLASS Button
+METHOD Button:DrawFrame( hDC, aRect, nAlign, nWidth, nStatus )
 
    LOCAL nFlags := DFCS_BUTTONPUSH
 
@@ -230,7 +230,7 @@ RETURN nWidth
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnParentDrawItem( nwParam, nlParam, dis ) CLASS Button
+METHOD Button:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL nLeft, nTop, aRect, nStyle, lDisabled, lSelected, lFocus, aTextRect, nTextFlags, nColor, n, lDefault, oImageList
    (nwParam)
    (nlParam)
@@ -379,7 +379,7 @@ METHOD OnParentDrawItem( nwParam, nlParam, dis ) CLASS Button
 
 RETURN 0
 
-METHOD OnParentCommand( nId, nCode, nlParam ) CLASS Button
+METHOD Button:OnParentCommand( nId, nCode, nlParam )
    LOCAL pt
    (nId, nCode)
    IF ::MenuArrow .AND. ::ContextMenu != NIL .AND. nlParam == ::hWnd
@@ -394,7 +394,7 @@ METHOD OnParentCommand( nId, nCode, nlParam ) CLASS Button
    ENDIF
 RETURN NIL
 
-METHOD OnCtlColorBtn( nwParam, nlParam ) CLASS Button
+METHOD Button:OnCtlColorBtn( nwParam, nlParam )
    LOCAL hBkGnd := ::Parent:BkBrush
    (nlParam)
    SetBrushOrgEx( nwParam, ::Parent:ClientWidth-::Left, ::Parent:ClientHeight-::Top )
@@ -404,7 +404,7 @@ METHOD OnCtlColorBtn( nwParam, nlParam ) CLASS Button
    SetTextColor( nwParam, ::ForeColor )
 RETURN hBkGnd
 
-METHOD OnCtlColorStatic( nwParam, nlParam ) CLASS Button
+METHOD Button:OnCtlColorStatic( nwParam, nlParam )
    LOCAL hBkGnd := ::BkBrush
    (nlParam)
    DEFAULT hBkGnd TO ::Parent:BkBrush
@@ -431,7 +431,7 @@ METHOD OnCtlColorStatic( nwParam, nlParam ) CLASS Button
    ENDIF
 RETURN NIL
 
-METHOD OnMouseHover() CLASS Button
+METHOD Button:OnMouseHover()
    IF !( ::__xCtrlName == "Button" )
       RETURN NIL
    ENDIF
@@ -439,7 +439,7 @@ METHOD OnMouseHover() CLASS Button
    ::InvalidateRect(, .F. )
 RETURN NIL
 
-METHOD OnMouseLeave() CLASS Button
+METHOD Button:OnMouseLeave()
    IF !( ::__xCtrlName == "Button" )
       RETURN NIL
    ENDIF
@@ -458,7 +458,7 @@ CLASS CommandLink INHERIT Control
    METHOD OnCtlColorBtn()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS CommandLink
+METHOD CommandLink:Init( oParent )
    ::__xCtrlName := "CommandLink"
    ::ClsName   := "Button"
    DEFAULT ::Style TO ( hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_COMMANDLINK) )
@@ -471,18 +471,18 @@ METHOD Init( oParent ) CLASS CommandLink
    ::ShortCutKey   := __MenuStripItemShortCut( Self )
 RETURN Self
 
-METHOD Create() CLASS CommandLink
+METHOD CommandLink:Create()
    Super:Create()
    ::__SetNote( ::xNote )
 RETURN Self
 
-METHOD __SetNote( cNote ) CLASS CommandLink
+METHOD CommandLink:__SetNote( cNote )
    IF ::IsWindow()
       ::SendMessage( BCM_SETNOTE, 0, AnsiToWide(cNote) )
    ENDIF
 RETURN Self
 
-METHOD OnCtlColorBtn( hDC ) CLASS CommandLink
+METHOD CommandLink:OnCtlColorBtn( hDC )
    LOCAL hBkGnd := ::Parent:BkBrush
    SetBrushOrgEx( hDC, ::Parent:ClientWidth-::Left, ::Parent:ClientHeight-::Top )
 RETURN hBkGnd
