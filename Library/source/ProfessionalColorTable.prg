@@ -57,7 +57,7 @@ CLASS ProfessionalColorTable
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Unload() CLASS ProfessionalColorTable
+METHOD ProfessionalColorTable:Unload()
    IF ::Pen != NIL
       HEVAL( ::Pen,   {|a,hPen| (a), DeleteObject( hPen ) } )
       HEVAL( ::Brush, {|a,hBrush| (a), DeleteObject( hBrush ) } )
@@ -67,7 +67,7 @@ METHOD Unload() CLASS ProfessionalColorTable
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Load( cScheme ) CLASS ProfessionalColorTable
+METHOD ProfessionalColorTable:Load( cScheme )
 
    IF ::AutoScheme .AND. cScheme == NIL
       ::GetCurrentStyle()
@@ -275,7 +275,7 @@ METHOD Load( cScheme ) CLASS ProfessionalColorTable
    ::Clean()
 RETURN Self
 
-METHOD Clean() CLASS ProfessionalColorTable
+METHOD ProfessionalColorTable:Clean()
    LOCAL nColor, cProp,  aKeys := { "ToolStripBorder",;
                                     "ToolStripGradientBegin",;
                                     "SeparatorDark",;
@@ -310,7 +310,7 @@ METHOD Clean() CLASS ProfessionalColorTable
    NEXT
 RETURN Self
 
-METHOD GetCurrentStyle() CLASS ProfessionalColorTable
+METHOD ProfessionalColorTable:GetCurrentStyle()
    LOCAL cTheme, cColor, cSize
    GetCurrentThemeName( @cTheme, @cColor, @cSize )
    DEFAULT cTheme TO ""
@@ -333,7 +333,7 @@ CLASS FlatGrayColorTable INHERIT ProfessionalColorTable
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Load() CLASS FlatGrayColorTable
+METHOD FlatGrayColorTable:Load()
    ::UseSystemColors := .T.
 
    ::ButtonCheckedGradientBegin             := RGB( 197, 222, 245 )
@@ -378,7 +378,7 @@ CLASS VSColorTable INHERIT ProfessionalColorTable
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Load() CLASS VSColorTable
+METHOD VSColorTable:Load()
    ::UseSystemColors := .T.
 
    ::ButtonCheckedGradientBegin             := RGB( 197, 222, 245 )

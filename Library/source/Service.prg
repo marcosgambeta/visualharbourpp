@@ -72,7 +72,7 @@ CLASS Service
    METHOD QueryData()
 ENDCLASS
 
-METHOD Install() CLASS Service
+METHOD Service:Install()
    LOCAL osv, aProcs := {}
    IF EMPTY( ::hServiceManager )
       ::hServiceManager := OpenSCManager( NIL, NIL, SC_MANAGER_ALL_ACCESS )
@@ -99,7 +99,7 @@ METHOD Install() CLASS Service
    ENDIF
 RETURN Self
 
-METHOD QueryData() CLASS Service
+METHOD Service:QueryData()
    LOCAL n, aServices, sd, lRet, qsc := (struct QUERY_SERVICE_CONFIG)
    IF ( lRet := QueryServiceConfig( ::hService, @qsc ) )
       ::File := qsc:lpBinaryPathName
@@ -115,7 +115,7 @@ METHOD QueryData() CLASS Service
    ENDIF
 RETURN lRet
 
-METHOD __SetServiceName( cName ) CLASS Service
+METHOD Service:__SetServiceName( cName )
    IF ::xServiceName != cName
       IF EMPTY( ::hServiceManager )
          ::hServiceManager := OpenSCManager( NIL, NIL, SC_MANAGER_ALL_ACCESS )
@@ -127,7 +127,7 @@ METHOD __SetServiceName( cName ) CLASS Service
    ENDIF
 RETURN cName
 
-METHOD GetStatus() CLASS Service
+METHOD Service:GetStatus()
    LOCAL ss
    IF !EMPTY( ::hService )
       ss := (struct SERVICE_STATUS)
@@ -136,7 +136,7 @@ METHOD GetStatus() CLASS Service
    ENDIF
 RETURN 0
 
-METHOD Run() CLASS Service
+METHOD Service:Run()
    ::ServiceStatusStruct := (struct SERVICE_STATUS)
    ::__pMainCallBackPtr := WinCallBackPointer( HB_ObjMsgPtr( Self, "__ServiceMain" ), Self )
    RunService( ::ServiceName, ::__pMainCallBackPtr )
@@ -158,7 +158,7 @@ PROCEDURE __ExitService CLASS Service
    ENDIF
 RETURN
 
-METHOD __ServiceMain() CLASS Service
+METHOD Service:__ServiceMain()
    ::ServiceStatusStruct:dwServiceType             := SERVICE_WIN32
    ::ServiceStatusStruct:dwCurrentState            := SERVICE_STOPPED
    ::ServiceStatusStruct:dwControlsAccepted        := 0
@@ -197,7 +197,7 @@ METHOD __ServiceMain() CLASS Service
 RETURN 0
 
 
-METHOD __ServiceProc( nCode ) CLASS Service
+METHOD Service:__ServiceProc( nCode )
    SWITCH nCode
       CASE SERVICE_CONTROL_INTERROGATE
            EXIT
@@ -224,7 +224,7 @@ CLASS ServiceController INHERIT Component, Service
    METHOD Stop( nTime ) INLINE StopService( ::hServiceManager, ::hService, .T., IIF( nTime != NIL, nTime, 1000 ) ), Self
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS ServiceController
+METHOD ServiceController:Init( oOwner )
    ::__xCtrlName := "ServiceController"
    ::ClsName     := "ServiceController"
    ::ComponentType := "ServiceController"
@@ -232,7 +232,7 @@ METHOD Init( oOwner ) CLASS ServiceController
    ::lCreated := .T.
 RETURN Self
 
-METHOD Create() CLASS ServiceController
+METHOD ServiceController:Create()
    ::hServiceManager := OpenSCManager( NIL, NIL, SC_MANAGER_ALL_ACCESS )
    ::hService        := OpenService( ::hServiceManager, ::ServiceName,  SERVICE_ALL_ACCESS )
 RETURN Self

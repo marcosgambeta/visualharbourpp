@@ -50,7 +50,7 @@ CLASS RichTextBox INHERIT EditBox
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS RichTextBox
+METHOD RichTextBox:Init( oParent )
    DEFAULT ::__xCtrlName TO "RichTextBox"
    ::Super:Init( oParent )
    ::Width       := 80
@@ -61,7 +61,7 @@ METHOD Init( oParent ) CLASS RichTextBox
    ::ClsName     := RICHEDIT_CLASS
 RETURN Self
 
-METHOD Create() CLASS RichTextBox
+METHOD RichTextBox:Create()
    LOCAL es := (struct EDITSTREAM)
 
    ::System:LoadRichEd()
@@ -74,7 +74,7 @@ METHOD Create() CLASS RichTextBox
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetCase( nCase ) CLASS RichTextBox
+METHOD RichTextBox:SetCase( nCase )
    DEFAULT nCase TO ::Case
 
    SWITCH nCase
@@ -88,7 +88,7 @@ METHOD SetCase( nCase ) CLASS RichTextBox
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD FindText( cText, nOpt ) CLASS RichTextBox
+METHOD RichTextBox:FindText( cText, nOpt )
    LOCAL ft := (struct FINDTEXT)
    DEFAULT nOpt TO FR_DOWN
    ft:lpstrText  := cText
@@ -98,7 +98,7 @@ METHOD FindText( cText, nOpt ) CLASS RichTextBox
 RETURN SendMessage( ::hWnd, EM_FINDTEXT, nOpt, ft )
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetTextLength( nFlags ) CLASS RichTextBox
+METHOD RichTextBox:GetTextLength( nFlags )
    LOCAL tl    := (struct GETTEXTLENGTHEX)
    DEFAULT nFlags TO GTL_DEFAULT
    tl:flags    := nFlags
@@ -106,7 +106,7 @@ METHOD GetTextLength( nFlags ) CLASS RichTextBox
 RETURN SendMessage( ::hWnd, EM_GETTEXTLENGTHEX, tl )
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetSelectionColor( nColor ) CLASS RichTextBox
+METHOD RichTextBox:SetSelectionColor( nColor )
    LOCAL cf := (struct CHARFORMAT)
    cf:cbSize      := cf:SizeOf()
    cf:dwMask      := CFM_COLOR
@@ -114,7 +114,7 @@ METHOD SetSelectionColor( nColor ) CLASS RichTextBox
 RETURN ::SendMessage( EM_SETCHARFORMAT, SCF_SELECTION, cf )
 
 //-----------------------------------------------------------------------------------------------
-METHOD EditStreamCallback( dwCookie, pbBuff, cb, pcb ) CLASS RichTextBox
+METHOD RichTextBox:EditStreamCallback( dwCookie, pbBuff, cb, pcb )
    (dwCookie, pbBuff, pcb)
 RETURN cb
 

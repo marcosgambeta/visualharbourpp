@@ -182,14 +182,14 @@ CLASS MessageWait
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------------------------------------
-METHOD Init( cText, cTitle, lProgress, cCancel, lMarquee, hParent, nMaxRange ) CLASS MessageWait
+METHOD MessageWait:Init( cText, cTitle, lProgress, cCancel, lMarquee, hParent, nMaxRange )
    DEFAULT lMarquee TO .F.
    s_lAutoClose := .F.
    ::hWnd := __MsgWait( cText, cTitle, lProgress, cCancel, lMarquee, hParent, nMaxRange )
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------------------------------------
-METHOD AdjustSize() CLASS MessageWait
+METHOD MessageWait:AdjustSize()
    LOCAL nBorder, aClient, hFont, aRect, hDC, rc := (struct RECT)
 
    aRect   := _GetWindowRect( ::hWnd )
@@ -216,7 +216,7 @@ METHOD AdjustSize() CLASS MessageWait
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------------------------------------
-METHOD __SetMarquee( lSet ) CLASS MessageWait
+METHOD MessageWait:__SetMarquee( lSet )
    LOCAL nStyle
    IF s_lMarquee != lSet
       nStyle := GetWindowLong( s_hProgress, GWL_STYLE )
@@ -234,7 +234,7 @@ METHOD __SetMarquee( lSet ) CLASS MessageWait
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------------------------------------
-METHOD SetText( cText ) CLASS MessageWait
+METHOD MessageWait:SetText( cText )
    s_cText := cText
    //SetWindowText( __hText, cText )
    RedrawWindow( ::hWnd, , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
@@ -242,7 +242,7 @@ METHOD SetText( cText ) CLASS MessageWait
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------------------------------------
-METHOD SetPosition(n) CLASS MessageWait
+METHOD MessageWait:SetPosition(n)
    IF ! s_lMarquee
       SendMessage( s_hProgress, PBM_SETPOS, n, 0 )
       __GetApplication():DoEvents()

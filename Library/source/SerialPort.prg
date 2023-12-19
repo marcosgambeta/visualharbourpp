@@ -118,7 +118,7 @@ CLASS SerialPort INHERIT Component
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner ) CLASS SerialPort
+METHOD SerialPort:Init( oOwner )
    ::__xCtrlName   := "SerialPort"
    ::ClsName       := "SerialPort"
    ::ComponentType := "SerialPort"
@@ -130,7 +130,7 @@ METHOD Init( oOwner ) CLASS SerialPort
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Open() CLASS SerialPort
+METHOD SerialPort:Open()
    LOCAL nEvent := -1, dcb := (struct DCB), cto := (struct COMMTIMEOUTS)
    ::Owner:CallWindowProc()
    IF ::IsOpen
@@ -167,7 +167,7 @@ METHOD Open() CLASS SerialPort
 RETURN .T.
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Close() CLASS SerialPort
+METHOD SerialPort:Close()
    KillTimer( ::Owner:hWnd, ::__nTimID )
    ::Clear()
    CloseHandle( ::Handle )
@@ -175,7 +175,7 @@ METHOD Close() CLASS SerialPort
 RETURN .T.
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Write( cStr ) CLASS SerialPort
+METHOD SerialPort:Write( cStr )
    LOCAL nSent
    IF ::IsOpen
       WriteFile( ::Handle, cStr, LEN(cStr), @nSent )
@@ -187,7 +187,7 @@ METHOD Write( cStr ) CLASS SerialPort
 RETURN nSent
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Read( nRead ) CLASS SerialPort
+METHOD SerialPort:Read( nRead )
    LOCAL cBuffer := ""
    IF ::IsOpen
       DEFAULT nRead TO ::ReadBufferSize
@@ -201,7 +201,7 @@ METHOD Read( nRead ) CLASS SerialPort
 RETURN cBuffer
 
 //-------------------------------------------------------------------------------------------------------
-METHOD CountOut() CLASS SerialPort
+METHOD SerialPort:CountOut()
    LOCAL nError, nCount := -1, cs := (struct COMSTAT)
    IF ::IsOpen .AND. ClearCommError( ::Handle, @nError, @cs )
       nCount := cs:cbOutQue
@@ -209,7 +209,7 @@ METHOD CountOut() CLASS SerialPort
 RETURN nCount
 
 //-------------------------------------------------------------------------------------------------------
-METHOD __SetCommData( nBit, lValue ) CLASS SerialPort
+METHOD SerialPort:__SetCommData( nBit, lValue )
    LOCAL lStatus, nSet, nClr, nError, cs := (struct COMSTAT)
    IF ::IsOpen
       IF ClearCommError( ::Handle, @nError, @cs )
@@ -229,7 +229,7 @@ METHOD __SetCommData( nBit, lValue ) CLASS SerialPort
 RETURN lStatus
 
 //-------------------------------------------------------------------------------------------------------
-METHOD CountIn() CLASS SerialPort
+METHOD SerialPort:CountIn()
    LOCAL nError, nCount := -1, cs := (struct COMSTAT)
    IF ClearCommError( ::Handle, @nError, @cs )
       nCount := cs:cbInQue
@@ -237,7 +237,7 @@ METHOD CountIn() CLASS SerialPort
 RETURN nCount
 
 //-------------------------------------------------------------------------------------------------------
-METHOD __SerialControlProc() CLASS SerialPort
+METHOD SerialPort:__SerialControlProc()
    LOCAL nRead := 0
    ::Application:Yield()
    KillTimer( ::Owner:hWnd, ::__nTimID )
@@ -250,14 +250,14 @@ METHOD __SerialControlProc() CLASS SerialPort
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Listen() CLASS SerialPort
+METHOD SerialPort:Listen()
    IF ::IsOpen
       SetTimer( ::Owner:hWnd, ::__nTimID, ::ReadTimeOut, ::__pCallBackPtr )
    ENDIF
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Properties() CLASS SerialPort
+METHOD SerialPort:Properties()
    LOCAL cp := (struct COMMPROP)
    IF ::IsOpen
       GetCommProperties( ::Handle, @cp )
@@ -265,7 +265,7 @@ METHOD Properties() CLASS SerialPort
 RETURN cp
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Destroy() CLASS SerialPort
+METHOD SerialPort:Destroy()
    ::Close()
    IF ::__pCallBackPtr != NIL
       VXH_FreeCallBackPointer( ::__pCallBackPtr )
@@ -275,7 +275,7 @@ METHOD Destroy() CLASS SerialPort
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD GetStatus( nType ) CLASS SerialPort
+METHOD SerialPort:GetStatus( nType )
    LOCAL nStatus := 0
    IF ::IsOpen
       GetCommModemStatus( ::Handle, @nStatus )

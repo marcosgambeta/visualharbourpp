@@ -63,7 +63,7 @@ ENDCLASS
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS CoolBar
+METHOD CoolBar:Init( oParent )
    LOCAL rbi := (struct REBARINFO)
 
    InitCommonControlsEx(ICC_COOL_CLASSES)
@@ -87,7 +87,7 @@ RETURN SELF
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS CoolBar
+METHOD CoolBar:Create()
    ::Super:Create()
    //SetClassLong( ::hWnd, GCL_STYLE, GetClassLong( ::hWnd, GCL_STYLE ) & NOT( CS_VREDRAW + CS_HREDRAW ) )
    IF ::DesignMode
@@ -102,7 +102,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD FindRemoveBand( aPt ) CLASS CoolBar
+METHOD CoolBar:FindRemoveBand( aPt )
    LOCAL pt, rbh
    pt := (struct POINT)
    pt:x := aPt[1]
@@ -119,7 +119,7 @@ METHOD FindRemoveBand( aPt ) CLASS CoolBar
 RETURN Self
 
 
-METHOD OnDestroy() CLASS CoolBar
+METHOD CoolBar:OnDestroy()
    AEVAL( ::Bands, {|o|IIF( o:Image != NIL, o:Image:Delete(), NIL )} )
    ::Super:OnDestroy()
 RETURN SELF
@@ -127,7 +127,7 @@ RETURN SELF
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD OnMouseMove( nwParam, nlParam ) CLASS CoolBar
+METHOD CoolBar:OnMouseMove( nwParam, nlParam )
    LOCAL rc, oTool, nBand, pt
    IF ::hWnd != GetCapture() .OR. ::hwndBand == NIL
       RETURN NIL
@@ -179,7 +179,7 @@ METHOD OnMouseMove( nwParam, nlParam ) CLASS CoolBar
 
 RETURN NIL
 
-METHOD __SetTheming( lSet ) CLASS CoolBar
+METHOD CoolBar:__SetTheming( lSet )
    LOCAL Band
    ::Super:__SetTheming( lSet )
    FOR EACH Band IN ::Bands
@@ -192,7 +192,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD SetImageList( oImage ) CLASS CoolBar
+METHOD CoolBar:SetImageList( oImage )
 
    LOCAL rbi
 
@@ -213,7 +213,7 @@ RETURN SELF
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD BandFromhWnd( hWnd ) CLASS CoolBar
+METHOD CoolBar:BandFromhWnd( hWnd )
 
    LOCAL n, iMax
    LOCAL rbi  := (struct REBARBANDINFO)
@@ -235,7 +235,7 @@ RETURN iMax
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD OnParentNotify( nwParam, nlParam ) CLASS CoolBar
+METHOD CoolBar:OnParentNotify( nwParam, nlParam )
    LOCAL nBand, chev, rbi
    (nwParam)
 
@@ -278,7 +278,7 @@ METHOD OnParentNotify( nwParam, nlParam ) CLASS CoolBar
    ENDCASE
 RETURN NIL
 
-METHOD UpdateSize() CLASS CoolBar
+METHOD CoolBar:UpdateSize()
    LOCAL oChild, hDef
    IF ::Repaint
       ::xHeight:= ::GetHeight()
@@ -302,7 +302,7 @@ RETURN NIL
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD GetBandInfo( nBand, nMask ) CLASS CoolBar
+METHOD CoolBar:GetBandInfo( nBand, nMask )
 
    LOCAL rbb := (struct REBARBANDINFO)
 
@@ -318,7 +318,7 @@ RETURN rbb
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD GetBandRect( nBand ) CLASS CoolBar
+METHOD CoolBar:GetBandRect( nBand )
 
    LOCAL rc := (struct RECT)
 
@@ -398,7 +398,7 @@ ENDCLASS
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD SetStyle( nStyle, Value ) CLASS CoolBarBand
+METHOD CoolBarBand:SetStyle( nStyle, Value )
    DEFAULT Value TO .T.
    IF Value
       ::oStruct:fStyle := hb_bitor(::oStruct:fStyle, nStyle)
@@ -412,7 +412,7 @@ METHOD SetStyle( nStyle, Value ) CLASS CoolBarBand
    ENDIF
 RETURN Self
 
-METHOD Init( oParent ) CLASS CoolBarBand
+METHOD CoolBarBand:Init( oParent )
    ::Parent             := oParent
    ::oStruct            := (struct REBARBANDINFO)
    ::Index              := LEN( oParent:Bands )
@@ -439,7 +439,7 @@ METHOD Init( oParent ) CLASS CoolBarBand
    __SetInitialValues( Self )
 RETURN Self
 
-METHOD Create() CLASS CoolBarBand
+METHOD CoolBarBand:Create()
    SendMessage( ::Parent:hWnd, RB_INSERTBAND, -1, ::oStruct )
    AADD( ::Parent:Children, Self )
    ::lCreated := .T.
@@ -459,7 +459,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD ReflectColor()
+METHOD CoolBarBand:ReflectColor()
    IF ::oStruct:hbmBack == NIL
       ::oStruct:fMask      := (::oStruct:fMask | RBBIM_COLORS)
       ::oStruct:clrBack    := IIF( ::BackColor != NIL, ::BackColor, ::Parent:BackColor )
@@ -469,7 +469,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetImage( cImage, hInst, nType ) CLASS CoolBarBand
+METHOD CoolBarBand:SetImage( cImage, hInst, nType )
 
    DEFAULT nType TO IMAGE_BITMAP
    DEFAULT hInst TO ::Parent:Instance
@@ -486,7 +486,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SetGrippers( Value ) CLASS CoolBarBand
+METHOD CoolBarBand:SetGrippers( Value )
 
    IF Value
       ::oStruct:fStyle := (::oStruct:fStyle | RBBS_GRIPPERALWAYS)
@@ -504,7 +504,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SetChild( oChild, lInit ) CLASS CoolBarBand
+METHOD CoolBarBand:SetChild( oChild, lInit )
    LOCAL aExt, oOwner
    DEFAULT lInit TO .F.
 
@@ -539,7 +539,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD RemoveChild() CLASS CoolBarBand
+METHOD CoolBarBand:RemoveChild()
 
    ::oStruct:fMask      := RBBIM_CHILD
    ::oStruct:hwndChild  := NIL
@@ -551,7 +551,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SetMinWidth( nMinWidth ) CLASS CoolBarBand
+METHOD CoolBarBand:SetMinWidth( nMinWidth )
 
    ::xMinWidth          := nMinWidth
 
@@ -566,7 +566,7 @@ RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SetMinHeight( nMinHeight ) CLASS CoolBarBand
+METHOD CoolBarBand:SetMinHeight( nMinHeight )
    IF ::lCreated //!::__IsInstance
       ::oStruct:fMask      := RBBIM_CHILDSIZE + RBBIM_SIZE
       ::oStruct:cyChild    := nMinHeight
@@ -579,7 +579,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SetWidth( nWidth ) CLASS CoolBarBand
+METHOD CoolBarBand:SetWidth( nWidth )
    IF ::lCreated
       ::oStruct:fMask := RBBIM_SIZE
       ::oStruct:cx    := nWidth
@@ -591,7 +591,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SetHeight( nHeight ) CLASS CoolBarBand
+METHOD CoolBarBand:SetHeight( nHeight )
 
    ::oStruct:fMask   := RBBIM_SIZE
    ::oStruct:cyChild := nHeight
@@ -603,7 +603,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SetCaption( cText ) CLASS CoolBarBand
+METHOD CoolBarBand:SetCaption( cText )
 
    ::xCaption       := cText
 
@@ -618,7 +618,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SetChevron( lSet ) CLASS CoolBarBand
+METHOD CoolBarBand:SetChevron( lSet )
    DEFAULT lSet TO ::xChevron
    IF lSet
       ::oStruct:fMask := RBBIM_IDEALSIZE + RBBIM_STYLE
@@ -637,7 +637,7 @@ RETURN ::oStruct:cxIdeal
 
 
 //--------------------------------------------------------------------------------------------------------
-METHOD GetRect() CLASS CoolBarBand
+METHOD CoolBarBand:GetRect()
    LOCAL rc, pt
    rc := ::Parent:GetBandRect( ::Index )
    pt := (struct POINT)
@@ -654,12 +654,12 @@ METHOD GetRect() CLASS CoolBarBand
 RETURN rc
 
 //--------------------------------------------------------------------------------------------------------
-METHOD GetRectangle() CLASS CoolBarBand
+METHOD CoolBarBand:GetRectangle()
    LOCAL rc := ::Parent:GetBandRect( ::Index )
 RETURN rc:Array
 
 //--------------------------------------------------------------------------------------------------------
-METHOD GetBandInfo() CLASS CoolBarBand
+METHOD CoolBarBand:GetBandInfo()
    LOCAL rbb := (struct REBARBANDINFO)
    rbb:cbSize     := rbb:sizeof()
    rbb:fMask      := hb_bitor(RBBIM_STYLE, RBBIM_ID, RBBIM_STYLE, RBBIM_CHILD, RBBIM_SIZE, RBBIM_CHILDSIZE, RBBIM_IDEALSIZE, RBBIM_IMAGE, RBBIM_LPARAM, RBBIM_HEADERSIZE)
@@ -668,7 +668,7 @@ RETURN rbb
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD OnChevronPushed( chev ) CLASS CoolBarBand
+METHOD CoolBarBand:OnChevronPushed( chev )
 
    LOCAL pt, oBtn, rcBtn, oItem, oSub, n, rc, nSize
 
@@ -757,7 +757,7 @@ RETURN 1
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD Destroy( lDestroyOwner ) CLASS CoolBarBand
+METHOD CoolBarBand:Destroy( lDestroyOwner )
 
    LOCAL n, oChild
 
@@ -797,13 +797,13 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SaveChild() CLASS CoolBarBand
+METHOD CoolBarBand:SaveChild()
    ::Backup := ::BandChild
 RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD RestoreChild() CLASS CoolBarBand
+METHOD CoolBarBand:RestoreChild()
    ::SetChild( ::Backup )
 RETURN SELF
 
@@ -825,7 +825,7 @@ ENDCLASS
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent, oBand ) CLASS FloatingToolBar
+METHOD FloatingToolBar:Init( oParent, oBand )
 
    ::Super:Init( oParent )
    ::ClsName    := "FloatBar"
@@ -836,7 +836,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS FloatingToolBar
+METHOD FloatingToolBar:Create()
    LOCAL oBar, oTool
 
    //::SetStyle( WS_THICKFRAME, .F. )
@@ -879,7 +879,7 @@ RETURN SELF
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD OnMove( x, y ) CLASS FloatingToolBar
+METHOD FloatingToolBar:OnMove( x, y )
    LOCAL oBand, pt, oControl
 
    pt := (struct POINT)
@@ -938,7 +938,7 @@ ENDCLASS
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Init( cName, cPath, nMask, lCreate) CLASS BITMAP
+METHOD BITMAP:Init( cName, cPath, nMask, lCreate)
 
    DEFAULT lCreate TO .F.
    ::Name      := cName
@@ -952,7 +952,7 @@ RETURN Self
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS Bitmap
+METHOD BITMAP:Create()
 
    LOCAL aSize, cName := ::Name
 

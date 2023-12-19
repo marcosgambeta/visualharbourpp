@@ -142,7 +142,7 @@ CLASS System
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetBrush( nColor ) CLASS System
+METHOD System:GetBrush( nColor )
    LOCAL n, hBrush
    IF ( n := ASCAN( ::aBrushes, {|a| a[1]==nColor} ) ) > 0
       hBrush := ::aBrushes[n][2]
@@ -153,7 +153,7 @@ METHOD GetBrush( nColor ) CLASS System
 RETURN hBrush
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD __GetLastError() CLASS System
+METHOD System:__GetLastError()
    LOCAL cError, nError := GetLastError()
    cError := FormatMessage( , , nError )
    IF ! Empty( cError )
@@ -163,7 +163,7 @@ METHOD __GetLastError() CLASS System
 RETURN cError
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetPathFromFolder( nId, lCreate ) CLASS System
+METHOD System:GetPathFromFolder( nId, lCreate )
    LOCAL cPath := ""
    DEFAULT lCreate TO .F.
    If lCreate
@@ -173,7 +173,7 @@ METHOD GetPathFromFolder( nId, lCreate ) CLASS System
 RETURN cPath
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetEnvironment( cVar ) CLASS System
+METHOD System:GetEnvironment( cVar )
    LOCAL cEnv, oReg
 
    oReg := Registry( HKEY_CURRENT_USER, "Environment" )
@@ -191,7 +191,7 @@ METHOD GetEnvironment( cVar ) CLASS System
 RETURN cEnv
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetLocalTime() CLASS System
+METHOD System:GetLocalTime()
    LOCAL st
    GetLocalTime( @st )
    ::xLocalTime[ "Year"         ] := st:wYear
@@ -205,7 +205,7 @@ METHOD GetLocalTime() CLASS System
 RETURN ::xLocalTime
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Init() CLASS System
+METHOD System:Init()
    LOCAL cRdd, aList, hSmall, hLarge, cBuffer := ""
    LOCAL n, aCursors, cSupp := ""
 
@@ -799,7 +799,7 @@ METHOD Init() CLASS System
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetRunningProcs() CLASS System
+METHOD System:GetRunningProcs()
    LOCAL aProcessList, oProcess, aProcess := {}
    aProcessList := GetWin32Proc( "SELECT * FROM Win32_Process" )
    FOR EACH oProcess IN aProcessList
@@ -808,7 +808,7 @@ METHOD GetRunningProcs() CLASS System
 RETURN aProcess
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetOSName( cProcName ) CLASS System
+METHOD System:GetOSName( cProcName )
    LOCAL aName, oProcess, aProcessList, aProcess := {}
    DEFAULT cProcName TO __GetApplication():FileName
    aProcessList := GetWin32Proc("SELECT * FROM Win32_Process WHERE Name = '"+cProcName+"'")
@@ -821,13 +821,13 @@ METHOD GetOSName( cProcName ) CLASS System
 RETURN aName
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetEnumCursor() CLASS System
+METHOD System:GetEnumCursor()
    LOCAL aCursors
    aCursors := { { "System Default", "Arrow", "Help", "Working", "Busy", "Cross", "TextSelect", "Unavailable", "SizeNS", "SizeWE", "SizeNESW", "SizeNWSE", "SizeAll", "UpArrow", "LinkSelect", "Hand" },;
                  { NIL, IDC_ARROW, IDC_HELP, IDC_APPSTARTING, IDC_WAIT, IDC_CROSS, IDC_IBEAM, IDC_NO, IDC_SIZENS, IDC_SIZEWE, IDC_SIZENESW, IDC_SIZENWSE, IDC_SIZEALL, IDC_UPARROW, IDC_HAND, IDC_HAND } }
 RETURN aCursors
 
-METHOD TypeCast( xValue, cType )
+METHOD System:TypeCast( xValue, cType )
    LOCAL aVal, n
    IF VALTYPE( xValue ) != "C"
       xValue := xStr( xValue )
@@ -865,7 +865,7 @@ FUNCTION GC2RGB( p_nColor )
 RETURN ALLTRIM(STR(l_nRed))+","+ALLTRIM(STR(l_nGreen))+","+ALLTRIM(STR(l_nBlue))
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Update() CLASS System
+METHOD System:Update()
    LOCAL cBuffer
    FreeExplorerBarInfo()
    GetExplorerBarInfo()
@@ -897,12 +897,12 @@ CLASS __SysTime
    METHOD __SetSysTime()
 ENDCLASS
 
-METHOD __GetSysTime(n) CLASS __SysTime
+METHOD __SysTime:__GetSysTime(n)
    LOCAL st
    GetSystemTime( @st )
 RETURN st:Array[n]
 
-METHOD __SetSysTime(n,x) CLASS __SysTime
+METHOD __SysTime:__SetSysTime(n,x)
    LOCAL st, st1
    GetSystemTime( @st1 )
    SWITCH n

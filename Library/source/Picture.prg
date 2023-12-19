@@ -74,7 +74,7 @@ CLASS PictureBox INHERIT Panel
    METHOD __CreateBkBrush()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS PictureBox
+METHOD PictureBox:Init( oParent )
    DEFAULT ::__xCtrlName TO "PictureBox"
    ::Super:Init( oParent )
    ::Width        := 100
@@ -86,7 +86,7 @@ METHOD Init( oParent ) CLASS PictureBox
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS PictureBox
+METHOD PictureBox:Create()
    LOCAL aSize, cType, n
    SWITCH VALTYPE( ::ImageName )
       CASE "A"
@@ -157,7 +157,7 @@ RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD Draw( hDC, x, y, hBmp ) CLASS PictureBox
+METHOD PictureBox:Draw( hDC, x, y, hBmp )
    LOCAL hMemBitmap, hOldBitmap, hMemDC, aSize, nFill
    LOCAL aPixels
    DEFAULT x TO 0
@@ -218,7 +218,7 @@ METHOD Draw( hDC, x, y, hBmp ) CLASS PictureBox
    ENDIF
 RETURN NIL
 
-METHOD __CreateBkBrush( hDC ) CLASS PictureBox
+METHOD PictureBox:__CreateBkBrush( hDC )
    LOCAL x := 0, y := 0
    LOCAL hMemBitmap, hOldBitmap, hBrush, hMemDC
 
@@ -257,7 +257,7 @@ METHOD __CreateBkBrush( hDC ) CLASS PictureBox
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnPaint() CLASS PictureBox
+METHOD PictureBox:OnPaint()
    LOCAL hDC := ::BeginPaint()
    ::__CreateBkBrush( hDC )
    _FillRect( hDC, { 0, 0, ::ClientWidth, ::ClientHeight }, ::BkBrush )
@@ -265,14 +265,14 @@ METHOD OnPaint() CLASS PictureBox
 RETURN 0
 
 //-----------------------------------------------------------------------------------------------
-METHOD Destroy() CLASS PictureBox
+METHOD PictureBox:Destroy()
    IF ::DesignMode
       ::Kill()
       ::Application:Project:RemoveImage( ::xImageName, Self )
    ENDIF
 RETURN ::Super:Destroy()
 
-METHOD SetImageName( cFile, cType ) CLASS PictureBox
+METHOD PictureBox:SetImageName( cFile, cType )
    LOCAL aSize, n, cPrev
    IF VALTYPE( cFile ) == "A"
       cFile := IIF( ::DesignMode .AND. VALTYPE( cFile[1] ) == "C", cFile[1], cFile[2] )

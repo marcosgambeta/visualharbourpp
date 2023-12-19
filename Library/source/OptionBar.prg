@@ -63,7 +63,7 @@ CLASS OptionBar INHERIT Control
    METHOD OnToolTipNotify( nwParam, nlParam, hdr ) INLINE ::__ToolBar:OnToolTipNotify( nwParam, nlParam, hdr )
 ENDCLASS
 
-METHOD GetChildFromPoint( pt ) CLASS OptionBar
+METHOD OptionBar:GetChildFromPoint( pt )
    LOCAL rc, oCtrl, Control
    ScreenToClient( ::__ToolBar:hWnd, @pt )
    FOR EACH Control IN ::Children
@@ -77,13 +77,13 @@ METHOD GetChildFromPoint( pt ) CLASS OptionBar
 RETURN oCtrl
 
 //-----------------------------------------------------------------------------------------------------
-METHOD __AddButton() CLASS OptionBar
+METHOD OptionBar:__AddButton()
    ::Application:Project:SetAction( { { DG_ADDCONTROL, 0, 0, 0, .T., Self, "OptionBarButton",,,1, {}, } }, ::Application:Project:aUndo )
 RETURN( Self )
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS OptionBar
+METHOD OptionBar:Init( oParent )
 
    ::ClsName      := "OptionBar"
    DEFAULT ::__xCtrlName TO "OptionBar"
@@ -97,7 +97,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS OptionBar
+METHOD OptionBar:Create()
    ::ClassBrush := ::BkBrush
    DEFAULT ::ClassBrush TO GetSysColorBrush( COLOR_BTNSHADOW )
    ::Super:Create()
@@ -150,7 +150,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD OnSize( nwParam, nlParam ) CLASS OptionBar
+METHOD OptionBar:OnSize( nwParam, nlParam )
    ::Super:OnSize( nwParam, nlParam )
    IF ::__ToolBar != NIL
       ::__ToolBar:SendMessage( TB_SETBUTTONWIDTH, 0, MAKELONG( ::ClientWidth, ::ClientWidth ) )
@@ -166,7 +166,7 @@ METHOD OnSize( nwParam, nlParam ) CLASS OptionBar
 RETURN( NIL )
 
 /*
-METHOD OnMove( x, y ) CLASS OptionBar
+METHOD OptionBar:OnMove( x, y )
    ::Super:OnMove( x, y )
 //   IF ::__ToolBar != NIL
 //      ::__ToolBar:RedrawWindow( , , RDW_FRAME + RDW_INVALIDATE + RDW_UPDATENOW )
@@ -174,7 +174,7 @@ METHOD OnMove( x, y ) CLASS OptionBar
 RETURN( NIL )
 */
 
-METHOD Undock() CLASS OptionBar
+METHOD OptionBar:Undock()
    ::Super:Undock()
    ::__oPage:RecalSize()
 RETURN Self
@@ -201,7 +201,7 @@ CLASS OptionBarButton INHERIT ToolButton
    METHOD GetRect()
 ENDCLASS
 
-METHOD GetRect() CLASS OptionBarButton
+METHOD OptionBarButton:GetRect()
    LOCAL rc := (struct RECT)
    SendMessage( ::Parent:hWnd, TB_GETITEMRECT, ::xPosition, @rc )
    rc:right := ::Parent:Width

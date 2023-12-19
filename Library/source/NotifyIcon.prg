@@ -66,7 +66,7 @@ CLASS NotifyIcon INHERIT Component
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner ) CLASS NotifyIcon
+METHOD NotifyIcon:Init( oOwner )
    ::__xCtrlName   := "NotifyIcon"
    ::ClsName       := "NotifyIcon"
    ::ComponentType := "NotifyIcon"
@@ -79,7 +79,7 @@ METHOD Init( oOwner ) CLASS NotifyIcon
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD SetVisible( lVisible ) CLASS NotifyIcon
+METHOD NotifyIcon:SetVisible( lVisible )
    LOCAL lOpen, tray := (struct NOTIFYICONDATA)
    IF ! ::DesignMode
       DEFAULT ::Id   TO ::Owner:ControlId++
@@ -135,7 +135,7 @@ METHOD SetVisible( lVisible ) CLASS NotifyIcon
    ENDIF
 RETURN Self
 
-METHOD __SetText( cText ) CLASS NotifyIcon
+METHOD NotifyIcon:__SetText( cText )
    LOCAL tray
    IF ! ::DesignMode .AND. ::Owner != NIL .AND. ::Owner:hWnd != NIL
       tray := (struct NOTIFYICONDATA)
@@ -148,7 +148,7 @@ METHOD __SetText( cText ) CLASS NotifyIcon
    ENDIF
 RETURN Self
 
-METHOD __SetIcon( cIcon ) CLASS NotifyIcon
+METHOD NotifyIcon:__SetIcon( cIcon )
    LOCAL tray
    IF ::__hIcon != NIL
       DestroyIcon( ::__hIcon )
@@ -197,6 +197,6 @@ METHOD __SetIcon( cIcon ) CLASS NotifyIcon
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD SetBalloonTipIcon(n) CLASS NotifyIcon
+METHOD NotifyIcon:SetBalloonTipIcon(n)
    ::xBalloonTipIcon := n
 RETURN Self

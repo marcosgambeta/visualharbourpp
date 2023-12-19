@@ -45,12 +45,12 @@ CLASS CFile
    METHOD Close()
 ENDCLASS
 
-METHOD Init( cName ) CLASS CFile
+METHOD CFile:Init( cName )
    ::Name := cName
    ::Modified := .F.
 RETURN Self
 
-METHOD SaveDialog( oParent, cTitle ) CLASS CFile
+METHOD CFile:SaveDialog( oParent, cTitle )
    LOCAL cFile, n, cFilter := ""
 
    DEFAULT oParent TO GetActiveWindow()
@@ -91,7 +91,7 @@ METHOD SaveDialog( oParent, cTitle ) CLASS CFile
 
 RETURN Self
 
-METHOD OpenDialog( oParent ) CLASS CFile
+METHOD CFile:OpenDialog( oParent )
    LOCAL cFile, n, cFilter := ""
 
    DEFAULT oParent TO GetActiveWindow()
@@ -152,7 +152,7 @@ METHOD OpenDialog( oParent ) CLASS CFile
 
 RETURN Self
 
-METHOD Close() CLASS CFile
+METHOD CFile:Close()
    IF ::Modified
       IF MessageBox( 0, ::Name+" has been modified, Do you want to save the changes ?", "File Save", hb_bitor(MB_ICONQUESTION, MB_YESNO) ) == IDYES
          ::Save()
@@ -160,7 +160,7 @@ METHOD Close() CLASS CFile
    ENDIF
 RETURN Self
 
-METHOD Save( cPath ) CLASS CFile
+METHOD CFile:Save( cPath )
    LOCAL hFile
    DEFAULT cPath TO ::Path
 
@@ -170,7 +170,7 @@ METHOD Save( cPath ) CLASS CFile
    ENDIF
 RETURN .T.
 
-METHOD Load() CLASS CFile
+METHOD CFile:Load()
    LOCAL cFile := ::Name
    IF !EMPTY( ::Path )
       cFile := ::Path + "\" + ::Name

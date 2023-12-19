@@ -90,7 +90,7 @@ CLASS Splitter INHERIT Control
 ENDCLASS
 
 //--------------------------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS Splitter
+METHOD Splitter:Init( oParent )
    ::__xCtrlName    := "Splitter"
    ::Super:Init( oParent )
    ::ClassBrush   := GetStockObject( NULL_BRUSH )
@@ -101,12 +101,12 @@ METHOD Init( oParent ) CLASS Splitter
    ::Events       := {  {"General", { { "OnPosChanged", "", "" } } } }
 RETURN Self
 
-METHOD __GetOwner() CLASS Splitter
+METHOD Splitter:__GetOwner()
    ::xOwner := __ChkComponent( Self, ::xOwner )
 RETURN ::xOwner
 
 //--------------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS Splitter
+METHOD Splitter:Create()
    LOCAL n
    DEFAULT ::Position TO 10 - ::Owner:Dock:Type
 
@@ -158,7 +158,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD __OnParentSize() CLASS Splitter
+METHOD Splitter:__OnParentSize()
    LOCAL aRect
    IF !::lSizing
       ::GetSizes()
@@ -169,7 +169,7 @@ RETURN NIL
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD OnParentMove() CLASS Splitter
+METHOD Splitter:OnParentMove()
    IF !::lSizing .AND. ::Owner != NIL .AND. ::Owner:IsWindow()
       ::GetSizes()
       SetWindowPos( ::hWnd, , ::xLeft, ::xTop, ::xWidth, ::xHeight, hb_bitor(SWP_NOACTIVATE, SWP_NOOWNERZORDER, SWP_NOZORDER, SWP_DEFERERASE) )
@@ -178,7 +178,7 @@ RETURN NIL
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD SplitOn( x, y, lDirect )
+METHOD Splitter:SplitOn( x, y, lDirect )
    LOCAL pt, nOwnerTop, nOwnerHeight, n
    (x,y)
    DEFAULT lDirect TO .F.
@@ -269,7 +269,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD OnMouseMove( nwParam, nlParam ) CLASS Splitter
+METHOD Splitter:OnMouseMove( nwParam, nlParam )
    LOCAL pt, nPos, pt2, rc, x, y
 
    ::Super:OnMouseMove( nwParam, nlParam )
@@ -351,7 +351,7 @@ RETURN NIL
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD OnLButtonDown() CLASS Splitter
+METHOD Splitter:OnLButtonDown()
    ::lDown := .T.
    SetCapture( ::hWnd )
 
@@ -362,7 +362,7 @@ RETURN 0
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD OnLButtonUp(nwParam,x,y) CLASS Splitter
+METHOD Splitter:OnLButtonUp(nwParam,x,y)
    (nwParam)
    ReleaseCapture( ::hWnd )
    ::lDown := .F.
@@ -374,7 +374,7 @@ RETURN 0
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD GetSizes() CLASS Splitter
+METHOD Splitter:GetSizes()
    IF ::Owner == NIL
       RETURN Self
    ENDIF
@@ -408,7 +408,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD SetSizes() CLASS Splitter
+METHOD Splitter:SetSizes()
    LOCAL nOld, lMove := .F., n
 
    ::Owner:aPrevSize := { ::Owner:xLeft, ::Owner:xTop, ::Owner:xWidth, ::Owner:xHeight }

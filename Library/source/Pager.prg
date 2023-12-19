@@ -42,7 +42,7 @@ ENDCLASS
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS PageScroller
+METHOD PageScroller:Init( oParent )
    ::ClsName      := "SysPager"
    DEFAULT ::__xCtrlName TO "PageScroller"
    InitCommonControlsEx( ICC_PAGESCROLLER_CLASS + ICC_BAR_CLASSES )
@@ -56,14 +56,14 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD SetPosition(n) CLASS PageScroller
+METHOD PageScroller:SetPosition(n)
    ::SetStyle( ::xPosition, .F. )
    ::SetStyle( n, .T. )
 RETURN Self
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD SetChild(o) CLASS PageScroller
+METHOD PageScroller:SetChild(o)
    IF ::hWnd != NIL
       IF o != NIL
          ::SendMessage( PGM_SETCHILD, 0, o:hWnd )
@@ -81,7 +81,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD __OnParentSize() CLASS PageScroller
+METHOD PageScroller:__OnParentSize()
    ::xLeft   := 0
    ::xTop    := 0
    ::xWidth  := ::Parent:ClientWidth
@@ -92,7 +92,7 @@ RETURN(self)
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS PageScroller
+METHOD PageScroller:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL pg, pgs
    (nwParam)
 

@@ -63,7 +63,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS ProgressBar
+METHOD ProgressBar:Init( oParent )
    LOCAL aRect
    DEFAULT ::__xCtrlName TO "ProgressBar"
    ::ClsName   := PROGRESS_CLASS
@@ -83,7 +83,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS ProgressBar
+METHOD ProgressBar:Create()
    ::Super:Create()
 
    ::SetRange( ::xMinRange,::xMaxRange )
@@ -103,7 +103,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD __SetMarqueeSeconds( nSecs ) CLASS ProgressBar
+METHOD ProgressBar:__SetMarqueeSeconds( nSecs )
    IF ! ::DesignMode .AND. ::IsWindow()
       ::SendMessage( PBM_SETMARQUEE, ::xMarquee, nSecs )
    ENDIF
@@ -111,7 +111,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetPosition( n ) CLASS ProgressBar
+METHOD ProgressBar:SetPosition( n )
    ::xPosition  := n
    IF ::IsWindow()
       ::SendMessage( PBM_SETPOS, n, 0 )
@@ -132,14 +132,14 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnDestroy() CLASS ProgressBar
+METHOD ProgressBar:OnDestroy()
    IF ! ::DesignMode .AND. ::TaskBarProgress
       TaskBarProgressState( IIF( ::Form:Parent != NIL, ::Form:Parent:hWnd, ::Form:hWnd ), TBPF_NOPROGRESS )
    ENDIF
    Super:OnDestroy()
 RETURN NIL
 
-METHOD OnUserMsg( hWnd, nMsg ) CLASS ProgressBar
+METHOD ProgressBar:OnUserMsg( hWnd, nMsg )
    (hWnd)
    IF nMsg == WM_USER + 555
       IF ::xMarquee

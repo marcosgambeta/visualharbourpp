@@ -118,7 +118,7 @@ CLASS Object
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD OnError( ... ) CLASS Object
+METHOD Object:OnError( ... )
    LOCAL cMsg, uRet, aParams := HB_AParams()
    cMsg := __GetMessage()
 
@@ -140,11 +140,11 @@ METHOD OnError( ... ) CLASS Object
    ENDIF
 RETURN uRet
 
-METHOD HasProperty( cName )
+METHOD Object:HasProperty( cName )
 RETURN ::__hObjects != NIL .AND. hGetPos( ::__hObjects, cName ) > 0
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD __InvalidMember( cMsg ) CLASS Object
+METHOD Object:__InvalidMember( cMsg )
    LOCAL uRet, oErr := ErrorNew()
    oErr:Args          := { Self, cMsg,  }
    oErr:CanDefault    := .F.
@@ -160,7 +160,7 @@ METHOD __InvalidMember( cMsg ) CLASS Object
 RETURN uRet
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD __SetCtrlName(c) CLASS Object
+METHOD Object:__SetCtrlName(c)
    IF !(::Name == c) .AND. ::Form != NIL
       ::Form:__SetAsProperty( c, Self )
       IF IsWindow(::hWnd) .AND. ::Form:hWnd == ::hWnd
@@ -174,7 +174,7 @@ METHOD __SetCtrlName(c) CLASS Object
 RETURN c
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD __CreateProperty( cBaseName ) CLASS Object
+METHOD Object:__CreateProperty( cBaseName )
    LOCAL n
 
    DEFAULT cBaseName TO ::__xCtrlName
@@ -185,7 +185,7 @@ METHOD __CreateProperty( cBaseName ) CLASS Object
 RETURN SELF
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetControlName( cName ) CLASS Object
+METHOD Object:GetControlName( cName )
    LOCAL cProp, n := 1, lComp := .T., oForm := ::Form
    IF ::Application:GenerateMembers .OR. ::Form:GenerateMembers .OR. ::DesignMode
       WHILE ::Application != NIL .AND. oForm != NIL .AND. oForm:__hObjects != NIL
@@ -199,7 +199,7 @@ METHOD GetControlName( cName ) CLASS Object
 RETURN n
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD __SetAsProperty( cName, oObj ) CLASS Object
+METHOD Object:__SetAsProperty( cName, oObj )
    LOCAL n
 
    IF oObj:ClsName == TOOLTIPS_CLASS .OR. ::__hObjects == NIL .OR. (::Application != NIL .AND. ( ! ::Application:GenerateMembers .OR. ! ::Form:GenerateMembers ) .AND. ! ::DesignMode )
@@ -218,7 +218,7 @@ METHOD __SetAsProperty( cName, oObj ) CLASS Object
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS Object
+METHOD Object:Create()
    LOCAL nRet := ExecuteEvent( "OnInit", Self )
 
    IF ::DesignMode
@@ -233,7 +233,7 @@ METHOD Create() CLASS Object
    ENDIF
 RETURN Self
 
-METHOD RemoveProperty() CLASS Object
+METHOD Object:RemoveProperty()
    LOCAL n
    IF ! EMPTY( ::xName ) .AND. ::Form:hWnd <> ::hWnd
       IF ( n := hGetPos( ::Form:__hObjects, ::xName ) ) > 0
@@ -245,7 +245,7 @@ METHOD RemoveProperty() CLASS Object
    ENDIF
 RETURN NIL
 
-METHOD SetTabOrder( nTabOrder ) CLASS Object
+METHOD Object:SetTabOrder( nTabOrder )
    LOCAL n, hAfter
    DEFAULT nTabOrder TO 0
    IF nTabOrder > 0 .AND. nTabOrder != ::xTabOrder

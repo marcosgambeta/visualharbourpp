@@ -62,7 +62,7 @@ ENDCLASS
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS StatusBar
+METHOD StatusBar:Init( oParent )
    ::ClsName   := "msctls_statusbar32"
    ::ThemeName := "Status"
    ::xHeight    := 30
@@ -82,7 +82,7 @@ RETURN SELF
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS StatusBar
+METHOD StatusBar:Create()
    LOCAL n
 
    ::Top    := ::Parent:ClientHeight - ::Height
@@ -117,20 +117,20 @@ METHOD Create() CLASS StatusBar
 RETURN Self
 
 //----------------------------------------------------------------------------------------------------
-METHOD SetImageIndex( n ) CLASS StatusBar
+METHOD StatusBar:SetImageIndex( n )
    IF ::ImageList != NIL .AND. ::hWnd != NIL
       ::SendMessage( SB_SETICON, 0, ::ImageList:GetImage( n ) )
    ENDIF
 RETURN NIL
 
 //----------------------------------------------------------------------------------------------------
-METHOD OnDrawItem( nwParam, nlParam, dis ) CLASS StatusBar
+METHOD StatusBar:OnDrawItem( nwParam, nlParam, dis )
    Super:OnDrawItem( nwParam, nlParam, dis )
 RETURN NIL
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD __OnParentSize() CLASS StatusBar
+METHOD StatusBar:__OnParentSize()
    ::Left   := 0
    ::Top    := ::Parent:ClientHeight-::Height
    ::Width  := ::Parent:ClientWidth
@@ -140,7 +140,7 @@ RETURN( NIL )
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD OnMouseMove( nwParam, nlParam ) CLASS StatusBar
+METHOD StatusBar:OnMouseMove( nwParam, nlParam )
    LOCAL n, rc, pt := (struct POINT)
 
    ::Super:OnMouseMove( nwParam, nlParam )
@@ -163,14 +163,14 @@ RETURN 0
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD GetPanelRect( nPanel ) CLASS StatusBar
+METHOD StatusBar:GetPanelRect( nPanel )
    LOCAL rc := (struct RECT)
    SendMessage( ::hWnd, SB_GETRECT, nPanel, @rc )
 RETURN rc
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD SetPanels( nWidth ) CLASS StatusBar
+METHOD StatusBar:SetPanels( nWidth )
    LOCAL cSizes := ""
    LOCAL nX     := 0
    LOCAL n, nPart
@@ -295,7 +295,7 @@ CLASS StatusBarPanel INHERIT Control
 //   error HANDLER OnError()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS StatusBarPanel
+METHOD StatusBarPanel:Init( oParent )
    ::Parent        := oParent
    ::ImageIndex    := -1
    ::Width         := 30
@@ -316,7 +316,7 @@ METHOD Init( oParent ) CLASS StatusBarPanel
    //__SetWindowObjPtr( Self )
 RETURN Self
 
-METHOD Create() CLASS StatusBarPanel
+METHOD StatusBarPanel:Create()
    ::hWnd := Seconds()
    IF ::DesignMode
       ::Application:ObjectTree:Set( Self )
@@ -332,7 +332,7 @@ METHOD Create() CLASS StatusBarPanel
    ::OriginalRect := { ::Left, ::Top, ::Width, ::Height }
 RETURN Self
 
-METHOD Destroy() CLASS StatusBarPanel
+METHOD StatusBarPanel:Destroy()
    LOCAL n
    IF !EMPTY( ::Children )
       ::Children[1]:Destroy()
@@ -352,7 +352,7 @@ METHOD Destroy() CLASS StatusBarPanel
    END
 RETURN Self
 
-METHOD GetRectangle() CLASS StatusBarPanel
+METHOD StatusBarPanel:GetRectangle()
    LOCAL rc := ::Parent:GetPanelRect( ::Index )
    ::Left   := rc:left
    ::Top    := rc:top
@@ -360,7 +360,7 @@ METHOD GetRectangle() CLASS StatusBarPanel
    ::Height := rc:bottom - rc:top
 RETURN rc:Array
 
-METHOD GetRect() CLASS StatusBarPanel
+METHOD StatusBarPanel:GetRect()
    LOCAL pt := (struct POINT), rc := ::Parent:GetPanelRect( ::Index )
    pt:x := rc:left
    pt:y := rc:top
@@ -375,7 +375,7 @@ METHOD GetRect() CLASS StatusBarPanel
    rc:bottom := pt:y
 RETURN rc
 
-METHOD SetText( cText ) CLASS StatusBarPanel
+METHOD StatusBarPanel:SetText( cText )
    IF ::Index != NIL .AND. ::Parent:IsWindow()
       DEFAULT cText TO ""
       ::Parent:SendMessage( SB_SETTEXT, ::Index, XSTR( cText ) )
@@ -383,7 +383,7 @@ METHOD SetText( cText ) CLASS StatusBarPanel
    ::Parent:InvalidateRect()
 RETURN NIL
 
-METHOD SetImageIndex( n ) CLASS StatusBarPanel
+METHOD StatusBarPanel:SetImageIndex( n )
    IF ::Index != NIL .AND. ::Parent:IsWindow()
       ::Parent:SendMessage( SB_SETICON, ::Index, IIF( n > 0 .AND. ::Parent:ImageList != NIL, ::Parent:ImageList:GetImage( n ), NIL ) )
    ENDIF

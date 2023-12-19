@@ -38,7 +38,7 @@ CLASS Panel FROM TitleControl
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS Panel
+METHOD Panel:Init( oParent )
    DEFAULT ::__xCtrlName TO "Panel"
    ::ClsName      := "PanelBox"
    ::Style        := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
@@ -65,7 +65,7 @@ METHOD Init( oParent ) CLASS Panel
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Create() CLASS Panel
+METHOD Panel:Create()
    Super:Create()
    IF ::VertScrollSize > 0
       ::OriginalRect[4] := ::VertScrollSize
@@ -86,7 +86,7 @@ METHOD Create() CLASS Panel
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __CreateBkBrush( hDC ) CLASS Panel
+METHOD Panel:__CreateBkBrush( hDC )
    LOCAL hMemBitmap, hOldBitmap, hMemDC, nBorder, nLeftBorder
    IF ::xBackColor == NIL .AND. ::Transparent
       hMemDC     := CreateCompatibleDC( hDC )
@@ -110,7 +110,7 @@ METHOD __CreateBkBrush( hDC ) CLASS Panel
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnEraseBkGnd( hDC ) CLASS Panel
+METHOD Panel:OnEraseBkGnd( hDC )
    ::__CreateBkBrush( hDC )
    _FillRect( hDC, { 0, 0, ::Width, ::Height }, ::BkBrush )
 RETURN 1

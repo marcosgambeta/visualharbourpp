@@ -69,7 +69,7 @@ CLASS RadioButton INHERIT Control
    METHOD OnCtlColorStatic()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS RadioButton
+METHOD RadioButton:Init( oParent )
    DEFAULT ::__xCtrlName TO "RadioButton"
    DEFAULT ::Style TO hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_AUTORADIOBUTTON, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ClsName   := "Button"
@@ -81,7 +81,7 @@ METHOD Init( oParent ) CLASS RadioButton
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetInitialState( nState ) CLASS RadioButton
+METHOD RadioButton:__SetInitialState( nState )
    LOCAL lChecked
    IF ::IsWindow()
       ::SendMessage( BM_SETCHECK, nState, 0 )
@@ -91,11 +91,11 @@ METHOD __SetInitialState( nState ) CLASS RadioButton
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetState() CLASS RadioButton
+METHOD RadioButton:GetState()
    LOCAL nState := ::SendMessage( BM_GETCHECK, 0, 0 )
 RETURN IIF( ( nState & BST_CHECKED ) == BST_CHECKED, BST_CHECKED, BST_UNCHECKED )
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS RadioButton
+METHOD RadioButton:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL nRet, cd, nState, aRect, lHot, lDisabled, lSelected, lFocus, nColor, lChecked, lPressed
    LOCAL sz
    LOCAL hBkGnd := ::BkBrush
@@ -199,7 +199,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS RadioButton
    ENDCASE
 RETURN NIL
 
-METHOD OnCtlColorStatic( nwParam ) CLASS RadioButton
+METHOD RadioButton:OnCtlColorStatic( nwParam )
    LOCAL nBack, hBkGnd := ::GetBkBrush()
    IF ::ForeColor != NIL
       SetTextColor( nwParam, ::ForeColor )
