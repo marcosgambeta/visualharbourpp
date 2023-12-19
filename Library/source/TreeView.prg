@@ -113,7 +113,7 @@ ENDCLASS
 
 //----------------------------------------------------------------------------//
 
-METHOD Init( oParent ) CLASS TreeView
+METHOD TreeView:Init( oParent )
    ::ClsName := "SysTreeView32"
    ::Level   := -1
    ::Style   := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, TVS_HASLINES, TVS_HASBUTTONS, TVS_LINESATROOT, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
@@ -182,7 +182,7 @@ METHOD Init( oParent ) CLASS TreeView
 
 RETURN Self
 
-METHOD Create() CLASS TreeView
+METHOD TreeView:Create()
    IF ! ::DragItems
       ::Style := hb_bitor(::Style, TVS_DISABLEDRAGDROP)
    ENDIF
@@ -203,7 +203,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------//
 
-METHOD AddItem( cPrompt, nImage, aColItems ) CLASS TreeView
+METHOD TreeView:AddItem( cPrompt, nImage, aColItems )
    LOCAL oItem
 
    DEFAULT nImage TO 0
@@ -220,7 +220,7 @@ return oItem
 
 //----------------------------------------------------------------------------//
 
-METHOD GetExpandedCount() CLASS TreeView
+METHOD TreeView:GetExpandedCount()
    LOCAL oItem, n := LEN( ::Items )
    FOR EACH oItem IN ::Items
       IF oItem:Expanded
@@ -230,17 +230,17 @@ METHOD GetExpandedCount() CLASS TreeView
 RETURN n
 
 
-METHOD ExpandAll() CLASS TreeView
+METHOD TreeView:ExpandAll()
    LOCAL oItem
    FOR EACH oItem IN ::Items
        oItem:ExpandAll()
    NEXT
 RETURN Self
 
-METHOD GetItemState( hItem, nMask ) CLASS TreeView
+METHOD TreeView:GetItemState( hItem, nMask )
 RETURN ::SendMessage( TVM_GETITEMSTATE, hItem, nMask )
 
-METHOD GetItemRect( hItem, lItem )
+METHOD TreeView:GetItemRect( hItem, lItem )
 
    LOCAL rc := (struct RECT)
    DEFAULT lItem TO .F.
@@ -276,7 +276,7 @@ RETURN NIL
 
 //----------------------------------------------------------------------------//
 
-METHOD SearchString( cStr, cRoot ) CLASS TreeView
+METHOD TreeView:SearchString( cStr, cRoot )
    LOCAL Item, oItem
 
    FOR EACH Item IN ::Items
@@ -291,7 +291,7 @@ METHOD SearchString( cStr, cRoot ) CLASS TreeView
 RETURN NIL
 //----------------------------------------------------------------------------//
 
-METHOD ResetContent() CLASS TreeView
+METHOD TreeView:ResetContent()
    //LOCAL n
    ::__lResetting := .T.
    SendMessage( ::hWnd, TVM_DELETEITEM, 0, TVI_ROOT  )
@@ -306,24 +306,24 @@ RETURN Self
 
 //----------------------------------------------------------------------------//
 
-METHOD GetSelected() CLASS TreeView
+METHOD TreeView:GetSelected()
 return FindTreeItem( ::Items, TVGetSelected( ::hWnd ) )
 
 //----------------------------------------------------------------------------//
 
-METHOD GetItem(n) CLASS TreeView
+METHOD TreeView:GetItem(n)
 return( ::Items[n] )
 
 //----------------------------------------------------------------------------//
 
-METHOD SetImageList( oList ) CLASS TreeView
+METHOD TreeView:SetImageList( oList )
    IF ::hWnd != NIL
       TVSetImageList( ::hWnd, IIF( oList != NIL, oList:handle, NIL ) , 0 )
    ENDIF
 RETURN Self
 
 //----------------------------------------------------------------------------//
-METHOD OnUserMsg( hWnd, nMsg, nwParam, nlParam ) CLASS TreeView
+METHOD TreeView:OnUserMsg( hWnd, nMsg, nwParam, nlParam )
    (hWnd,nwParam)
    IF nMsg == UM_CHECKSTATECHANGE
       ExecuteEvent( "ItemCheck", Self, FindTreeItem( ::Items, nlParam ) )
@@ -332,7 +332,7 @@ METHOD OnUserMsg( hWnd, nMsg, nwParam, nlParam ) CLASS TreeView
 RETURN Self
 
 //----------------------------------------------------------------------------//
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS TreeView
+METHOD TreeView:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL tvht, rc //, tvdi
    LOCAL tvkd, nState, lRet, nPos, hItem//, nChecked
    DEFAULT hdr TO ::Parent:hdr
@@ -479,7 +479,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS TreeView
 RETURN lRet
 
 //----------------------------------------------------------------------------------------------------------
-METHOD HitTest( x, y ) CLASS TreeView
+METHOD TreeView:HitTest( x, y )
    LOCAL hItem, oItem, tvht
    tvht := (struct TVHITTESTINFO)
    tvht:pt:x := x
@@ -489,7 +489,7 @@ METHOD HitTest( x, y ) CLASS TreeView
 RETURN oItem
 
 //----------------------------------------------------------------------------------------------------------
-METHOD OnMouseMove( nwParam, nlParam ) CLASS TreeView
+METHOD TreeView:OnMouseMove( nwParam, nlParam )
    LOCAL oItem, pt
 
    ::Super:OnMouseMove( nwParam, nlParam )
@@ -506,7 +506,7 @@ METHOD OnMouseMove( nwParam, nlParam ) CLASS TreeView
 RETURN Self
 
 //----------------------------------------------------------------------------------------------------------
-METHOD OnLButtonUp( w, x, y ) CLASS TreeView
+METHOD TreeView:OnLButtonUp( w, x, y )
    LOCAL oItem
    (w)
    IF ::DragItems .AND. ::__oDrag != NIL
@@ -522,7 +522,7 @@ METHOD OnLButtonUp( w, x, y ) CLASS TreeView
 RETURN Self
 
 //----------------------------------------------------------------------------------------------------------
-METHOD MoveItem( oDrag, nPos, oOwner ) CLASS TreeView
+METHOD TreeView:MoveItem( oDrag, nPos, oOwner )
    LOCAL oItem
    IF oDrag != NIL .AND. oOwner != NIL
       oDrag:Delete()

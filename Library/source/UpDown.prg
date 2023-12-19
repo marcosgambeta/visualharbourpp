@@ -34,7 +34,7 @@ CLASS UpDown INHERIT Control
    METHOD SetRange( n, i ) INLINE    ::SendMessage( UDM_SETRANGE, 0, MAKELONG( n, i ) )
 ENDCLASS
 
-METHOD Init( oParent ) CLASS UpDown
+METHOD UpDown:Init( oParent )
    ::ClsName := "msctls_updown32"
    DEFAULT ::Style   TO hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS, UDS_ALIGNRIGHT, UDS_SETBUDDYINT)
    DEFAULT ::__xCtrlName TO "UpDown"
@@ -44,7 +44,7 @@ METHOD Init( oParent ) CLASS UpDown
    ::__lMoveable := .T.
 RETURN Self
 
-METHOD Create() CLASS UpDown
+METHOD UpDown:Create()
    ::SetStyle( UDS_NOTHOUSANDS, ! ::DisplayThousands )
    ::SetStyle( UDS_ARROWKEYS, ::ArrowKeys )
    ::SetStyle( UDS_ALIGNRIGHT, .F. )
@@ -55,7 +55,7 @@ METHOD Create() CLASS UpDown
    ::SetRange( ::MaxRange, ::MinRange )
 RETURN Self
 
-METHOD __SetBuddy( oBuddy ) CLASS UpDown
+METHOD UpDown:__SetBuddy( oBuddy )
    IF ::IsWindow()
       DEFAULT oBuddy TO ::Buddy
       IF VALTYPE( oBuddy ) != "C"

@@ -25,14 +25,14 @@ ENDCLASS
 
 //--------------------------------------------------------------------------------------------------
 
-METHOD Init() CLASS TaskBar
+METHOD TaskBar:Init()
    SHAppBarMessage( ABM_GETTASKBARPOS, @::BarData )
    ::hWnd    := ::BarData:hWnd
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------
 
-METHOD OnWindowPosChanged() CLASS TaskBar
+METHOD TaskBar:OnWindowPosChanged()
    SHAppBarMessage( ABM_GETTASKBARPOS, @::BarData )
 
    ::Left   := ::BarData:rc:Left

@@ -40,19 +40,19 @@ CLASS Timer INHERIT Component
    METHOD Destroy()   INLINE ::Stop(), ::Super:Destroy()
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS Timer
+METHOD Timer:Init( oOwner )
    ::__xCtrlName := "Timer"
    ::ComponentType := "Timer"
    ::Super:Init( oOwner )
    ::Id := oOwner:__Timers ++
 RETURN Self
 
-METHOD Create() CLASS Timer
+METHOD Timer:Create()
    ::hProc := WinCallBackPointer( HB_ObjMsgPtr( Self, "TimeProc" ), Self )
    ::lCreated := .T.
 RETURN Self
 
-METHOD Start() CLASS Timer
+METHOD Timer:Start()
    IF ! ::Running .AND. Eval( ::bWhen )
       IF ::Owner != NIL
          ::Running := .T.
@@ -64,7 +64,7 @@ METHOD Start() CLASS Timer
    ENDIF
 RETURN Self
 
-METHOD Stop() CLASS Timer
+METHOD Timer:Stop()
    IF ::Running .AND. Eval( ::bWhen )
       ::Running := .F.
       IF ::Owner != NIL
@@ -77,7 +77,7 @@ METHOD Stop() CLASS Timer
 RETURN Self
 
 
-METHOD SetDelay(n) CLASS Timer
+METHOD Timer:SetDelay(n)
    ::xDelay := n
    IF ::Running
       ::Stop()
@@ -85,7 +85,7 @@ METHOD SetDelay(n) CLASS Timer
    ENDIF
 RETURN Self
 
-METHOD TimeProc() CLASS Timer
+METHOD Timer:TimeProc()
    LOCAL nRet := 0
    IF ! ::DesignMode
       ::OnTimeOut()

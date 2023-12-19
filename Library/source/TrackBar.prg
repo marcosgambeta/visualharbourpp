@@ -26,7 +26,7 @@ CLASS TrackBar INHERIT Control
    METHOD OnParentNotify()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS TrackBar
+METHOD TrackBar:Init( oParent )
    DEFAULT ::__xCtrlName TO "TrackBar"
    ::ClsName := TRACKBAR_CLASS
    ::Super:Init( oParent )
@@ -40,7 +40,7 @@ METHOD Init( oParent ) CLASS TrackBar
             } } }
 RETURN Self
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS TrackBar
+METHOD TrackBar:OnParentNotify( nwParam, nlParam, hdr )
    local tpc
    (nwParam)
    IF hdr:code == TRBN_THUMBPOSCHANGING

@@ -69,13 +69,13 @@ CLASS WebBrowser INHERIT ActiveX
    METHOD OnGetDlgCode() INLINE DLGC_WANTALLKEYS
 ENDCLASS
 
-METHOD Init( oParent ) CLASS WebBrowser
+METHOD WebBrowser:Init( oParent )
    DEFAULT ::__xCtrlName TO "WebBrowser"
    Super:Init( oParent )
    ::ProgID  := "Shell.Explorer.2"
 RETURN Self
 
-METHOD Create() CLASS WebBrowser
+METHOD WebBrowser:Create()
    LOCAL oReg
    IF ! ::DesignMode
       oReg := Registry( HKEY_CURRENT_USER, "Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION" )
@@ -97,7 +97,7 @@ METHOD Create() CLASS WebBrowser
    ENDIF
 RETURN Self
 
-METHOD WebNavigate( Url ) CLASS WebBrowser
+METHOD WebBrowser:WebNavigate( Url )
    IF ! ::DesignMode .AND. ::hObj != NIL
       ::Navigate( Url )
    ENDIF

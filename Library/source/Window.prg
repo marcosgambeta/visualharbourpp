@@ -668,7 +668,7 @@ PROCEDURE __WinDestruct CLASS Window
 RETURN
 
 //-----------------------------------------------------------------------------------------------
-METHOD Init( oParent, lInitValues ) CLASS Window
+METHOD Window:Init( oParent, lInitValues )
    LOCAL Topic
    DEFAULT ::__lInitialized  TO .F.
    DEFAULT lInitValues TO .T.
@@ -728,12 +728,12 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD GetControl( cName ) CLASS Window
+METHOD Window:GetControl( cName )
    LOCAL n := ASCAN( ::Children, {|o| o:Name == cName } )
 RETURN IIF( n > 0, ::Children[n], NIL )
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetTheming( lSet ) CLASS Window
+METHOD Window:__SetTheming( lSet )
    IF ::hWnd != NIL
       IF !lSet
          ::RemoveWindowTheme()
@@ -745,7 +745,7 @@ METHOD __SetTheming( lSet ) CLASS Window
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SaveValues() CLASS Window
+METHOD Window:SaveValues()
    LOCAL n, xValue
    ::__aValues := {}
    FOR n := 1 TO LEN( ::Children )
@@ -767,7 +767,7 @@ METHOD SaveValues() CLASS Window
 RETURN ::__aValues
 
 //-----------------------------------------------------------------------------------------------
-METHOD RestoreValues( aValues ) CLASS Window
+METHOD Window:RestoreValues( aValues )
    LOCAL oCtrl, n
    DEFAULT aValues TO ::__aValues
    FOR n := 1 TO LEN( aValues )
@@ -785,7 +785,7 @@ METHOD RestoreValues( aValues ) CLASS Window
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SaveLayout( cIniFile, cSection ) CLASS Window
+METHOD Window:SaveLayout( cIniFile, cSection )
    LOCAL oIni
    IF EMPTY( cIniFile )
       oIni := ::Application:IniFile
@@ -797,7 +797,7 @@ METHOD SaveLayout( cIniFile, cSection ) CLASS Window
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD IsChildOf( hWnd ) CLASS Window
+METHOD Window:IsChildOf( hWnd )
    LOCAL oParent := ::Parent
 
    WHILE oParent != NIL
@@ -812,7 +812,7 @@ METHOD IsChildOf( hWnd ) CLASS Window
 RETURN .F.
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetWindowText( cText ) CLASS Window
+METHOD Window:SetWindowText( cText )
    LOCAL xText := cText
    IF ! ::DesignMode .AND. ! ::Application:__Vxh
       TRY
@@ -833,7 +833,7 @@ METHOD SetWindowText( cText ) CLASS Window
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD RestoreLayout( cIniFile, cSection, lAllowOut ) CLASS Window
+METHOD Window:RestoreLayout( cIniFile, cSection, lAllowOut )
    LOCAL c, oIni, aPos
    DEFAULT lAllowOut TO .T.
    IF EMPTY( cIniFile )
@@ -858,14 +858,14 @@ METHOD RestoreLayout( cIniFile, cSection, lAllowOut ) CLASS Window
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetCCTL() CLASS Window
+METHOD Window:GetCCTL()
    LOCAL oParent := ::Parent
    WHILE oParent:ClsName != "CCTL"
       oParent := oParent:Parent
    ENDDO
 RETURN oParent
 
-METHOD __Register( cClass ) CLASS Window
+METHOD Window:__Register( cClass )
    LOCAL wcex
 
    IF cClass == NIL
@@ -902,7 +902,7 @@ METHOD __Register( cClass ) CLASS Window
    ::__Registered := .F.
 RETURN(.T.)
 
-METHOD ReCreate() CLASS Window
+METHOD Window:ReCreate()
    LOCAL Child
    ::hWnd := NIL
    ::Create()
@@ -911,7 +911,7 @@ METHOD ReCreate() CLASS Window
    NEXT
 RETURN Self
 
-METHOD __SetSizePos( nPos, nVal ) CLASS Window
+METHOD Window:__SetSizePos( nPos, nVal )
    DEFAULT nVal TO 0
    IF ::ClsName == "VXH_FORM_IDE" .AND. nPos <= 2
       RETURN NIL
@@ -943,7 +943,7 @@ METHOD __SetSizePos( nPos, nVal ) CLASS Window
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Close() CLASS Window
+METHOD Window:Close()
    LOCAL nRet := SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE )
    IF nRet <> 0
       IF ::Application != NIL .AND. ::Application:MainForm != NIL .AND. ::Application:MainForm:hWnd == ::hWnd
@@ -953,7 +953,7 @@ METHOD Close() CLASS Window
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD Create( oParent ) CLASS Window
+METHOD Window:Create( oParent )
    LOCAL hParent, nLeft, nTop
    LOCAL oObj, nError, cError, aSize
    LOCAL cBmpMask, cText
@@ -1192,7 +1192,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------
 
-METHOD AddAccelerator( nVirtKey, nKey, nId, bAction ) CLASS Window
+METHOD Window:AddAccelerator( nVirtKey, nKey, nId, bAction )
    LOCAL n
    IF ( n := ASCAN( ::__Accelerators, {|a| a[1]==nVirtKey .AND. a[2]==nKey} ) ) > 0
       ::__Accelerators[n][3] := nId
@@ -1210,7 +1210,7 @@ METHOD AddAccelerator( nVirtKey, nKey, nId, bAction ) CLASS Window
    ENDIF
 RETURN Self
 
-METHOD Destroy() CLASS Window
+METHOD Window:Destroy()
    IF ::ClsName == "MDIChild"
       ::Parent:MdiDestroy( Self )
     ELSE
@@ -1218,7 +1218,7 @@ METHOD Destroy() CLASS Window
    ENDIF
 RETURN Self
 
-METHOD RegisterDocking() CLASS Window
+METHOD Window:RegisterDocking()
    IF ::Dock != NIL
       IF ::Parent != NIL
          DEFAULT ::Parent:__aDock TO {}
@@ -1230,7 +1230,7 @@ METHOD RegisterDocking() CLASS Window
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------
-METHOD __SubClass() CLASS Window
+METHOD Window:__SubClass()
    IF ::__lSubClass .AND. ::__nProc == NIL .AND. ::__pCallBackPtr == NIL
       ::__pCallBackPtr := WinCallBackPointer( HB_ObjMsgPtr( Self, ::__WndProc ), Self )
       ::__nProc := SetWindowLong( ::hWnd, GWL_WNDPROC, ::__pCallBackPtr )
@@ -1238,7 +1238,7 @@ METHOD __SubClass() CLASS Window
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------
-METHOD __UnSubClass() CLASS Window
+METHOD Window:__UnSubClass()
    IF ::__nProc != NIL
       SetWindowLong( ::hWnd, GWL_WNDPROC, ::__nProc )
       ::__nProc := NIL
@@ -1246,7 +1246,7 @@ METHOD __UnSubClass() CLASS Window
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __CreateMDI( lCreate ) CLASS Window
+METHOD Window:__CreateMDI( lCreate )
    DEFAULT lCreate TO .T.
    ::__IdeImageIndex := 3
    IF ::hWnd != NIL
@@ -1276,7 +1276,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetBackColor( nColor, lRepaint ) CLASS Window
+METHOD Window:SetBackColor( nColor, lRepaint )
    DEFAULT lRepaint TO .T.
    IF nColor == NIL .AND. ::__ForceSysColor
       nColor := ::__SysBackColor
@@ -1295,7 +1295,7 @@ METHOD SetBackColor( nColor, lRepaint ) CLASS Window
    ENDIF
 RETURN SELF
 
-METHOD SetForeColor( nColor, lRepaint ) CLASS Window
+METHOD Window:SetForeColor( nColor, lRepaint )
    DEFAULT lRepaint TO .T.
    ::xForeColor := nColor
    IF lRepaint .AND. ::IsWindowVisible()
@@ -1304,7 +1304,7 @@ METHOD SetForeColor( nColor, lRepaint ) CLASS Window
 RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
-METHOD IsCovered( nTopClip) CLASS Window
+METHOD Window:IsCovered( nTopClip)
    LOCAL lRet := FALSE
    LOCAL aClip, nRet
    DEFAULT nTopClip TO 0
@@ -1317,7 +1317,7 @@ RETURN FALSE
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetParent( oParent ) CLASS Window
+METHOD Window:SetParent( oParent )
    LOCAL n
    IF ::Parent != NIL
       IF ( n := ASCAN( ::Parent:Children, {|o|o:hWnd==::hWnd} ) ) > 0
@@ -1340,7 +1340,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetExStyle(nStyle,lAdd) CLASS Window
+METHOD Window:SetExStyle(nStyle,lAdd)
    DEFAULT lAdd TO .T.
    IF ::IsWindow()
       ::ExStyle := ::GetWindowLong( GWL_EXSTYLE )
@@ -1361,21 +1361,21 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD GetWindowPlacement() CLASS Window
+METHOD Window:GetWindowPlacement()
    LOCAL pWp := (struct WINDOWPLACEMENT)
    GetWindowPlacement( ::hWnd, @pWp )
 RETURN pWp
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD GetWindowInfo() CLASS Window
+METHOD Window:GetWindowInfo()
    LOCAL pWi := (struct WINDOWINFO)
    GetWindowInfo( ::hWnd, @pWi )
 RETURN pWi
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetStyle( nStyle, lAdd ) CLASS Window
+METHOD Window:SetStyle( nStyle, lAdd )
    LOCAL cStyle := ""
    DEFAULT lAdd TO .T.
    IF nStyle == NIL
@@ -1476,7 +1476,7 @@ RETURN nRet
 #define WM_IDLE WM_USER + 1
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnDropFiles( nwParam, nlParam ) CLASS Window
+METHOD Window:OnDropFiles( nwParam, nlParam )
    LOCAL nFiles, n, cFile, pt := (struct POINT)
    (nlParam)
 
@@ -1499,12 +1499,12 @@ METHOD OnDropFiles( nwParam, nlParam ) CLASS Window
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnMouseLeave() CLASS Window
+METHOD Window:OnMouseLeave()
    ::__lMouseHover := .F.
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnMouseMove( nwParam, nlParam ) CLASS Window
+METHOD Window:OnMouseMove( nwParam, nlParam )
    LOCAL nRet
    IF ! ::__lMouseHover
       IF ::ToolTip != NIL .AND. ::__lPopTip
@@ -1519,7 +1519,7 @@ METHOD OnMouseMove( nwParam, nlParam ) CLASS Window
 RETURN nRet
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnNCMouseMove() CLASS Window
+METHOD Window:OnNCMouseMove()
    IF !::__lNCMouseHover
       ::__lNCMouseHover := .T.
       ::TrackMouseEvent( hb_bitor(TME_NONCLIENT, TME_LEAVE, TME_HOVER) )
@@ -1527,19 +1527,19 @@ METHOD OnNCMouseMove() CLASS Window
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnNCMouseHover() CLASS Window
+METHOD Window:OnNCMouseHover()
    ::TrackMouseEvent( hb_bitor(TME_NONCLIENT, TME_LEAVE) )
    ::__lNCMouseHover := .T.
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnNCMouseLeave() CLASS Window
+METHOD Window:OnNCMouseLeave()
    ::TrackMouseEvent( hb_bitor(TME_NONCLIENT, TME_HOVER) )
    ::__lNCMouseHover := .F.
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnSetCursor() CLASS Window
+METHOD Window:OnSetCursor()
    IF ::Application != NIL .AND. ::Application:Cursor != NIL
       WinSetCursor( ::Application:Cursor )
       RETURN .T.
@@ -1551,7 +1551,7 @@ METHOD OnSetCursor() CLASS Window
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnSize( nwParam, nlParam ) CLASS Window
+METHOD Window:OnSize( nwParam, nlParam )
    LOCAL x, y, aChildren, hDef, oChild
 
    ::__lSizeChanged := .T.
@@ -1593,7 +1593,7 @@ METHOD OnSize( nwParam, nlParam ) CLASS Window
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnNCActivate( nwParam, nlParam ) CLASS Window
+METHOD Window:OnNCActivate( nwParam, nlParam )
    LOCAL oWnd
    IF nwParam == 0 .AND. IsWindow( nlParam )
       oWnd := ObjFromHandle( nlParam )
@@ -1604,7 +1604,7 @@ METHOD OnNCActivate( nwParam, nlParam ) CLASS Window
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnMouseWheel( nwParam, nlParam ) CLASS Window
+METHOD Window:OnMouseWheel( nwParam, nlParam )
    LOCAL pt, rc, n, nLines, nPage, nDelta, nScroll
    IF ::sih != NIL .OR. ::siv != NIL
       pt := (struct POINT)
@@ -1663,7 +1663,7 @@ METHOD OnMouseWheel( nwParam, nlParam ) CLASS Window
    ENDIF
 RETURN NIL
 
-METHOD OnCommand( nwParam, nlParam ) CLASS Window
+METHOD Window:OnCommand( nwParam, nlParam )
    LOCAL nCode, nId, nRet, oCtrl, lHandled, oForm, oChild, oItem
    nCode := HIWORD( nwParam )
    nId   := LOWORD( nwParam )
@@ -1836,7 +1836,7 @@ METHOD OnCommand( nwParam, nlParam ) CLASS Window
    ENDIF
 RETURN NIL
 
-METHOD BeginPaint( hDC ) CLASS Window
+METHOD Window:BeginPaint( hDC )
    LOCAL cPaint
    ::__cPaint := NIL
    IF hDC == NIL
@@ -1845,14 +1845,14 @@ METHOD BeginPaint( hDC ) CLASS Window
    ENDIF
 RETURN hDC
 
-METHOD EndPaint() CLASS Window
+METHOD Window:EndPaint()
    IF ::__cPaint != NIL
       _EndPaint( ::hWnd, ::__cPaint )
       ::__cPaint := NIL
    ENDIF
 RETURN NIL
 
-METHOD OnNCDestroy() CLASS Window
+METHOD Window:OnNCDestroy()
    LOCAL n, aComp, aProperty, aProperties
    aComp := {}
    FOR n := 1 TO LEN( ::Components )
@@ -2047,7 +2047,7 @@ METHOD OnNCDestroy() CLASS Window
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnEraseBkgnd( hDC ) CLASS Window
+METHOD Window:OnEraseBkgnd( hDC )
    LOCAL nRet
 
    IF ::BkBrush == NIL .AND. ::ClsName == "Dialog" .AND. ::Modal .AND. ::xBackColor != NIL .AND. ::xBackColor <> ::__SysBackColor
@@ -2062,7 +2062,7 @@ METHOD OnEraseBkgnd( hDC ) CLASS Window
 RETURN nRet
 
 //-----------------------------------------------------------------------------------------------
-METHOD __ControlProc( hWnd, nMsg, nwParam, nlParam ) CLASS Window
+METHOD Window:__ControlProc( hWnd, nMsg, nwParam, nlParam )
    LOCAL nRet, n, cBuffer, oObj, oChild, oItem, cBlock
    LOCAL lShow, hParent, oCtrl, aRect, aPt, msg, mmi, oForm
    LOCAL pt, code, nMess, mis, dis, bBlock, oMdi, aMenu
@@ -2929,7 +2929,7 @@ RETURN ::__WinProc(hWnd, nMsg, nwParam, nlParam)
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnMeasureItem( nwParam, nlParam, mis ) CLASS Window
+METHOD Window:OnMeasureItem( nwParam, nlParam, mis )
    LOCAL n, oItem, oButton, oSub, oMenu
    (nwParam)
    IF ::Application != NIL
@@ -2953,7 +2953,7 @@ METHOD OnMeasureItem( nwParam, nlParam, mis ) CLASS Window
    ENDIF
 RETURN NIL
 
-METHOD OnSetFocus() CLASS Window
+METHOD Window:OnSetFocus()
    LOCAL aRect, aPt, n, nRet, aParent
    IF ::Parent != NIL .AND. ::Parent:VertScroll
 
@@ -2991,7 +2991,7 @@ METHOD OnSetFocus() CLASS Window
    ENDIF
 RETURN nRet
 
-METHOD OnDrawItem( nwParam, nlParam, dis ) CLASS Window
+METHOD Window:OnDrawItem( nwParam, nlParam, dis )
    LOCAL n, oItem, oButton, oSub, oMenu
    (nwParam, nlParam)
    oMenu := ::Application:oCurMenu
@@ -3019,7 +3019,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD GetClientRect() CLASS Window
+METHOD Window:GetClientRect()
    LOCAL aRect:=_GetClientRect( ::hWnd )
    ::ClientWidth  := aRect[3]
    ::ClientHeight := aRect[4]
@@ -3027,7 +3027,7 @@ RETURN {aRect[3],aRect[4]}
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD GetWindowRect() CLASS Window
+METHOD Window:GetWindowRect()
    LOCAL aPt, aRect
 
    aRect := _GetWindowRect( ::hWnd )
@@ -3052,7 +3052,7 @@ RETURN aRect
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD __SetScrollBars() CLASS Window
+METHOD Window:__SetScrollBars()
    STATIC lBusy := .F.
    LOCAL nDelta
 
@@ -3146,7 +3146,7 @@ RETURN NIL
 //------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------
 
-METHOD DockIt() CLASS Window
+METHOD Window:DockIt()
    IF ::IsWindow() .AND. ::Parent != NIL
       ::RegisterDocking()
       ::Parent:UpdateWindow()
@@ -3154,14 +3154,14 @@ METHOD DockIt() CLASS Window
    ENDIF
 RETURN Self
 
-METHOD Animate( nSpeed, nFlags ) CLASS Window
+METHOD Window:Animate( nSpeed, nFlags )
    AnimateWindow( ::hWnd, nSpeed, nFlags )
    ::xVisible := ( nFlags & AW_HIDE ) == 0
 RETURN Self
 
 //------------------------------------------------------------------------------------------------------
 
-METHOD __FixDocking() CLASS Window
+METHOD Window:__FixDocking()
    LOCAL oObj, cObj
    IF ::__hObjects != NIL
       FOR EACH cObj IN ::__hObjects:Keys
@@ -3185,7 +3185,7 @@ METHOD __FixDocking() CLASS Window
 RETURN Self
 
 
-METHOD __OnParentSize( x, y, hDef, lMoveNow, lNoMove, nParX, nParY ) CLASS Window
+METHOD Window:__OnParentSize( x, y, hDef, lMoveNow, lNoMove, nParX, nParY )
    LOCAL n, nCurLeft, nCurTop, oLeft, oTop, oRight, oBottom, lAnchor, lDock, nHeight, nMargin, aRect
 
    DEFAULT lMoveNow TO FALSE
@@ -3528,7 +3528,7 @@ RETURN NIL
 
 //---------------------------------------------------------------------------------------------
 
-METHOD TrackMouseEvent( nFlags, nHoverTimeOut ) CLASS Window
+METHOD Window:TrackMouseEvent( nFlags, nHoverTimeOut )
    LOCAL tme
    tme := (struct TRACKMOUSEEVENT)
    tme:cbSize      := tme:SizeOf()
@@ -3544,7 +3544,7 @@ RETURN Self
 
 //---------------------------------------------------------------------------------------------
 
-METHOD MoveWindow( x, y, w, h, lRep ) CLASS Window
+METHOD Window:MoveWindow( x, y, w, h, lRep )
    DEFAULT x    TO ::xLeft
    DEFAULT y    TO ::xTop
    DEFAULT w    TO ::xWidth
@@ -3566,7 +3566,7 @@ METHOD MoveWindow( x, y, w, h, lRep ) CLASS Window
 RETURN Self
 //---------------------------------------------------------------------------------------------
 
-METHOD MessageWait( cText, cTitle, lProgress, cCancel, lMarquee, nMaxRange ) CLASS Window
+METHOD Window:MessageWait( cText, cTitle, lProgress, cCancel, lMarquee, nMaxRange )
    LOCAL oWnd
    DEFAULT lProgress TO .F.
    oWnd := MessageWait( cText, cTitle, lProgress, cCancel, lMarquee, ::hWnd, nMaxRange )
@@ -3574,7 +3574,7 @@ RETURN oWnd
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD OnVScroll( nSBCode, nPos ) CLASS Window
+METHOD Window:OnVScroll( nSBCode, nPos )
 
    LOCAL nDelta
    LOCAL nMaxPos := ::OriginalRect[4]// - ::xHeight
@@ -3640,7 +3640,7 @@ METHOD OnVScroll( nSBCode, nPos ) CLASS Window
 RETURN 0
 
 //----------------------------------------------------------------------------------------------------
-METHOD UpdateScrollArea( nWidth, nHeight ) CLASS Window
+METHOD Window:UpdateScrollArea( nWidth, nHeight )
    LOCAL x, y, oSelf := IIF( ::__oDlg != NIL, ::__oDlg, Self )
    IF oSelf:HorzScroll
       WITH OBJECT oSelf
@@ -3679,7 +3679,7 @@ METHOD UpdateScrollArea( nWidth, nHeight ) CLASS Window
 RETURN NIL
 
 //----------------------------------------------------------------------------------------------------
-METHOD OnHScroll( nSBCode, nPos ) CLASS Window
+METHOD Window:OnHScroll( nSBCode, nPos )
 
    LOCAL nDelta
    LOCAL nMaxPos := ::OriginalRect[3]// - ::xHeight
@@ -3735,12 +3735,12 @@ METHOD OnHScroll( nSBCode, nPos ) CLASS Window
 
 RETURN 0
 
-METHOD GetRect() CLASS Window
+METHOD Window:GetRect()
    LOCAL rc := (struct RECT)
    GetWindowRect( ::hWnd, @rc )
 RETURN rc
 
-METHOD GetChildFromPoint( pt, bAction, aSel ) CLASS Window
+METHOD Window:GetChildFromPoint( pt, bAction, aSel )
    LOCAL o, rc, oCtrl, Control
 
    FOR EACH Control IN ::Children
@@ -3768,12 +3768,12 @@ METHOD GetChildFromPoint( pt, bAction, aSel ) CLASS Window
    DEFAULT oCtrl TO Self
 RETURN oCtrl
 
-METHOD __GetShowMode() CLASS Window
+METHOD Window:__GetShowMode()
    LOCAL wndpl := (struct WINDOWPLACEMENT)
    GetWindowPlacement( ::hWnd, @wndpl )
 RETURN wndpl:showCmd
 
-METHOD __SetFrameStyle(n) CLASS Window
+METHOD Window:__SetFrameStyle(n)
    SWITCH n
       CASE 1
          ::Style := (::Style & NOT( WS_POPUP ))
@@ -3798,7 +3798,7 @@ METHOD __SetFrameStyle(n) CLASS Window
    ENDIF
 RETURN Self
 
-METHOD __SetWindowCursor( nCursor ) CLASS Window
+METHOD Window:__SetWindowCursor( nCursor )
    IF ! ::DesignMode
       ::__hCursor := IIF( nCursor != NIL .AND. nCursor <= 32651, LoadCursor(, nCursor ), nCursor )
       IF ::hWnd != NIL .AND. IsWindowVisible( ::hWnd ) .AND. ( ::hWnd == GetFocus() .OR. ( ::ExStyle & WS_EX_NOACTIVATE ) == WS_EX_NOACTIVATE )
@@ -3868,12 +3868,12 @@ CLASS __WindowDock
    METHOD IsDocked() INLINE ::Left != NIL .OR. ::Top != NIL .OR. ::Right != NIL .OR. ::Bottom != NIL
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS __WindowDock
+METHOD __WindowDock:Init( oOwner )
    ::Owner := oOwner
    __SetInitialValues( Self )
 RETURN Self
 
-METHOD Destroy() CLASS __WindowDock
+METHOD __WindowDock:Destroy()
    ::xLeft   := NIL
    ::xTop    := NIL
    ::xRight  := NIL
@@ -3881,7 +3881,7 @@ METHOD Destroy() CLASS __WindowDock
    ::Owner   := NIL
 RETURN NIL
 
-METHOD SetMargins( cMargins ) CLASS __WindowDock
+METHOD __WindowDock:SetMargins( cMargins )
    LOCAL n, aMargins := hb_atokens( cMargins, "," )
    ::LeftMargin   := 0
    ::TopMargin    := 0
@@ -3918,7 +3918,7 @@ METHOD SetMargins( cMargins ) CLASS __WindowDock
    ENDIF
 RETURN Self
 
-METHOD Update() CLASS __WindowDock
+METHOD __WindowDock:Update()
    IF ::Owner:IsWindowVisible()
       ::Owner:DockIt()
       IF ::DesignMode
@@ -3929,7 +3929,7 @@ METHOD Update() CLASS __WindowDock
    ENDIF
 RETURN Self
 
-METHOD SetDock( x ) CLASS __WindowDock
+METHOD __WindowDock:SetDock( x )
    IF x != NIL
       ::Type += x
    ENDIF
@@ -3963,12 +3963,12 @@ CLASS __AnchorSet
    METHOD Destroy()
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS __AnchorSet
+METHOD __AnchorSet:Init( oOwner )
    ::Owner := oOwner
    __SetInitialValues( Self )
 RETURN Self
 
-METHOD Destroy() CLASS __AnchorSet
+METHOD __AnchorSet:Destroy()
    ::xLeft   := NIL
    ::xTop    := NIL
    ::xRight  := NIL
@@ -3976,7 +3976,7 @@ METHOD Destroy() CLASS __AnchorSet
    ::Owner   := NIL
 RETURN NIL
 
-METHOD SetAnchor( nPos, lSet ) CLASS __AnchorSet
+METHOD __AnchorSet:SetAnchor( nPos, lSet )
    LOCAL oItem, Item, aValue, n, cVar
    SWITCH nPos
       CASE 1
@@ -4509,7 +4509,7 @@ CLASS WinForm INHERIT Window
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
-METHOD Init( oParent, aParameters, cProjectName ) CLASS WinForm
+METHOD WinForm:Init( oParent, aParameters, cProjectName )
    LOCAL hInst, hPointer, n
    ::SetChildren := .F.
    IF VALTYPE( oParent ) == "N"
@@ -4556,7 +4556,7 @@ METHOD Init( oParent, aParameters, cProjectName ) CLASS WinForm
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __CreateProperty( cBaseName ) CLASS WinForm
+METHOD WinForm:__CreateProperty( cBaseName )
    LOCAL n
    DEFAULT cBaseName TO ::__xCtrlName
    IF EMPTY( ::xName ) .AND. ::GenerateMember
@@ -4566,7 +4566,7 @@ METHOD __CreateProperty( cBaseName ) CLASS WinForm
 RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetInstance( cProjectName, oOle ) CLASS WinForm
+METHOD WinForm:SetInstance( cProjectName, oOle )
    LOCAL hInst, hPointer
    ::Ole := oOle
    IF ::DllInstance == NIL
@@ -4578,7 +4578,7 @@ METHOD SetInstance( cProjectName, oOle ) CLASS WinForm
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Create( hoParent ) CLASS WinForm
+METHOD WinForm:Create( hoParent )
    LOCAL lVertScroll, lHorzScroll
    IF ::__hParent != NIL
       hoParent := ::__hParent
@@ -4658,7 +4658,7 @@ METHOD Create( hoParent ) CLASS WinForm
 RETURN Self
 
 //------------------------------------------------------------------------------------------------------
-METHOD Hide() CLASS WinForm
+METHOD WinForm:Hide()
    LOCAL nAnimation
    IF ::hWnd != NIL
       IF ::AnimationStyle != NIL .AND. ::AnimationStyle <> 0 .AND. ! ::DesignMode
@@ -4684,7 +4684,7 @@ METHOD Hide() CLASS WinForm
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __OnClose( nwParam, nlParam ) CLASS WinForm
+METHOD WinForm:__OnClose( nwParam, nlParam )
    LOCAL nRet, nAnimation
    IF ! ::Modal
       nRet := ExecuteEvent( "OnClose", Self )
@@ -4711,7 +4711,7 @@ METHOD __OnClose( nwParam, nlParam ) CLASS WinForm
 RETURN nRet
 
 //-----------------------------------------------------------------------------------------------
-METHOD CenterWindow( lDesk ) CLASS WinForm
+METHOD WinForm:CenterWindow( lDesk )
    LOCAL oWin, aRect
    DEFAULT lDesk TO .F.
    IF ::hWnd == NIL .OR. ::DesignMode
@@ -4744,7 +4744,7 @@ METHOD CenterWindow( lDesk ) CLASS WinForm
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnNCDestroy() CLASS WinForm
+METHOD WinForm:OnNCDestroy()
    ::Super:OnNCDestroy()
    hb_gcAll( .t. )
    IF ::xAnimation != NIL .AND. ::xAnimation:Owner != NIL
@@ -4753,7 +4753,7 @@ METHOD OnNCDestroy() CLASS WinForm
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD __CreateBkBrush( hDC ) CLASS WinForm
+METHOD WinForm:__CreateBkBrush( hDC )
    LOCAL lDC
    IF ::BackgroundImage != NIL .AND. ::BackgroundImage:hDIB != NIL
       lDC := ( hDC == NIL )
@@ -4766,7 +4766,7 @@ METHOD __CreateBkBrush( hDC ) CLASS WinForm
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetActiveMenuBar( oMenu ) CLASS WinForm
+METHOD WinForm:__SetActiveMenuBar( oMenu )
    IF ::hWnd != NIL .AND. VALTYPE( oMenu ) != "C"
       SetMenu( ::hWnd, IIF( oMenu != NIL, oMenu:hMenu, NIL ) )
       IF oMenu != NIL
@@ -4777,7 +4777,7 @@ METHOD __SetActiveMenuBar( oMenu ) CLASS WinForm
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnSize( nwParam, nlParam ) CLASS WinForm
+METHOD WinForm:OnSize( nwParam, nlParam )
 
    ::ClientWidth  := LOWORD(nlParam)
    ::ClientHeight := HIWORD(nlParam)
@@ -4802,7 +4802,7 @@ METHOD OnSize( nwParam, nlParam ) CLASS WinForm
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnSysCommand( nwParam ) CLASS WinForm
+METHOD WinForm:OnSysCommand( nwParam )
    LOCAL oChild, hDef
    IF (nwParam IN {SC_MAXIMIZE,SC_MAXIMIZE2,SC_RESTORE,SC_RESTORE2}) .AND. ! EMPTY( ::__aDock )
       ::CallWindowProc()
@@ -4819,7 +4819,7 @@ METHOD OnSysCommand( nwParam ) CLASS WinForm
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetBackColor( nColor, lRepaint ) CLASS WinForm
+METHOD WinForm:SetBackColor( nColor, lRepaint )
    ::Super:SetBackColor( nColor, lRepaint )
    IF ::BackgroundImage != NIL .AND. ::BackgroundImage:hDIB != NIL
       ::BackgroundImage:__SetImageName( @::BackgroundImage:xImageName )
@@ -4830,7 +4830,7 @@ METHOD SetBackColor( nColor, lRepaint ) CLASS WinForm
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SaveLayout( cIniFile, cSection, lAllowOut, lAllowMinimized ) CLASS WinForm
+METHOD WinForm:SaveLayout( cIniFile, cSection, lAllowOut, lAllowMinimized )
    LOCAL nShow, oIni, rc := (struct RECT)
    DEFAULT lAllowOut TO .T.
    DEFAULT lAllowMinimized TO .T.
@@ -4866,7 +4866,7 @@ METHOD SaveLayout( cIniFile, cSection, lAllowOut, lAllowMinimized ) CLASS WinFor
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD RestoreLayout( cIniFile, cSection, lAllowOut, lAllowMinimized ) CLASS WinForm
+METHOD WinForm:RestoreLayout( cIniFile, cSection, lAllowOut, lAllowMinimized )
    LOCAL c, oIni, aRect, aPos
    DEFAULT lAllowOut TO .T.
    DEFAULT lAllowMinimized TO .T.
@@ -4928,7 +4928,7 @@ METHOD RestoreLayout( cIniFile, cSection, lAllowOut, lAllowMinimized ) CLASS Win
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __PaintBakgndImage( hDC, lBitBlt ) CLASS WinForm
+METHOD WinForm:__PaintBakgndImage( hDC, lBitBlt )
    LOCAL hMemBitmap, hOldBitmap, hMemDC, hBrush
 
    DEFAULT hDC TO ::Drawing:hDC
@@ -4965,7 +4965,7 @@ METHOD __PaintBakgndImage( hDC, lBitBlt ) CLASS WinForm
    ENDIF
 RETURN NIL
 
-METHOD Show( nShow ) CLASS WinForm
+METHOD WinForm:Show( nShow )
    LOCAL nRet, hDC, hMemDC, hOldBitmap, hMemBitmap, hBrush
    DEFAULT nShow TO ::ShowMode
    IF ::__OnInitCanceled
@@ -5032,7 +5032,7 @@ METHOD Show( nShow ) CLASS WinForm
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __PrcMdiMenu( nId ) CLASS WinForm
+METHOD WinForm:__PrcMdiMenu( nId )
    LOCAL oMdi := ::MDIClient:GetActive()
 
    IF oMdi != NIL
@@ -5053,7 +5053,7 @@ METHOD __PrcMdiMenu( nId ) CLASS WinForm
 RETURN 0
 
 //-----------------------------------------------------------------------------------------------
-METHOD MdiActivate( oMdi ) CLASS WinForm
+METHOD WinForm:MdiActivate( oMdi )
    IF oMdi == NIL
       SendMessage( ::Parent:hWnd, WM_MDIACTIVATE, ::hWnd )
     ELSE
@@ -5061,7 +5061,7 @@ METHOD MdiActivate( oMdi ) CLASS WinForm
    ENDIF
 RETURN Self
 //-----------------------------------------------------------------------------------------------
-METHOD MdiClose( oMdi ) CLASS WinForm
+METHOD WinForm:MdiClose( oMdi )
    IF oMdi == NIL
       SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE )
     ELSE
@@ -5070,7 +5070,7 @@ METHOD MdiClose( oMdi ) CLASS WinForm
 RETURN Self
 //-----------------------------------------------------------------------------------------------
 
-METHOD MdiDestroy( oMdi ) CLASS WinForm
+METHOD WinForm:MdiDestroy( oMdi )
    IF oMdi == NIL
       SendMessage( ::Parent:hWnd, WM_MDIDESTROY, ::hWnd )
     ELSE
@@ -5078,7 +5078,7 @@ METHOD MdiDestroy( oMdi ) CLASS WinForm
    ENDIF
 RETURN Self
 //-----------------------------------------------------------------------------------------------
-METHOD MdiMaximize( oMdi ) CLASS WinForm
+METHOD WinForm:MdiMaximize( oMdi )
    IF oMdi == NIL
       SendMessage( ::Parent:hWnd, WM_MDIMAXIMIZE, ::hWnd )
     ELSE
@@ -5086,7 +5086,7 @@ METHOD MdiMaximize( oMdi ) CLASS WinForm
    ENDIF
 RETURN Self
 //-----------------------------------------------------------------------------------------------
-METHOD MdiRestore( oMdi ) CLASS WinForm
+METHOD WinForm:MdiRestore( oMdi )
    IF oMdi == NIL
       SendMessage( ::Parent:hWnd, WM_MDIRESTORE, ::hWnd )
     ELSE
@@ -5094,7 +5094,7 @@ METHOD MdiRestore( oMdi ) CLASS WinForm
    ENDIF
 RETURN Self
 //-----------------------------------------------------------------------------------------------
-METHOD MdiGetActive() CLASS WinForm
+METHOD WinForm:MdiGetActive()
    LOCAL n, hWnd := SendMessage( ::MDIClient:hWnd, WM_MDIGETACTIVE )
    IF( n := ASCAN( ::MDIClient:Children, {|o|o:hWnd == hWnd} ) ) > 0
       RETURN ::MDIClient:Children[n]
@@ -5103,7 +5103,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetFormIcon( cIcon ) CLASS WinForm
+METHOD WinForm:SetFormIcon( cIcon )
    IF VALTYPE( cIcon ) == "A"
       cIcon := IIF( ::DesignMode .AND. VALTYPE( cIcon[1] ) == "C", cIcon[1], cIcon[2] )
    ENDIF
@@ -5141,7 +5141,7 @@ METHOD SetFormIcon( cIcon ) CLASS WinForm
    ENDIF
 RETURN Self
 
-METHOD __SetBitmapMaskColor( nColor ) CLASS WinForm
+METHOD WinForm:__SetBitmapMaskColor( nColor )
    LOCAL cBmp, hBitmap
    IF ! ::DesignMode .AND. ::hWnd != NIL
       cBmp := ::xBitmapMask
@@ -5178,7 +5178,7 @@ METHOD __SetBitmapMaskColor( nColor ) CLASS WinForm
    ENDIF
 RETURN Self
 
-METHOD __SetBitmapMask( cBmp ) CLASS WinForm
+METHOD WinForm:__SetBitmapMask( cBmp )
    LOCAL aSize, hBitmap
    IF ::DesignMode
       IF VALTYPE( ::xBitmapMask ) == "A"
@@ -5232,7 +5232,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetOpacity( n ) CLASS WinForm
+METHOD WinForm:SetOpacity( n )
    LOCAL nStyle
    IF ::hWnd != NIL
       nStyle := GetWindowLong( ::hWnd, GWL_EXSTYLE )
@@ -5247,7 +5247,7 @@ METHOD SetOpacity( n ) CLASS WinForm
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetImageList() CLASS WinForm
+METHOD WinForm:SetImageList()
    ::xImageList := __ChkComponent( Self, ::xImageList )
    __BrowseChildren( Self )
 RETURN Self
@@ -5370,7 +5370,7 @@ CLASS __Animation
    METHOD Init() CONSTRUCTOR
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS __Animation
+METHOD __Animation:Init( oOwner )
    ::Owner := oOwner
    __SetInitialValues( Self )
 RETURN Self

@@ -111,7 +111,7 @@ CLASS ToolTip INHERIT Window
    METHOD OnTimer()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS ToolTip
+METHOD ToolTip:Init( oParent )
    ::__xCtrlName    := "ToolTip"
    ::ClsName      := TOOLTIPS_CLASS
    ::Super:Init( oParent )
@@ -124,7 +124,7 @@ METHOD Init( oParent ) CLASS ToolTip
    oParent := NIL
 RETURN( self )
 
-METHOD Create() CLASS ToolTip
+METHOD ToolTip:Create()
    ::SetChildren := .F.
    IF ! ::DesignMode
       ::Super:Create()
@@ -153,7 +153,7 @@ METHOD Create() CLASS ToolTip
    ENDIF
 RETURN( Self )
 
-METHOD SetTTStyle( nStyle, lSet ) CLASS ToolTip
+METHOD ToolTip:SetTTStyle( nStyle, lSet )
    IF lSet
       ::TTStyle := hb_bitor(::TTStyle, nStyle)
     ELSE
@@ -165,12 +165,12 @@ METHOD SetTTStyle( nStyle, lSet ) CLASS ToolTip
    ENDIF
 RETURN Self
 
-METHOD Destroy() CLASS ToolTip
+METHOD ToolTip:Destroy()
    SendMessage( ::hWnd, TTM_DELTOOL, 0, ::Tip )
    ::Tip := NIL
 RETURN Super:Destroy()
 
-METHOD GetMargin() CLASS ToolTip
+METHOD ToolTip:GetMargin()
    LOCAL rc := (struct RECT)
    SendMessage( ::hWnd, TTM_GETMARGIN, 0, rc )
    rc:Scatter()
@@ -178,7 +178,7 @@ RETURN rc
 
 //------------------------------------------------------------------------------------------------
 
-METHOD SetNewRect( aRect ) CLASS ToolTip
+METHOD ToolTip:SetNewRect( aRect )
    ::Tip:rect:left   := aRect[1]
    ::Tip:rect:top    := aRect[2]
    ::Tip:rect:right  := aRect[3]
@@ -186,7 +186,7 @@ METHOD SetNewRect( aRect ) CLASS ToolTip
    SendMessage( ::hWnd, TTM_NEWTOOLRECT, 0, ::Tip )
 RETURN( Self )
 
-METHOD TrackActivate( lSet ) CLASS ToolTip
+METHOD ToolTip:TrackActivate( lSet )
    local ti := (struct TOOLINFO)
    DEFAULT lSet TO .T.
    ti:cbSize      := ti:sizeof()
@@ -196,7 +196,7 @@ METHOD TrackActivate( lSet ) CLASS ToolTip
    SendMessage( ::hWnd, TTM_TRACKACTIVATE, lSet, Ti )
 RETURN Self
 
-METHOD SetText(c) CLASS ToolTip
+METHOD ToolTip:SetText(c)
    ::xText := c
    IF IsWindow( ::hWnd )
       ::tip:lpszText := ::xText
@@ -204,7 +204,7 @@ METHOD SetText(c) CLASS ToolTip
    ENDIF
 RETURN Self
 
-METHOD OnLButtonDown( n, x, y ) CLASS ToolTip
+METHOD ToolTip:OnLButtonDown( n, x, y )
    LOCAL pt
    IF (::Tip:uflags & TTF_TRACK) == TTF_TRACK .AND. ::CloseOnClick
       ::TrackActivate( .F. )
@@ -220,7 +220,7 @@ METHOD OnLButtonDown( n, x, y ) CLASS ToolTip
    ENDIF
 RETURN NIL
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS ToolTip
+METHOD ToolTip:OnParentNotify( nwParam, nlParam, hdr )
    (nwParam, nlParam)
    IF hdr:code == TTN_POP
       ::Parent:__lPopTip := .T.
@@ -228,7 +228,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS ToolTip
    ENDIF
 RETURN NIL
 
-METHOD OnTimer( nTimer ) CLASS ToolTip
+METHOD ToolTip:OnTimer( nTimer )
    IF nTimer == 25
       ::KillTimer( 25 )
       ::Popup()

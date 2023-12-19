@@ -72,13 +72,13 @@ ENDCLASS
 
 //----------------------------------------------------------------------------//
 
-METHOD Init( oParent ) CLASS TreeViewItem
+METHOD TreeViewItem:Init( oParent )
    DEFAULT ::__xCtrlName TO "TreeViewItem"
    ::Items  := {}
    ::Parent := oParent
 RETURN Self
 
-METHOD Create( lSetOwner ) CLASS TreeViewItem
+METHOD TreeViewItem:Create( lSetOwner )
    LOCAL nPos, tvis, oOwner := ::Owner
    DEFAULT oOwner TO ::Parent
    DEFAULT nPos   TO 0
@@ -126,7 +126,7 @@ METHOD Create( lSetOwner ) CLASS TreeViewItem
 
 RETURN Self
 
-METHOD ExpandAll() CLASS TreeViewItem
+METHOD TreeViewItem:ExpandAll()
    LOCAL oItem
    SendMessage( ::Parent:hWnd, TVM_EXPAND, TVE_EXPAND, ::hItem )
    FOR EACH oItem IN ::Items
@@ -134,7 +134,7 @@ METHOD ExpandAll() CLASS TreeViewItem
    NEXT
 RETURN Self
 
-METHOD GetExpandedCount() CLASS TreeViewItem
+METHOD TreeViewItem:GetExpandedCount()
    LOCAL oItem, n := 0
    FOR EACH oItem IN ::Items
       IF oItem:Expanded
@@ -145,13 +145,13 @@ RETURN n
 
 //----------------------------------------------------------------------------//
 
-METHOD SetStyle( nStyle, xValue )
+METHOD TreeViewItem:SetStyle( nStyle, xValue )
    ::Parent:SendMessage( nStyle, xValue, 0 )
 RETURN Self
 
 //----------------------------------------------------------------------------//
 
-METHOD SearchString(  cStr, cRoot, cParent ) CLASS TreeViewItem
+METHOD TreeViewItem:SearchString(  cStr, cRoot, cParent )
    LOCAL Item, oItem
    FOR EACH Item IN ::Items
        IF UPPER(Item:Caption) == UPPER(cStr)
@@ -168,7 +168,7 @@ RETURN NIL
 
 //----------------------------------------------------------------------------//
 
-METHOD SetItemState( nState ) CLASS TreeViewItem
+METHOD TreeViewItem:SetItemState( nState )
    ::tvi := (struct TVITEM)
    ::tvi:mask  := TVIF_HANDLE + TVIF_STATE
    ::tvi:hItem := ::hItem
@@ -179,7 +179,7 @@ METHOD SetItemState( nState ) CLASS TreeViewItem
 
 RETURN Self
 
-METHOD SetPosition( nPos ) CLASS TreeViewItem
+METHOD TreeViewItem:SetPosition( nPos )
    LOCAL hOldItem, tvis := (struct TV_INSERTSTRUCT)
 
    hOldItem := ::hItem
@@ -203,7 +203,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------//
 
-METHOD AddItem( cPrompt, nImage, aColItems, hAfter ) CLASS TreeViewItem
+METHOD TreeViewItem:AddItem( cPrompt, nImage, aColItems, hAfter )
    LOCAL oItem
 
    DEFAULT nImage TO 0
@@ -223,7 +223,7 @@ return oItem
 
 //----------------------------------------------------------------------------//
 
-METHOD SetOwner( oOwner ) CLASS TreeViewItem
+METHOD TreeViewItem:SetOwner( oOwner )
    LOCAL n
    IF ::Owner != NIL .AND. ( n := ASCAN( ::Owner:Items, {|o|o:hItem == ::hItem } ) ) > 0
       ADEL( ::Owner:Items, n, .T. )
@@ -238,7 +238,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------//
 
-METHOD Delete() CLASS TreeViewItem
+METHOD TreeViewItem:Delete()
    LOCAL n
 
    TVDeleteItem( ::Parent:handle, ::hItem )
@@ -260,7 +260,7 @@ RETURN NIL
 
 //----------------------------------------------------------------------------//
 
-METHOD SetItemText( cText ) CLASS TreeViewItem
+METHOD TreeViewItem:SetItemText( cText )
    LOCAL tvi
    IF ::Parent != NIL .AND. ::Parent:hWnd != NIL
       tvi := (struct TVITEM)
@@ -271,7 +271,7 @@ METHOD SetItemText( cText ) CLASS TreeViewItem
    ENDIF
 RETURN Self
 
-METHOD SetImageIndex(n) CLASS TreeViewItem
+METHOD TreeViewItem:SetImageIndex(n)
    LOCAL tvi
    IF ::Parent != NIL .AND. ::Parent:hWnd != NIL .AND. ::hItem != NIL
       tvi := (struct TVITEM)

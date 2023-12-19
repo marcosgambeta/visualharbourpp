@@ -220,7 +220,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS ToolBar
+METHOD ToolBar:Init( oParent )
 
    ::ClsName  := "ToolBarWindow32"
    DEFAULT ::__xCtrlName TO "ToolBar"
@@ -254,7 +254,7 @@ RETURN( Self )
 //   ENDIF
 //RETURN .T.
 
-METHOD __ChkImageList(n,oImg) CLASS ToolBar
+METHOD ToolBar:__ChkImageList(n,oImg)
    IF n == 1
       DEFAULT oImg TO ::xImageList
     ELSE
@@ -290,11 +290,11 @@ METHOD __ChkImageList(n,oImg) CLASS ToolBar
    ENDIF
 RETURN Self
 
-METHOD __AddButton() CLASS ToolBar
+METHOD ToolBar:__AddButton()
    ::Application:Project:SetAction( { { DG_ADDCONTROL, 0, 0, 0, .T., Self, "ToolButton",,,1, {}, } }, ::Application:Project:aUndo )
 RETURN( Self )
 
-METHOD Create() CLASS ToolBar
+METHOD ToolBar:Create()
    LOCAL nPadding, tbb := (struct TBBUTTON)
    ::Super:Create()
 
@@ -340,7 +340,7 @@ METHOD Create() CLASS ToolBar
 RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetStyle( nStyle, lAdd ) CLASS ToolBar
+METHOD ToolBar:SetStyle( nStyle, lAdd )
    LOCAL cStyle := ""
    DEFAULT lAdd TO .T.
    IF lAdd
@@ -357,12 +357,12 @@ RETURN self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD AddControl() CLASS ToolBar
+METHOD ToolBar:AddControl()
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetExtStyle( nStyle, lSet ) CLASS ToolBar
+METHOD ToolBar:SetExtStyle( nStyle, lSet )
    DEFAULT lSet TO .T.
    IF lSet
       ::ExtStyle := hb_bitor(::ExtStyle, nStyle)
@@ -374,7 +374,7 @@ METHOD SetExtStyle( nStyle, lSet ) CLASS ToolBar
    ENDIF
 RETURN Self
 
-METHOD OnKillFocus() CLASS ToolBar
+METHOD ToolBar:OnKillFocus()
    IF ! ::DesignMode
       ::nPressed := -1
       SendMessage( ::hWndHook, WM_CANCELMODE, 0, 0)
@@ -383,7 +383,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetBanner( hInst, cName, cPath, nMask ) CLASS ToolBar
+METHOD ToolBar:SetBanner( hInst, cName, cPath, nMask )
    ::Banner := Bitmap( hInst, cName, cPath, nMask, .T. )
    ::Height := MAX( ::ClientHeight, ::Banner:height )
 RETURN SELF
@@ -391,7 +391,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnDestroy() CLASS ToolBar
+METHOD ToolBar:OnDestroy()
    IF ::Banner != NIL
       ::Banner:Delete()
    ENDIF
@@ -404,7 +404,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetColorScheme( nHighlight, nShadow ) CLASS ToolBar
+METHOD ToolBar:SetColorScheme( nHighlight, nShadow )
    LOCAL cs := (struct COLORSCHEME)
    cs:dwSize          := cs:SizeOf()
    cs:clrBtnHighlight := nHighlight
@@ -413,7 +413,7 @@ METHOD SetColorScheme( nHighlight, nShadow ) CLASS ToolBar
 RETURN SELF
 
 
-METHOD SetPadding( x, n ) CLASS ToolBar
+METHOD ToolBar:SetPadding( x, n )
    LOCAL lSet := .T.
    IF x == 1
       ::xHorzPadding := n
@@ -428,7 +428,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnMeasureItem( nwParam, nlParam, mis ) CLASS ToolBar
+METHOD ToolBar:OnMeasureItem( nwParam, nlParam, mis )
    LOCAL n, oItem, oButton, oSub
    (nwParam)
    IF mis:CtlType == ODT_MENU
@@ -465,7 +465,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnDrawItem( nwParam, nlParam, dis ) CLASS ToolBar
+METHOD ToolBar:OnDrawItem( nwParam, nlParam, dis )
    LOCAL hDC, rc, n:=0, hBrush, xIcon:=0, yIcon:=0
    LOCAL nTop, oButton, oItem, oMenu, nOff := 0, Chk
    LOCAL lCheck := .F., nPos, lArrow := .F., lWhole := .F., oSub
@@ -687,7 +687,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD DrawArrow(hDC,aRect) CLASS ToolBar
+METHOD ToolBar:DrawArrow(hDC,aRect)
 
    LOCAL nLeft,nTop,nRight,nBottom,hOld,nM,nL,nR,nT
 
@@ -709,7 +709,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD AddBitmap( hInst, nhIdBmp ) CLASS ToolBar
+METHOD ToolBar:AddBitmap( hInst, nhIdBmp )
 
    LOCAL tbab := (struct TBADDBITMAP)
 
@@ -723,7 +723,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetButtonState( nBtn, nState ) CLASS ToolBar
+METHOD ToolBar:SetButtonState( nBtn, nState )
 
    LOCAL tbbi := (struct TBBUTTONINFO)
 
@@ -737,7 +737,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD GetButtonsWidth( x ) CLASS ToolBar
+METHOD ToolBar:GetButtonsWidth( x )
 
    LOCAL n, nWidth := 0
    LOCAL rc := (struct RECT)
@@ -760,7 +760,7 @@ RETURN nWidth
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD GetButton( nBtn ) CLASS ToolBar
+METHOD ToolBar:GetButton( nBtn )
 
    LOCAL tbb := (struct TBBUTTON)
 
@@ -771,7 +771,7 @@ RETURN tbb
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD GetButtonInfo( nBtn, nMask ) CLASS ToolBar
+METHOD ToolBar:GetButtonInfo( nBtn, nMask )
    LOCAL tbbi := (struct TBBUTTONINFO)
 
    DEFAULT nMask TO TBIF_STATE
@@ -785,7 +785,7 @@ RETURN tbbi
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnInitMenuPopup( nwParam, nPos ) CLASS ToolBar
+METHOD ToolBar:OnInitMenuPopup( nwParam, nPos )
    IF ::Chevron!=NIL .AND. ::Chevron:hMenu == nwParam .AND. !::Chevron:CoolBar
       RETURN 0
    ENDIF
@@ -808,7 +808,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnUserMsg( hWnd, nMsg ) CLASS ToolBar
+METHOD ToolBar:OnUserMsg( hWnd, nMsg )
 
    DO CASE
       CASE nMsg == MBM_POPUPMENU
@@ -832,7 +832,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnParentCommand( nId, nCode, nlParam ) CLASS ToolBar
+METHOD ToolBar:OnParentCommand( nId, nCode, nlParam )
 
    LOCAL n, oChild, oItem, nRet, dwItemData
 
@@ -873,7 +873,7 @@ RETURN nRet
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OpenPopup( hWnd ) CLASS ToolBar
+METHOD ToolBar:OpenPopup( hWnd )
 
    LOCAL n, oBtn, hMonitor, mix
    LOCAL rc := (struct RECT)
@@ -923,7 +923,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD CreateDropDown( nBtn, nLeft, nBottom, nTop ) CLASS ToolBar
+METHOD ToolBar:CreateDropDown( nBtn, nLeft, nBottom, nTop )
    LOCAL oBtn := ::aItems[nBtn]
    IF LEN( oBtn:Children ) > 0
       DEFAULT nTop TO nBottom
@@ -934,7 +934,7 @@ RETURN(1)
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD MoveMenu( hWnd, lChevron ) CLASS ToolBar
+METHOD ToolBar:MoveMenu( hWnd, lChevron )
 
    LOCAL nScreen, Rect, rc, nLeft, pt := (struct POINT)
 
@@ -975,7 +975,7 @@ RETURN 0
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnToolTipNotify( nwParam, nlParam, hdr ) CLASS ToolBar
+METHOD ToolBar:OnToolTipNotify( nwParam, nlParam, hdr )
    LOCAL n, cText
    (nwParam)
    IF hdr:code == TTN_GETDISPINFOW .OR. hdr:code == TTN_GETDISPINFO
@@ -997,7 +997,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS ToolBar
+METHOD ToolBar:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL oButton, oBtn, nDif, n, nState, x, nRet
    LOCAL nHot, oMdi, nTop, aRect, hIcon, hTheme, nButton//, hBrush
    LOCAL tbcd, nmt, nmtb, rc, pt, cr, lColor := .F.
@@ -1249,20 +1249,20 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD disableall() CLASS ToolBar
+METHOD ToolBar:disableall()
    AEVAL(::aItems,{|btn| ::disableBtn(btn:oStruct:idCommand)})
 RETURN(self)
 
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD enableall() CLASS ToolBar
+METHOD ToolBar:enableall()
    AEVAL(::aItems,{|btn| ::enableBtn(btn:oStruct:idCommand)})
 RETURN(self)
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD UpdateMenu( lShow ) CLASS ToolBar
+METHOD ToolBar:UpdateMenu( lShow )
    LOCAL oBtn, oMdi, nStyle
 
    oMdi := ::Form:MDIClient:GetActive()
@@ -1360,7 +1360,7 @@ METHOD UpdateMenu( lShow ) CLASS ToolBar
    ENDIF
 RETURN Self
 
-METHOD GetGapWidth() CLASS ToolBar
+METHOD ToolBar:GetGapWidth()
    LOCAL oBtn, nWidth := 0
    FOR EACH oBtn IN ::aItems
        IF oBtn:Id <= IDM_MDI_ICON
@@ -1372,7 +1372,7 @@ METHOD GetGapWidth() CLASS ToolBar
    ENDIF
 RETURN nWidth
 
-METHOD __OnParentSize( x, y, hDef, lMoveNow, lNoMove ) CLASS ToolBar
+METHOD ToolBar:__OnParentSize( x, y, hDef, lMoveNow, lNoMove )
    LOCAL oControl
    ::Super:__OnParentSize( x, y, hDef, lMoveNow, lNoMove )
    ::GetClientRect()
@@ -1394,7 +1394,7 @@ RETURN hDef
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnSize( nwParam, nlParam ) CLASS ToolBar
+METHOD ToolBar:OnSize( nwParam, nlParam )
    LOCAL n, tbbi
    Super:OnSize( nwParam, nlParam )
 
@@ -1542,7 +1542,7 @@ CLASS ToolButton INHERIT Object
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS ToolButton
+METHOD ToolButton:Init( oParent )
    DEFAULT ::ClsName TO "ToolButton"
    DEFAULT ::__xCtrlName TO "ToolButton"
 
@@ -1559,7 +1559,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Create( nPos ) CLASS ToolButton
+METHOD ToolButton:Create( nPos )
    LOCAL /*lpMenuInfo,*/ tbbi, aRect, n := -1
 
    IF LEN( ::Parent:Children ) == 0 .AND. EMPTY( ::xCaption )
@@ -1701,7 +1701,7 @@ METHOD Create( nPos ) CLASS ToolButton
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD ShowMenu( x, y ) CLASS ToolButton
+METHOD ToolButton:ShowMenu( x, y )
    LOCAL nRes := 0
    DEFAULT x TO ::Left
    DEFAULT y TO ::Top
@@ -1709,13 +1709,13 @@ METHOD ShowMenu( x, y ) CLASS ToolButton
 RETURN nRes
 
 //-------------------------------------------------------------------------------------------------------
-METHOD __AddMenuItem() CLASS ToolButton
+METHOD ToolButton:__AddMenuItem()
    ::Application:Project:SetAction( { { DG_ADDCONTROL, 0, 0, 0, .T., Self, "MenuItem",,,1, {}, } }, ::Application:Project:aUndo )
 RETURN Self
 
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetPosition(n) CLASS ToolButton
+METHOD ToolButton:SetPosition(n)
    (n)
 //   LOCAL cName, x, oButton
 //   IF ::lCreated
@@ -1727,12 +1727,12 @@ METHOD SetPosition(n) CLASS ToolButton
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD MoveWindow() CLASS ToolButton
+METHOD ToolButton:MoveWindow()
    ::SetWidth( ::Width )
 RETuRN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Enable( lEnable ) CLASS ToolButton
+METHOD ToolButton:Enable( lEnable )
    IF ::oStruct != NIL //.AND. ! ::DesignMode
       DEFAULT lEnable TO .T.
       ::Parent:SendMessage( TB_ENABLEBUTTON, ::oStruct:idCommand, lEnable )
@@ -1741,7 +1741,7 @@ METHOD Enable( lEnable ) CLASS ToolButton
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Show( lShow ) CLASS ToolButton
+METHOD ToolButton:Show( lShow )
    IF ::oStruct != NIL .AND. ! ::DesignMode
       DEFAULT lShow TO .T.
       ::Parent:SendMessage( TB_HIDEBUTTON, ::oStruct:idCommand, !lShow )
@@ -1750,7 +1750,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetText( c ) CLASS ToolButton
+METHOD ToolButton:SetText( c )
    LOCAL aRect, tbbi := (struct TBBUTTONINFO)
 
    ::xCaption   := c
@@ -1776,7 +1776,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetWidth( nWidth ) CLASS ToolButton
+METHOD ToolButton:SetWidth( nWidth )
    LOCAL tbbi
 
    IF ::lCreated
@@ -1796,7 +1796,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Delete( lChildren, lDelProp ) CLASS ToolButton
+METHOD ToolButton:Delete( lChildren, lDelProp )
    LOCAL aRect, tbbi, n := -1
    DEFAULT lDelProp  TO .T.
    DEFAULT lChildren TO .T.
@@ -1846,7 +1846,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Press() CLASS ToolButton
+METHOD ToolButton:Press()
 
    LOCAL tbbi := (struct TBBUTTONINFO)
 
@@ -1858,7 +1858,7 @@ METHOD Press() CLASS ToolButton
 
 RETURN SELF
 
-METHOD Check( lCheck ) CLASS ToolButton
+METHOD ToolButton:Check( lCheck )
    LOCAL tbbi := (struct TBBUTTONINFO)
    DEFAULT lCheck TO .T.
    tbbi:cbSize  := tbbi:sizeof()
@@ -1870,7 +1870,7 @@ METHOD Check( lCheck ) CLASS ToolButton
    SendMessage( ::Parent:hWnd, TB_SETBUTTONINFO, ::Id, tbbi )
 RETURN SELF
 
-METHOD SetState( nState, lSet ) CLASS ToolButton
+METHOD ToolButton:SetState( nState, lSet )
    LOCAL tbbi
    IF lSet
       ::State := ::State + nState
@@ -1889,7 +1889,7 @@ RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Release() CLASS ToolButton
+METHOD ToolButton:Release()
 
    LOCAL tbbi := (struct TBBUTTONINFO)
 
@@ -1903,21 +1903,21 @@ RETURN SELF
 
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetClientRect() CLASS ToolButton
+METHOD ToolButton:GetClientRect()
    LOCAL rc := ::GetRect()
 RETURN { rc:Left, rc:Top, rc:Right-rc:Left, rc:Bottom-rc:Top }
 
-METHOD GetWindowRect() CLASS ToolButton
+METHOD ToolButton:GetWindowRect()
    LOCAL rc := ::GetRect()
 RETURN { rc:Left, rc:Top, rc:Right-rc:Left, rc:Bottom-rc:Top }
 
-METHOD GetRect() CLASS ToolButton
+METHOD ToolButton:GetRect()
    LOCAL rc := (struct RECT)
    SendMessage( ::Parent:hWnd, TB_GETITEMRECT, ::xPosition, @rc )
 RETURN rc
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetImageIndex( nInd ) CLASS ToolButton
+METHOD ToolButton:SetImageIndex( nInd )
    LOCAL tbbi
    IF ::lCreated
       tbbi := (struct TBBUTTONINFO)
@@ -1929,7 +1929,7 @@ METHOD SetImageIndex( nInd ) CLASS ToolButton
 RETURN self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetStyle( nStyle, lAdd ) CLASS ToolButton
+METHOD ToolButton:SetStyle( nStyle, lAdd )
    LOCAL tbbi, n
 
    DEFAULT lAdd TO .T.
@@ -1973,7 +1973,7 @@ RETURN self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD AddMenuItem( cCaption, nId, bnAction, nImgInd, cAccel ) CLASS ToolButton
+METHOD ToolButton:AddMenuItem( cCaption, nId, bnAction, nImgInd, cAccel )
 
    LOCAL oItem := MenuItem( Self )
    oItem:Id        := nId

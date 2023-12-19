@@ -63,7 +63,7 @@ CLASS WinSock INHERIT Component
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Init( oOwner, lCallBack ) CLASS WinSock
+METHOD WinSock:Init( oOwner, lCallBack )
    DEFAULT lCallBack TO .T.
    ::__xCtrlName   := "WinSock"
    ::ClsName       := "WinSock"
@@ -80,7 +80,7 @@ METHOD Init( oOwner, lCallBack ) CLASS WinSock
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS WinSock
+METHOD WinSock:Create()
    LOCAL oComp
    IF ! ::DesignMode
       ::Handle := InetCreate( 250 )
@@ -100,7 +100,7 @@ METHOD Create() CLASS WinSock
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Connect() CLASS WinSock
+METHOD WinSock:Connect()
    IF ::Protocol == ::System:SockProtocol:TCP
       DEFAULT ::Handle TO InetCreate( 250 )
       InetConnect( ::RemoteIP, ::RemotePort, ::Handle )
@@ -112,7 +112,7 @@ METHOD Connect() CLASS WinSock
 RETURN ::Connected
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Disconnect( lAll ) CLASS WinSock
+METHOD WinSock:Disconnect( lAll )
    IF ! ::DesignMode
       DEFAULT lAll TO .F.
       IF ::RemoteHandle != NIL
@@ -132,7 +132,7 @@ METHOD Disconnect( lAll ) CLASS WinSock
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Send( cData ) CLASS WinSock
+METHOD WinSock:Send( cData )
    LOCAL nSent, hSocket
    IF ::Protocol == ::System:SockProtocol:TCP
       IF ( hSocket := IIF( ::RemoteHandle != NIL, ::RemoteHandle, ::Handle ) ) != NIL
@@ -142,7 +142,7 @@ METHOD Send( cData ) CLASS WinSock
 RETURN nSent
 
 //-------------------------------------------------------------------------------------------------------
-METHOD SockControlProc() CLASS WinSock
+METHOD WinSock:SockControlProc()
    LOCAL cData, n
    KillTimer( ::Owner:hWnd, ::nRecId )
    IF ::lListener .AND. ::RemoteHandle == NIL
@@ -184,7 +184,7 @@ METHOD SockControlProc() CLASS WinSock
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Listen() CLASS WinSock
+METHOD WinSock:Listen()
    DEFAULT ::Handle TO InetCreate( 250 )
    InetServer( ::LocalPort, ::Handle )
 
