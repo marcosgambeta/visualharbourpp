@@ -84,7 +84,7 @@ CLASS MenuItem INHERIT Object
    METHOD SetText(cText)  INLINE ::__SetText(cText)
 ENDCLASS
 
-METHOD Init( oParent ) CLASS MenuItem
+METHOD MenuItem:Init( oParent )
    ::ClsName     := "MenuItem"
    ::__xCtrlName := "MenuItem"
 
@@ -105,7 +105,7 @@ METHOD Init( oParent ) CLASS MenuItem
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD __ResetImageList() CLASS MenuItem
+METHOD MenuItem:__ResetImageList()
 
    LOCAL oSubMenu, mii
 
@@ -128,7 +128,7 @@ METHOD __ResetImageList() CLASS MenuItem
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD GetMenuById( nId ) CLASS MenuItem
+METHOD MenuItem:GetMenuById( nId )
    LOCAL oSubMenu, oMenu
    FOR EACH oSubMenu IN ::Children
        IF oSubMenu:Id == nId
@@ -141,13 +141,13 @@ METHOD GetMenuById( nId ) CLASS MenuItem
 RETURN oMenu
 
 //-------------------------------------------------------------------------------------------------------
-METHOD ReCreate() CLASS MenuItem
+METHOD MenuItem:ReCreate()
    ::Create( .F. )
    AEVAL( ::Children, {|o| o:ReCreate() } )
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Create( lAdd ) CLASS MenuItem
+METHOD MenuItem:Create( lAdd )
    LOCAL cShort, cText, mii
    DEFAULT lAdd TO .T.
    ::__mii := (struct MENUITEMINFO)
@@ -218,7 +218,7 @@ METHOD Create( lAdd ) CLASS MenuItem
    ENDIF
 RETURN NIL
 
-METHOD __SetVisible( lVisible ) CLASS MenuItem
+METHOD MenuItem:__SetVisible( lVisible )
    LOCAL i, n, mii
    IF ::hMenu != NIL .AND. lVisible != ::xVisible
       n := ASCAN( ::Parent:Children, {|o| o:hMenu == ::hMenu } )
@@ -258,7 +258,7 @@ METHOD __SetVisible( lVisible ) CLASS MenuItem
    ENDIF
 RETURN NIL
 
-METHOD __SetChecked( lCheck ) CLASS MenuItem
+METHOD MenuItem:__SetChecked( lCheck )
    LOCAL mii
    IF ::__pObjPtr != NIL .AND. lCheck != ::xChecked
       mii := (struct MENUITEMINFO)
@@ -271,7 +271,7 @@ METHOD __SetChecked( lCheck ) CLASS MenuItem
    ENDIF
 RETURN NIL
 
-METHOD __SetEnabled( lEnabled ) CLASS MenuItem
+METHOD MenuItem:__SetEnabled( lEnabled )
    LOCAL mii
    IF ::__pObjPtr != NIL .AND. lEnabled != ::xEnabled
       mii := (struct MENUITEMINFO)
@@ -283,7 +283,7 @@ METHOD __SetEnabled( lEnabled ) CLASS MenuItem
    ENDIF
 RETURN NIL
 
-METHOD __SetText( cText ) CLASS MenuItem
+METHOD MenuItem:__SetText( cText )
    LOCAL cShort
    IF ::__mii != NIL
       cShort := ::ShortCutKey:GetShortcutText()
@@ -293,7 +293,7 @@ METHOD __SetText( cText ) CLASS MenuItem
 RETURN SELF
 
 
-METHOD Destroy() CLASS MenuItem
+METHOD MenuItem:Destroy()
    LOCAL n
    FOR n := 1 TO LEN( ::Children )
        ::Children[n]:Destroy()
@@ -314,7 +314,7 @@ METHOD Destroy() CLASS MenuItem
    DeleteMenu( ::Parent:hMenu, ::Id, MF_BYCOMMAND )
 RETURN Self
 
-METHOD __AddMenuItem() CLASS MenuItem
+METHOD MenuItem:__AddMenuItem()
    ::Application:Project:SetAction( { { 1, 0, 0, 0, .T., Self, "MenuItem",,,1, {}, } }, ::Application:Project:aUndo )
 RETURN Self
 

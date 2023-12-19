@@ -47,14 +47,14 @@ CLASS SMTPCDO INHERIT Component
    METHOD Send()
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS SMTPCDO
+METHOD SMTPCDO:Init( oOwner )
    ::__xCtrlName   := "SMTPCDO"
    ::ClsName       := "SMTPCDO"
    ::ComponentType := "SMTPCDO"
    ::Super:Init( oOwner )
 RETURN Self
 
-METHOD Send( cCal ) CLASS SMTPCDO
+METHOD SMTPCDO:Send( cCal )
    LOCAL oStm, oMsg, oBody, cSchema, aFiles, cFile, lReturn := .T.
    LOCAL hEventHandler := {=>}
    TRY
@@ -171,7 +171,7 @@ CLASS MSendMail
    METHOD Send()
 ENDCLASS
 
-METHOD SetFlags( nFlag, lSet ) CLASS MSendMail
+METHOD MSendMail:SetFlags( nFlag, lSet )
    DEFAULT lSet TO .T.
    IF lSet
       ::__Flags := hb_bitor(::__Flags, nFlag)
@@ -180,7 +180,7 @@ METHOD SetFlags( nFlag, lSet ) CLASS MSendMail
    ENDIF
 RETURN Self
 
-METHOD Send() CLASS MSendMail
+METHOD MSendMail:Send()
    LOCAL n, aAttach, pSender, pRecip, pFile, pMsg, nRecipients := 0
 
    pSender := (struct MapiRecipDesc)

@@ -133,7 +133,7 @@ CLASS ListBox FROM TitleControl
    METHOD ResetFrame() INLINE ::SetWindowPos(,0,0,0,0,hb_bitor(SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER))
 ENDCLASS
 
-METHOD Init( oParent ) CLASS ListBox
+METHOD ListBox:Init( oParent )
    ::ClsName      := "ListBox"
    DEFAULT ::Style   TO hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, LBS_NOTIFY, LBS_HASSTRINGS, LBS_NOINTEGRALHEIGHT, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    DEFAULT ::__xCtrlName TO "ListBox"
@@ -151,21 +151,21 @@ METHOD Init( oParent ) CLASS ListBox
    ENDIF
 RETURN Self
 
-METHOD Create() CLASS ListBox
+METHOD ListBox:Create()
    ::Super:Create()
    IF ::ItemToolTips
       ::__SetItemToolTips( .T. )
    ENDIF
 RETURN Self
 
-//METHOD OnEraseBkGnd() CLASS ListBox
+//METHOD ListBox:OnEraseBkGnd()
 //   IF ::Transparent
 //      RETURN 1
 //   ENDIF
 //RETURN NIL
 
 
-METHOD GetText( nItem ) CLASS ListBox
+METHOD ListBox:GetText( nItem )
    LOCAL cBuffer := ""
    IF ::hWnd != NIL
       DEFAULT nItem TO ::GetCurSel()
@@ -177,7 +177,7 @@ METHOD GetText( nItem ) CLASS ListBox
 RETURN cBuffer
 
 //----------------------------------------------------------------------------------------------------------------
-METHOD __SetItemToolTips( lTips ) CLASS ListBox
+METHOD ListBox:__SetItemToolTips( lTips )
    LOCAL wcex
    IF lTips
 
@@ -214,7 +214,7 @@ METHOD __SetItemToolTips( lTips ) CLASS ListBox
    ENDIF
 RETURN Self
 
-METHOD __TipCallBack( hWnd, nMsg, nwParam, nlParam ) CLASS ListBox
+METHOD ListBox:__TipCallBack( hWnd, nMsg, nwParam, nlParam )
    static lMouseHover := .F.
    SWITCH nMsg
       CASE WM_MOUSEMOVE
@@ -245,7 +245,7 @@ METHOD __TipCallBack( hWnd, nMsg, nwParam, nlParam ) CLASS ListBox
    END
 RETURN CallWindowProc( ::__nTipProc, hWnd, nMsg, nwParam, nlParam )
 
-METHOD __TrackMouseEvent( hWnd, nFlags ) CLASS ListBox
+METHOD ListBox:__TrackMouseEvent( hWnd, nFlags )
    LOCAL tme := (struct TRACKMOUSEEVENT)
    tme:cbSize      := tme:SizeOf()
    tme:dwFlags     := nFlags
@@ -254,7 +254,7 @@ METHOD __TrackMouseEvent( hWnd, nFlags ) CLASS ListBox
    TrackMouseEvent( tme )
 RETURN Self
 
-METHOD __ListboxMouseMove( nwParam, aPt ) CLASS ListBox
+METHOD ListBox:__ListboxMouseMove( nwParam, aPt )
    LOCAL hDC, hOldFont, cBuf, pt := (struct POINT)
    LOCAL rcBounds := (struct RECT)
    LOCAL rcDraw := (struct RECT)
@@ -321,7 +321,7 @@ METHOD __ListboxMouseMove( nwParam, aPt ) CLASS ListBox
 RETURN NIL
 
 //----------------------------------------------------------------------------------------------------------------
-METHOD __HandleOnPaint( hWnd ) CLASS ListBox
+METHOD ListBox:__HandleOnPaint( hWnd )
    LOCAL hDC, cPaint, aRect, cText, hOldFont, hTheme
    hDC := _BeginPaint( hWnd, @cPaint )
    aRect := _GetClientRect( hWnd )
@@ -343,14 +343,14 @@ METHOD __HandleOnPaint( hWnd ) CLASS ListBox
    _EndPaint( hWnd, cPaint)
 RETURN 0
 
-METHOD __HandleOnTimer( nwParam ) CLASS ListBox
+METHOD ListBox:__HandleOnTimer( nwParam )
    KillTimer( ::__tipWnd, nwParam )
    ShowWindow( ::__tipWnd, SW_HIDE)
 RETURN Self
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD AddString( cText, lSel ) CLASS ListBox
+METHOD ListBox:AddString( cText, lSel )
    LOCAL n
    IF ::hWnd != NIL
       ::SendMessage( LB_ADDSTRING, 0, cText )
@@ -368,7 +368,7 @@ METHOD AddString( cText, lSel ) CLASS ListBox
    ENDIF
 RETURN NIL
 
-METHOD InsertString(nLine,cText) CLASS ListBox
+METHOD ListBox:InsertString(nLine,cText)
    LOCAL n
    IF ::hWnd != NIL
       ::SendMessage( LB_INSERTSTRING, nLine-1, cText )
@@ -382,13 +382,13 @@ METHOD InsertString(nLine,cText) CLASS ListBox
    ENDIF
 RETURN NIL
 
-METHOD DeleteString(nLine) CLASS ListBox
+METHOD ListBox:DeleteString(nLine)
    IF ::hWnd != NIL
       ::SendMessage( LB_DELETESTRING, nLine-1, 0)
    ENDIF
 RETURN NIL
 
-METHOD SetHorizontalExtent( nWidth ) CLASS ListBox
+METHOD ListBox:SetHorizontalExtent( nWidth )
    LOCAL x, nCnt, n
    IF ::hWnd != NIL
       IF nWidth == NIL
@@ -407,7 +407,7 @@ RETURN NIL
 
 //--------------------------------------------------------------------------------------------------------------
 
-METHOD SetDrawStyle(n) CLASS ListBox
+METHOD ListBox:SetDrawStyle(n)
    SWITCH n
       CASE 1
          ::SetStyle( LBS_OWNERDRAWFIXED, .F. )
@@ -426,7 +426,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD GetString(nLine) CLASS ListBox
+METHOD ListBox:GetString(nLine)
    LOCAL nLen
    LOCAL cBuf
    DEFAULT nLine TO ::CurSel
@@ -436,19 +436,19 @@ RETURN( IIF(nLen == LB_ERR, nil, left(cBuf, nLen) ) )
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD GetItemRect( nLine) CLASS ListBox
+METHOD ListBox:GetItemRect( nLine)
    LOCAL rc := (struct RECT)
    SendMessage( ::hWnd, LB_GETITEMRECT, nLine+1, @rc)
 RETURN rc:Array
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD GetSelItems() CLASS ListBox
+METHOD ListBox:GetSelItems()
 RETURN ListBoxGetSelItems( ::hWnd )
 
 //----------------------------------------------------------------------------------------------------------------
 
-METHOD OnParentCommand( nId, nCode, nlParam ) CLASS ListBox
+METHOD ListBox:OnParentCommand( nId, nCode, nlParam )
    LOCAL nRet
    DO CASE
       CASE nCode == LBN_SELCHANGE
@@ -478,7 +478,7 @@ METHOD OnParentCommand( nId, nCode, nlParam ) CLASS ListBox
 RETURN nRet
 
 //----------------------------------------------------------------------------------------------------------------
-METHOD OnMouseMove( nwParam, nlParam ) CLASS ListBox
+METHOD ListBox:OnMouseMove( nwParam, nlParam )
    LOCAL x, y, aRect := _GetClientRect( ::hWnd )
 
    ::Super:OnMouseMove( nwParam, nlParam )
@@ -492,7 +492,7 @@ METHOD OnMouseMove( nwParam, nlParam ) CLASS ListBox
 RETURN NIL
 /*
 //----------------------------------------------------------------------------------------------------------------
-METHOD OnCtlColorListBox( nwParam ) CLASS ListBox
+METHOD ListBox:OnCtlColorListBox( nwParam )
    LOCAL hBkGnd := ::BkBrush
    IF ::ForeColor != NIL .AND. ::ForeColor != ::__SysForeColor
       SetTextColor( nwParam, ::ForeColor )
@@ -509,7 +509,7 @@ METHOD OnCtlColorListBox( nwParam ) CLASS ListBox
 RETURN NIL
 */
 //---------------------------------------------------------------------------------------------------
-METHOD OnCtlColorListBox( nwParam ) CLASS ListBox
+METHOD ListBox:OnCtlColorListBox( nwParam )
    LOCAL hBrush, nFore, nBack, nBorder, nLeftBorder
 
    nFore := ::ForeColor

@@ -129,7 +129,7 @@ ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS ListView
+METHOD ListView:Init( oParent )
    DEFAULT ::__xCtrlName TO "ListView"
    ::Style        := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ClsName      := "SysListView32"
@@ -155,7 +155,7 @@ RETURN self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Create( lNew ) CLASS ListView
+METHOD ListView:Create( lNew )
    ::Super:Create()
    DEFAULT lNew TO .F.
 
@@ -195,7 +195,7 @@ METHOD Create( lNew ) CLASS ListView
 
 RETURN Self
 
-METHOD SetForeColor(n) CLASS ListView
+METHOD ListView:SetForeColor(n)
    IF ::hWnd != NIL
       ::SendMessage( LVM_SETTEXTCOLOR, 0, n )
       ::InvalidateRect()
@@ -203,7 +203,7 @@ METHOD SetForeColor(n) CLASS ListView
 RETURN Self
 
 
-METHOD SetBackColor(n) CLASS ListView
+METHOD ListView:SetBackColor(n)
    IF ::hWnd != NIL
       ::SendMessage( LVM_SETBKCOLOR, 0, n )
       ::SendMessage( LVM_SETTEXTBKCOLOR, 0, n )
@@ -213,7 +213,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD SetCurSel( n ) CLASS ListView
+METHOD ListView:SetCurSel( n )
    LOCAL lvi     := (struct LVITEM)
    lvi:mask      := 0x000F
    lvi:stateMask := hb_bitor(LVIS_SELECTED, LVIS_FOCUSED)
@@ -223,7 +223,7 @@ RETURN ::SendMessage( LVM_SETITEMSTATE, n-1, lvi )
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD GetSearchString() CLASS ListView
+METHOD ListView:GetSearchString()
    LOCAL n, cStr
    n := SendMessage( ::hWnd, LVM_GETISEARCHSTRING, 0, NIL )
    IF n > 0
@@ -235,7 +235,7 @@ RETURN cStr
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD SetDataSource( oSource ) CLASS ListView
+METHOD ListView:SetDataSource( oSource )
    LOCAL aField, n, nAlign
    oSource := __ChkComponent( Self, oSource )
 
@@ -269,7 +269,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD __SetViewStyle( n ) CLASS ListView
+METHOD ListView:__SetViewStyle( n )
    LOCAL lvti
    DEFAULT n TO ::ViewStyle
    IF IsWindow( ::hWnd  )
@@ -286,7 +286,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD SetItemText( nRow, nCol, cText ) CLASS ListView
+METHOD ListView:SetItemText( nRow, nCol, cText )
    LOCAL lvi := (struct LVWITEM)
    DEFAULT nRow TO ::SendMessage( LVM_GETITEMCOUNT, 0, 0 )+1
    DEFAULT nCol TO 0
@@ -297,7 +297,7 @@ METHOD SetItemText( nRow, nCol, cText ) CLASS ListView
 RETURN Self
 //-------------------------------------------------------------------------------------------------------
 
-METHOD SetLVExStyle( nStyle, lAdd ) CLASS ListView
+METHOD ListView:SetLVExStyle( nStyle, lAdd )
    DEFAULT lAdd TO .T.
    IF ::IsWindow()
       ::LvExStyle := ::SendMessage( LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0 )
@@ -312,7 +312,7 @@ METHOD SetLVExStyle( nStyle, lAdd ) CLASS ListView
    ENDIF
 RETURN Self
 
-METHOD FindItem( cItem ) CLASS ListView
+METHOD ListView:FindItem( cItem )
    LOCAL lvfi       := (struct LVFINDINFO)
    lvfi:flags       := hb_bitor(LVFI_PARTIAL, LVFI_STRING)
    lvfi:lParam      := NIL
@@ -323,7 +323,7 @@ RETURN ::SendMessage( LVM_FINDITEM, -1, lvfi )
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD SetImageList( oList ) CLASS ListView
+METHOD ListView:SetImageList( oList )
    oList := __ChkComponent( Self, oList )
    IF ::hWnd != NIL
       ::SendMessage( LVM_SETIMAGELIST, LVSIL_NORMAL, IIF( oList != NIL, oList:Handle, NIL ) )
@@ -332,7 +332,7 @@ RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SetImageListSmall( oList ) CLASS ListView
+METHOD ListView:SetImageListSmall( oList )
    oList := __ChkComponent( Self, oList )
    IF ::hWnd != NIL
       ::SendMessage( LVM_SETIMAGELIST, LVSIL_SMALL, IIF( oList != NIL, oList:Handle, NIL ) )
@@ -341,7 +341,7 @@ RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD SortItems( nColumn, lAscending ) CLASS ListView
+METHOD ListView:SortItems( nColumn, lAscending )
    IF ::hWnd != NIL
       __ListViewSortColumn( ::hWnd, nColumn, lAscending )
    ENDIF
@@ -349,13 +349,13 @@ RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD AddColumn( cText, nWidth, nAlign )
+METHOD ListView:AddColumn( cText, nWidth, nAlign )
    LOCAL oColumn := ListViewColumn( Self, cText, nWidth, nAlign, .T. )
 RETURN Self
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD GetVirtualValue( nItem, nSubItem ) CLASS ListView
+METHOD ListView:GetVirtualValue( nItem, nSubItem )
    LOCAL cText := ""
    IF nSubItem >= 0
       IF nSubItem == 0 .AND. nItem <> ::nCurRec
@@ -378,7 +378,7 @@ RETURN cText
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD OnParentNotify( nwParam, nlParam ) CLASS ListView
+METHOD ListView:OnParentNotify( nwParam, nlParam )
    LOCAL nmia, pnkd, lCopy := .F., lpnmh := (struct NMHDR*) nlParam, pnmv
    (nwParam)
    SWITCH lpnmh:code
@@ -420,7 +420,7 @@ RETURN 0
 
 //--------------------------------------------------------------------------------------------------------
 
-METHOD InsertItem( cText, nImage, nRow, nGroup, lParam ) CLASS ListView
+METHOD ListView:InsertItem( cText, nImage, nRow, nGroup, lParam )
    LOCAL lvi := (struct LVWITEM)
 
    DEFAULT nImage TO 0
@@ -441,12 +441,12 @@ METHOD InsertItem( cText, nImage, nRow, nGroup, lParam ) CLASS ListView
    lvi:cchTextMax := MAX_PATH
 RETURN SendMessage( ::hWnd, LVM_INSERTITEM, 0, lvi ) + 1
 
-METHOD InsertItems() CLASS ListView
+METHOD ListView:InsertItems()
    ListViewDeleteAllItems(::hWnd)
    ListViewSetItemCount(::hWnd, LEN( ::Items ), hb_bitor(LVSICF_NOINVALIDATEALL, LVSICF_NOSCROLL) )
 return(self)
 
-METHOD GetSelection() CLASS ListView
+METHOD ListView:GetSelection()
    LOCAL nSel, lvi, cRet, n, lParam
    IF SendMessage( ::hWnd, LVM_GETSELECTEDCOUNT, 0, 0 ) > 0
       nSel := SendMessage( ::hWnd, LVM_GETNEXTITEM, -1, LVNI_SELECTED )
@@ -508,7 +508,7 @@ ENDCLASS
 
 //----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent, cText, nWidth, nAlign, lCreate ) CLASS ListViewColumn
+METHOD ListViewColumn:Init( oParent, cText, nWidth, nAlign, lCreate )
 
    DEFAULT lCreate TO .F.
 
@@ -525,7 +525,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS ListViewColumn
+METHOD ListViewColumn:Create()
    LOCAL lvc := (struct LV_COLUMN)
 
    lvc:mask       := hb_bitor(LVCF_FMT, LVCF_WIDTH, LVCF_TEXT, LVCF_SUBITEM)
@@ -543,7 +543,7 @@ METHOD Create() CLASS ListViewColumn
    ListViewInsertColumn( ::Parent:hWnd, ::Index, lvc:Value )
 RETURN Self
 
-METHOD Destroy() CLASS ListViewColumn
+METHOD ListViewColumn:Destroy()
    LOCAL n := 1
    ::Parent:SendMessage( LVM_DELETECOLUMN, ::Index, 0 )
    ADEL( ::Parent:Columns, ::Index, .T. )
@@ -569,14 +569,14 @@ CLASS ListViewGroup INHERIT Control
 ENDCLASS
 
 //------------------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS ListViewGroup
+METHOD ListViewGroup:Init( oParent )
    ::__xCtrlName := "ListViewGroup"
    ::Id := LEN( oParent:Children )
    Super:Init( oParent )
 RETURN Self
 
 //------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS ListViewGroup
+METHOD ListViewGroup:Create()
    LOCAL nRet, plvg := (struct LVGROUP)
 
    ::Parent:SendMessage( LVM_ENABLEGROUPVIEW, 1, 0 )
@@ -598,7 +598,7 @@ METHOD Create() CLASS ListViewGroup
 RETURN Self
 
 //------------------------------------------------------------------------------------------------------
-METHOD Destroy() CLASS ListViewGroup
+METHOD ListViewGroup:Destroy()
    LOCAL n
    ADEL( ::Parent:Children, ::Id+1, .T. )
    ::Parent:SendMessage( LVM_REMOVEGROUP, ::Id, NIL )
@@ -608,15 +608,15 @@ METHOD Destroy() CLASS ListViewGroup
 RETURN NIL
 
 //------------------------------------------------------------------------------------------------------
-METHOD SetText() CLASS ListViewGroup
+METHOD ListViewGroup:SetText()
 RETURN Self
 
 //------------------------------------------------------------------------------------------------------
-METHOD SetAlignment() CLASS ListViewGroup
+METHOD ListViewGroup:SetAlignment()
 RETURN Self
 
 //------------------------------------------------------------------------------------------------------
-METHOD GetRectangle() CLASS ListViewGroup
+METHOD ListViewGroup:GetRectangle()
 RETURN {0,0,0,0}
 
 //------------------------------------------------------------------------------------------------------

@@ -72,7 +72,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS Label
+METHOD Label:Init( oParent )
    DEFAULT ::__xCtrlName TO "Label"
    ::Style        := hb_bitor(WS_CHILD, WS_VISIBLE, BS_OWNERDRAW, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ClsName      := "Label"
@@ -108,7 +108,7 @@ METHOD Init( oParent ) CLASS Label
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Create()  CLASS Label
+METHOD Label:Create()
    //IF ::Parent:__xCtrlName IN {"TabPage","GroupBox"} .AND. ! ::xTransparent .AND. ::BackColor == ::__SysBackColor
    //   ::Transparent := .T.
    //ENDIF
@@ -118,7 +118,7 @@ METHOD Create()  CLASS Label
 RETURN Self
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetForeColor( nColor, lRepaint ) CLASS Label
+METHOD Label:SetForeColor( nColor, lRepaint )
    DEFAULT lRepaint TO .T.
    ::xForeColor := nColor
    ::__CurColor := nColor
@@ -131,7 +131,7 @@ METHOD SetForeColor( nColor, lRepaint ) CLASS Label
 RETURN SELF
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetBlinkColor() CLASS Label
+METHOD Label:__SetBlinkColor()
    IF ! ::DesignMode
       IF ::BlinkColor != NIL
          ::SetTimer( 512, 500 )
@@ -144,7 +144,7 @@ METHOD __SetBlinkColor() CLASS Label
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnTimer( nID ) CLASS Label
+METHOD Label:OnTimer( nID )
    IF nID == 512
       ::KillTimer( 512 )
       DEFAULT ::__CurColor TO ::ForeColor
@@ -159,14 +159,14 @@ METHOD OnTimer( nID ) CLASS Label
 RETURN 0
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnLButtonUp() CLASS Label
+METHOD Label:OnLButtonUp()
    LOCAL nRet
    nRet := __Evaluate( ::Action, Self,,, nRet )
    ExecuteEvent( "OnClick", Self )
 RETURN nRet
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnPaint() CLASS Label
+METHOD Label:OnPaint()
    LOCAL hOldPen, nFlags, cText, hBrush, hFont, hBkGnd, aRect := {0,0,::xWidth,::xHeight}
    LOCAL hMemDC, hMemBitmap, hOldBitmap, hDC, rc
 
@@ -314,7 +314,7 @@ CLASS Line INHERIT CONTROL
    METHOD __SetLenght()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS Line
+METHOD Line:Init( oParent )
    DEFAULT ::__xCtrlName TO "Line"
    ::ClsName       := "VxhLine"
    ::Style         := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
@@ -336,11 +336,11 @@ METHOD Init( oParent ) CLASS Line
                             { "OnEnable"           , "", "" } } } }
 RETURN Self
 
-METHOD Create() CLASS Line
+METHOD Line:Create()
    Super:Create()
 RETURN Self
 
-METHOD __SetVertical( lSet ) CLASS Line
+METHOD Line:__SetVertical( lSet )
    ::__lResizeable := {.F.,!lSet,.F.,lSet,.F.,!lSet,.F.,lSet}
    IF lSet
       ::xHeight := ::xLenght
@@ -354,7 +354,7 @@ METHOD __SetVertical( lSet ) CLASS Line
    ENDIF
 RETURN NIL
 
-METHOD __SetSunken( lSet ) CLASS Line
+METHOD Line:__SetSunken( lSet )
    IF ::xSunken != lSet
       ::Weight := IIF( lSet, 2, 1 )
       IF ::xVertical
@@ -368,7 +368,7 @@ METHOD __SetSunken( lSet ) CLASS Line
    ENDIF
 RETURN NIL
 
-METHOD __SetLenght( nLen ) CLASS Line
+METHOD Line:__SetLenght( nLen )
    IF ::xLenght != nLen
       IF ::xVertical
          ::xHeight := nLen
@@ -381,14 +381,14 @@ METHOD __SetLenght( nLen ) CLASS Line
    ENDIF
 RETURN NIL
 
-METHOD OnSize( nwParam, nlParam ) CLASS Line
+METHOD Line:OnSize( nwParam, nlParam )
    Super:OnSize( nwParam, nlParam )
    IF ::DesignMode
       ::xLenght := IIF( ::xVertical, ::Height, ::Width )
    ENDIF
 RETURN NIL
 
-METHOD OnEraseBkGnd( hDC ) CLASS Line
+METHOD Line:OnEraseBkGnd( hDC )
    LOCAL lVert := ::xVertical, hBrush := CreateSolidBrush( ::Color )
    _FillRect( hDC, { 0, 0, IIF( lVert, 1, ::Width ), IIF( lVert, ::Height, 1 ) }, hBrush )
    DeleteObject( hBrush )

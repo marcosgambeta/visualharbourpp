@@ -79,7 +79,7 @@ CLASS MemoryTable INHERIT Component
    ACCESS IsOpen             INLINE ::Structure != NIL //Select( ::Area ) > 0
 ENDCLASS
 
-METHOD Init( oOwner, aStruct, aData ) CLASS MemoryTable
+METHOD MemoryTable:Init( oOwner, aStruct, aData )
    ::__xCtrlName   := "MemoryTable"
    ::ClsName       := "MemoryTable"
    ::ComponentType := "DataSource"
@@ -90,19 +90,19 @@ METHOD Init( oOwner, aStruct, aData ) CLASS MemoryTable
    ::lCreated   := .T.
 RETURN Self
 
-METHOD GoTop() CLASS MemoryTable
+METHOD MemoryTable:GoTop()
    ::Record := MIN( 1, ::RecCount() )
    ::lBof   := ::Record < 1
    ::lEof   := ::Record < 1
 RETURN Self
 
-METHOD GoBottom() CLASS MemoryTable
+METHOD MemoryTable:GoBottom()
    ::Record := MAX( 0, ::RecCount() )
    ::lBof   := ::Record < 1
    ::lEof   := ::Record < 1
 RETURN Self
 
-METHOD GoTo( nRec ) CLASS MemoryTable
+METHOD MemoryTable:GoTo( nRec )
    IF nRec > 0
       IF ( ::lEof := ( nRec > ::RecCount() ) )
          nRec := ::RecCount()
@@ -113,7 +113,7 @@ METHOD GoTo( nRec ) CLASS MemoryTable
    ENDIF
 RETURN Self
 
-METHOD Skip( n ) CLASS MemoryTable
+METHOD MemoryTable:Skip( n )
    DEFAULT n TO 1
    ::Record += n
    IF ::Record < 1
@@ -130,7 +130,7 @@ METHOD Skip( n ) CLASS MemoryTable
    ENDIF
 RETURN Self
 
-METHOD Delete() CLASS MemoryTable
+METHOD MemoryTable:Delete()
    IF ::RecCount() > 0
       ADEL( ::Table, ::Record, .T. )
       ::Record := MIN( ::Record, ::RecCount() )
@@ -139,7 +139,7 @@ METHOD Delete() CLASS MemoryTable
    ::lEof   := ::Record < 1
 RETURN Self
 
-METHOD Create() CLASS MemoryTable
+METHOD MemoryTable:Create()
 
    LOCAL aField
    LOCAL hClass, cField, oErr
@@ -178,7 +178,7 @@ METHOD Create() CLASS MemoryTable
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Seek( xKey, lSoft, lCaseSensitive, lPartial ) CLASS MemoryTable
+METHOD MemoryTable:Seek( xKey, lSoft, lCaseSensitive, lPartial )
    LOCAL bBlock
    (lSoft)
    IF ! Empty( ::Tag )
@@ -203,18 +203,18 @@ METHOD Seek( xKey, lSoft, lCaseSensitive, lPartial ) CLASS MemoryTable
 RETURN !::lEof
 
 //-------------------------------------------------------------------------------------------------------
-METHOD FieldPos( cField ) CLASS MemoryTable
+METHOD MemoryTable:FieldPos( cField )
 RETURN aScan( ::Structure, {|a| ! Empty(cField) .AND. a[1] == UPPER( cField ) } )
 
 //-------------------------------------------------------------------------------------------------------
-METHOD OrdSetFocus( cOrder ) CLASS MemoryTable
+METHOD MemoryTable:OrdSetFocus( cOrder )
    LOCAL cPrevTag := ::Tag
    ::Tag := cOrder
    DEFAULT cPrevTag TO ""
 RETURN cPrevTag
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Append( lIns ) CLASS MemoryTable
+METHOD MemoryTable:Append( lIns )
    LOCAL n, xVal
    IF lIns != NIL .AND. !::Record == 0
       AINS( ::Table, ::Record, Array( Len( ::Structure ) ), .T. )
@@ -255,7 +255,7 @@ ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Put( xVal, cName ) CLASS MemData
+METHOD MemData:Put( xVal, cName )
    LOCAL n
    IF xVal != NIL
       n := ::Parent:FieldPos( Upper( cName ) )
@@ -267,14 +267,14 @@ METHOD Put( xVal, cName ) CLASS MemData
 RETURN ::Parent:Table[ ::Parent:Record ][ ::Parent:FieldPos( Upper( cName ) ) ]
 
 //-------------------------------------------------------------------------------------------------------
-METHOD FieldPut( nField, xVal ) CLASS MemData
+METHOD MemData:FieldPut( nField, xVal )
    IF ::Parent:Record > 0
       ::Parent:Table[ ::Parent:Record ][ nField ] := xVal
    ENDIF
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD FieldGet( nField ) CLASS MemData
+METHOD MemData:FieldGet( nField )
    LOCAL xRet
    IF ::Parent:Record > 0
       xRet := ::Parent:Table[ ::Parent:Record ][ nField ]
@@ -474,7 +474,7 @@ CLASS MemoryDataTable INHERIT DataTable
    METHOD Destroy()      INLINE  ::Close(), DBDrop("mem:"+::name), Super:Destroy()
 ENDCLASS
 
-METHOD Init( oOwner ) CLASS MemoryDataTable
+METHOD MemoryDataTable:Init( oOwner )
    DEFAULT ::__xCtrlName TO "MemoryDataTable"
    DEFAULT ::ClsName     TO "MemoryDataTable"
    ::ComponentType := "DataSource"

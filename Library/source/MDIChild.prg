@@ -46,7 +46,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent, aParams, cProjectName ) CLASS MDIChildWindow
+METHOD MDIChildWindow:Init( oParent, aParams, cProjectName )
    DEFAULT ::__xCtrlName TO "MDIChild"
    ::xMDIChild   := .T.
    ::Modal       := .F.
@@ -59,7 +59,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS MDIChildWindow
+METHOD MDIChildWindow:Create()
    LOCAL n
 
    ::ControlParent := .T.
@@ -95,7 +95,7 @@ METHOD Create() CLASS MDIChildWindow
    ENDIF
 RETURN Self
 
-METHOD Show( nShow ) CLASS MDIChildWindow
+METHOD MDIChildWindow:Show( nShow )
    LOCAL nRet
    DEFAULT nShow TO ::ShowMode
 
@@ -121,14 +121,14 @@ METHOD Show( nShow ) CLASS MDIChildWindow
    ::Style := hb_bitor(::Style, WS_VISIBLE)
 RETURN Self
 
-METHOD OnNCDestroy() CLASS MDIChildWindow
+METHOD MDIChildWindow:OnNCDestroy()
    LOCAL n
    IF ( n := ASCAN( ::Parent:Children, {|o|o:hWnd == ::hWnd} ) ) > 0
       ADEL( ::Parent:Children, n, .T. )
    ENDIF
 RETURN Super:OnNCDestroy()
 
-METHOD SetWindowText( cText ) CLASS MDIChildWindow
+METHOD MDIChildWindow:SetWindowText( cText )
    Super:SetWindowText( cText )
    SendMessage( ::Parent:hWnd, WM_MDIREFRESHMENU, 0, 0 )
 RETURN Self

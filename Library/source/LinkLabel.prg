@@ -61,7 +61,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS LinkLabel
+METHOD LinkLabel:Init( oParent )
    ::__xCtrlName := "LinkLabel"
    ::Style := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, BS_OWNERDRAW, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ClsName := "button"
@@ -71,7 +71,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS LinkLabel
+METHOD LinkLabel:Create()
    LOCAL aSize
 
    Super:Create()
@@ -93,7 +93,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetWindowText( cText ) CLASS LinkLabel
+METHOD LinkLabel:SetWindowText( cText )
    LOCAL aSize
    IF VALTYPE( cText ) == "C"
       ::xText := cText
@@ -126,7 +126,7 @@ METHOD SetWindowText( cText ) CLASS LinkLabel
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD PaintLabel( hDC ) CLASS LinkLabel
+METHOD LinkLabel:PaintLabel( hDC )
    LOCAL nColor, hBrush := ::BkBrush
    LOCAL rc := (struct RECT)
 
@@ -169,7 +169,7 @@ METHOD PaintLabel( hDC ) CLASS LinkLabel
    ENDIF
 RETURN NIL
 
-METHOD OnPaint() CLASS LinkLabel
+METHOD LinkLabel:OnPaint()
    LOCAL hDC, hMemDC, hMemBitmap, hOldBitmap
 
    hDC        := ::BeginPaint()
@@ -189,7 +189,7 @@ METHOD OnPaint() CLASS LinkLabel
    ::EndPaint()
 RETURN 0
 
-METHOD SetSelColor( nColor, lRepaint ) CLASS LinkLabel
+METHOD LinkLabel:SetSelColor( nColor, lRepaint )
    DEFAULT lRepaint TO TRUE
    ::xSelBackColor := nColor
    IF ::SelBkBrush != NIL
@@ -204,7 +204,7 @@ METHOD SetSelColor( nColor, lRepaint ) CLASS LinkLabel
    ENDIF
 RETURN SELF
 
-METHOD SetLinkColor( nColor, lRepaint ) CLASS LinkLabel
+METHOD LinkLabel:SetLinkColor( nColor, lRepaint )
    DEFAULT lRepaint TO .T.
    ::xForeColor := nColor
    IF ::IsWindowVisible()
@@ -212,7 +212,7 @@ METHOD SetLinkColor( nColor, lRepaint ) CLASS LinkLabel
    ENDIF
 RETURN SELF
 
-METHOD SetVisitedColor( nColor, lRepaint ) CLASS LinkLabel
+METHOD LinkLabel:SetVisitedColor( nColor, lRepaint )
    DEFAULT lRepaint TO .T.
    ::xVisitedColor := nColor
    IF ::IsWindowVisible()
@@ -220,7 +220,7 @@ METHOD SetVisitedColor( nColor, lRepaint ) CLASS LinkLabel
    ENDIF
 RETURN SELF
 
-METHOD SetImageIndex() CLASS LinkLabel
+METHOD LinkLabel:SetImageIndex()
    LOCAL aSize
    IF ::AutoSize
       ::__lResizeable   := {.F.,.F.,.F.,.F.,.F.,.F.,.F.,.F.}

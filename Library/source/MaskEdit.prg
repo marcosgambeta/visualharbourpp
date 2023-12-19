@@ -70,7 +70,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS MaskEdit
+METHOD MaskEdit:Init( oParent )
    ::__xCtrlName := "MaskEdit"
    ::Super:Init( oParent )
    ::WantReturn := .T.
@@ -86,7 +86,7 @@ METHOD Init( oParent ) CLASS MaskEdit
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Create() CLASS MaskEdit
+METHOD MaskEdit:Create()
    LOCAL aTextExt := ::Drawing:GetTextExtentPoint32( 'X' )
 
    DEFAULT ::xText TO SPACE( ::Width / aTextExt[1] )
@@ -115,7 +115,7 @@ METHOD Create() CLASS MaskEdit
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnGetDlgCode( msg ) CLASS MaskEdit
+METHOD MaskEdit:OnGetDlgCode( msg )
    LOCAL n, nRet
    IF ::InDataGrid .AND. msg != NIL .AND. msg:hwnd == ::hWnd .AND. msg:message == WM_KEYDOWN .AND. (msg:wParam IN {VK_RETURN,VK_TAB,VK_ESCAPE})
       RETURN ::Super:OnGetDlgCode( msg )
@@ -160,7 +160,7 @@ METHOD OnGetDlgCode( msg ) CLASS MaskEdit
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnLButtonDown( nwParam, nlParam ) CLASS MaskEdit
+METHOD MaskEdit:OnLButtonDown( nwParam, nlParam )
    LOCAL oCtrl := ObjFromHandle( GetFocus() )
    Super:OnLButtonDown()
    IF oCtrl != NIL .AND. oCtrl:__xCtrlName == "MaskEdit" .AND. oCtrl:hWnd != ::hWnd
@@ -173,7 +173,7 @@ METHOD OnLButtonDown( nwParam, nlParam ) CLASS MaskEdit
    ENDIF
 RETURN NIL
 
-METHOD __Validate() CLASS MaskEdit
+METHOD MaskEdit:__Validate()
    LOCAL lCaret
    IF ! ::lInValid
       ::lInValid := .T.
@@ -213,14 +213,14 @@ METHOD __Validate() CLASS MaskEdit
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetGetProp( cProp, xVal ) CLASS MaskEdit
+METHOD MaskEdit:SetGetProp( cProp, xVal )
    IF cProp == "Picture" .AND. ::oGet != NIL
       ::oGet:Picture := xVal
    ENDIF
 RETURN xVal
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnUserMsg( hWnd, nMsg, nwParam ) CLASS MaskEdit
+METHOD MaskEdit:OnUserMsg( hWnd, nMsg, nwParam )
    DO CASE
       CASE nMsg == WM_CARET
            Resetcaret( Self, Set( _SET_INSERT ) .OR. ::NoOverStrike )
@@ -228,7 +228,7 @@ METHOD OnUserMsg( hWnd, nMsg, nwParam ) CLASS MaskEdit
 RETURN Super:OnUserMsg( hWnd, nMsg, nwParam )
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnUndo() CLASS MaskEdit
+METHOD MaskEdit:OnUndo()
    ::oGet:Undo()
    ::oGet:changed := FALSE
    ::oGet:UpdateBuffer()
@@ -236,7 +236,7 @@ METHOD OnUndo() CLASS MaskEdit
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnKeyDown( nwParam ) CLASS MaskEdit
+METHOD MaskEdit:OnKeyDown( nwParam )
    LOCAL nStart, nEnd, i, lShift, lCtrl
    IF ::ReadOnly
       RETURN(0)
@@ -364,7 +364,7 @@ METHOD OnKeyDown( nwParam ) CLASS MaskEdit
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD __GoToNextControl( nKey ) CLASS MaskEdit
+METHOD MaskEdit:__GoToNextControl( nKey )
    LOCAL hNext
    IF (nKey IN { VK_UP, VK_DOWN, VK_RETURN })
       IF ::Form:Modal
@@ -376,7 +376,7 @@ METHOD __GoToNextControl( nKey ) CLASS MaskEdit
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnChar( nwParam, nlParam ) CLASS MaskEdit
+METHOD MaskEdit:OnChar( nwParam, nlParam )
    LOCAL nStart, nEnd, i, bChanged
 
    IF nwParam==27 .OR. ::Validating
@@ -509,7 +509,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnSetFocus() CLASS MaskEdit
+METHOD MaskEdit:OnSetFocus()
    LOCAL lShift, h, nStart, nEnd, coldbuff
 
    ::NoEdit := (::GetWindowLong( GWL_STYLE ) & ES_READONLY) != 0
@@ -558,7 +558,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnKillFocus( nwParam, nlParam ) CLASS MaskEdit
+METHOD MaskEdit:OnKillFocus( nwParam, nlParam )
    ::oget:assign()
    ::oget:updatebuffer()
 
@@ -594,7 +594,7 @@ RETURN Super:OnKillFocus( nwParam, nlParam )
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnPaste( nwParam, nlParam ) CLASS MaskEdit
+METHOD MaskEdit:OnPaste( nwParam, nlParam )
    LOCAL nStart, nEnd, cText, i, cChar
    (nwParam, nlParam)
    IF ::IsWindowEnabled() .AND. !::NoEdit .AND. !::ReadOnly
@@ -655,7 +655,7 @@ RETURN 0
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnCopy( nwParam, nlParam ) CLASS MaskEdit
+METHOD MaskEdit:OnCopy( nwParam, nlParam )
    LOCAL nStart, nEnd, ctempbuff
    IF ::IsWindowEnabled() .AND. !::NoEdit .AND. !::ReadOnly
       nStart := LoWord( ::SendMessage( EM_GETSEL, 0, 0 ) ) + 1
@@ -671,7 +671,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD OnCut( nwParam, nlParam ) CLASS MaskEdit
+METHOD MaskEdit:OnCut( nwParam, nlParam )
    LOCAL nStart, nEnd, i, ctempbuff, retval
    IF ::IsWindowEnabled() .AND. !::NoEdit .AND. !::ReadOnly
       nStart := LoWord( ::SendMessage( EM_GETSEL, 0, 0 ) ) + 1

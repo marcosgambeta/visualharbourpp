@@ -50,14 +50,14 @@ CLASS IniFile
 ENDCLASS
 
 //--------------------------------------------------------------------------------------------------
-METHOD Init( cFileName ) CLASS IniFile
+METHOD IniFile:Init( cFileName )
    IF Valtype(cFileName)=="C" .AND. ! Empty(cFileName)
       ::Name := cFileName
    ENDIF
 RETURN(SELF)
 
 //--------------------------------------------------------------------------------------------------
-METHOD GetSections() CLASS IniFile
+METHOD IniFile:GetSections()
    LOCAL Section, cRet, aSec, aRet:={}
    IF Empty( ::Name )
       cRet := GetProfileString( NIL, NIL, NIL )
@@ -72,7 +72,7 @@ METHOD GetSections() CLASS IniFile
    NEXT
 RETURN aRet
 
-METHOD GetSectionEntries( cSection, lFixOld ) CLASS IniFile
+METHOD IniFile:GetSectionEntries( cSection, lFixOld )
    LOCAL cRet, n, aRet := {}
    IF ( cRet := GetPrivateProfileSection( cSection, ::Name ) ) != NIL
       aRet := hb_aTokens( cRet, chr(0) )
@@ -89,7 +89,7 @@ RETURN aRet
 
 
 //--------------------------------------------------------------------------------------------------
-METHOD GetEntries( cSection ) CLASS IniFile
+METHOD IniFile:GetEntries( cSection )
    LOCAL cRet, aEnt, Entry, aRet := {}
 
    IF Empty( ::Name )
@@ -107,28 +107,28 @@ METHOD GetEntries( cSection ) CLASS IniFile
 RETURN aRet
 
 //--------------------------------------------------------------------------------------------------
-METHOD DelSection( cSection ) CLASS IniFile
+METHOD IniFile:DelSection( cSection )
    IF Empty(::Name)
       RETURN WriteProfileString(cSection,NIL,NIL)
    ENDIF
 RETURN WritePrivateProfileString(cSection,NIL,NIL,::Name)
 
 //--------------------------------------------------------------------------------------------------
-METHOD DelEntry( cSection, cEntry ) CLASS IniFile
+METHOD IniFile:DelEntry( cSection, cEntry )
    IF Empty(::Name)
       RETURN WriteProfileString(cSection,cEntry,NIL)
    ENDIF
 RETURN WritePrivateProfileString(cSection,cEntry,NIL,::Name)
 
 //--------------------------------------------------------------------------------------------------
-METHOD Flush() CLASS IniFile
+METHOD IniFile:Flush()
    IF Empty(::Name)
       RETURN WriteProfileString(NIL,NIL,NIL)
    ENDIF
 RETURN WritePrivateProfileString(NIL,NIL,NIL,::Name)
 
 //--------------------------------------------------------------------------------------------------
-METHOD Write( cSection, acEntry, xValue ) CLASS IniFile
+METHOD IniFile:Write( cSection, acEntry, xValue )
    LOCAL lRet := .F., cSave := "", c
    IF VALTYPE( acEntry ) != "A"
       IF Empty( ::Name )
@@ -159,7 +159,7 @@ RETURN lRet
 
 
 //--------------------------------------------------------------------------------------------------
-METHOD Read( cSection, cEntry, xDefault ) CLASS IniFile
+METHOD IniFile:Read( cSection, cEntry, xDefault )
    SWITCH ValType( xDefault )
       CASE "C"
            RETURN ::ReadString( cSection, cEntry, xDefault )
@@ -172,7 +172,7 @@ METHOD Read( cSection, cEntry, xDefault ) CLASS IniFile
 RETURN(NIL)
 
 //--------------------------------------------------------------------------------------------------
-METHOD ReadColor( cSection, cEntry, xDefault )
+METHOD IniFile:ReadColor( cSection, cEntry, xDefault )
    LOCAL aColor, cColor
    DEFAULT xDefault TO ""
    IF Empty( ::Name )
@@ -189,7 +189,7 @@ METHOD ReadColor( cSection, cEntry, xDefault )
 RETURN RGB( VAL(aColor[1]), VAL(aColor[2]), VAL(aColor[3]) )
 
 //--------------------------------------------------------------------------------------------------
-METHOD ReadString( cSection, cEntry, xDefault ) CLASS IniFile
+METHOD IniFile:ReadString( cSection, cEntry, xDefault )
    DEFAULT xDefault TO ""
    IF Empty( ::Name )
       RETURN GetProfileString( cSection, cEntry, xDefault )
@@ -197,7 +197,7 @@ METHOD ReadString( cSection, cEntry, xDefault ) CLASS IniFile
 RETURN GetPrivateProfileString( cSection, cEntry, xDefault, ::Name )
 
 //--------------------------------------------------------------------------------------------------
-METHOD ReadDate( cSection, cEntry, xDefault ) CLASS IniFile
+METHOD IniFile:ReadDate( cSection, cEntry, xDefault )
    DEFAULT xDefault TO CTOD("")
    IF Empty( ::Name )
       RETURN GetProfileString( cSection, cEntry, xDefault )
@@ -205,7 +205,7 @@ METHOD ReadDate( cSection, cEntry, xDefault ) CLASS IniFile
 RETURN GetPrivateProfileString( cSection, cEntry, xDefault, ::Name )
 
 //--------------------------------------------------------------------------------------------------
-METHOD ReadNumber( cSection, cEntry, xDefault ) CLASS IniFile
+METHOD IniFile:ReadNumber( cSection, cEntry, xDefault )
    LOCAL cValue
    IF Empty( ::Name )
       cValue := GetProfileString(cSection, cEntry, IIF( xDefault != NIL, STR( xDefault ), xDefault ) )
@@ -215,7 +215,7 @@ METHOD ReadNumber( cSection, cEntry, xDefault ) CLASS IniFile
 RETURN IIF( ! Empty(cValue), VAL( cValue ), xDefault )
 
 //--------------------------------------------------------------------------------------------------
-METHOD ReadArray( cSection ) CLASS IniFile
+METHOD IniFile:ReadArray( cSection )
    LOCAL cEntry, aEntry := {}
    IF Empty( ::Name )
       cEntry := GetProfileSection( cSection )
@@ -230,14 +230,14 @@ METHOD ReadArray( cSection ) CLASS IniFile
 RETURN aEntry
 
 //--------------------------------------------------------------------------------------------------
-METHOD ReadInteger( cSection, cEntry, xDefault ) CLASS IniFile
+METHOD IniFile:ReadInteger( cSection, cEntry, xDefault )
    DEFAULT xDefault TO 0
    IF Empty( ::Name )
       RETURN GetProfileInt( cSection, cEntry, xDefault )
    ENDIF
 RETURN GetPrivateProfileInt( cSection, cEntry, xDefault, ::Name )
 //--------------------------------------------------------------------------------------------------
-METHOD ReadLogical( cSection, cEntry, xDefault ) CLASS IniFile
+METHOD IniFile:ReadLogical( cSection, cEntry, xDefault )
    DEFAULT xDefault TO .F.
    IF Empty( ::Name )
       RETURN UPPER( GetProfileString( cSection, cEntry, xDefault ) ) $ "YESON1"

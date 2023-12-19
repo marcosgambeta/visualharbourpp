@@ -43,7 +43,7 @@ CLASS MenuStrip INHERIT ToolStrip
 ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS MenuStrip
+METHOD MenuStrip:Init( oParent )
    ::__xCtrlName   := "MenuStrip"
    ::Style         := hb_bitor(WS_CHILD, WS_VISIBLE, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
    ::ClsName       := "MenuStrip"
@@ -56,7 +56,7 @@ METHOD Init( oParent ) CLASS MenuStrip
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnParentSysKeyDown( nwParam ) CLASS MenuStrip
+METHOD MenuStrip:OnParentSysKeyDown( nwParam )
    LOCAL nItem, oItem
 
    IF nwParam != VK_MENU
@@ -77,7 +77,7 @@ METHOD OnParentSysKeyDown( nwParam ) CLASS MenuStrip
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
-METHOD OnParentSysCommand( nwParam ) CLASS MenuStrip
+METHOD MenuStrip:OnParentSysCommand( nwParam )
 
    IF nwParam == SC_KEYMENU .AND. !CheckBit( GetKeyState( VK_SPACE ) , 32768 ) .AND. !::System:__ToolStripFlags[ "s_lKey" ]
       IF ::System:__ToolStripFlags[ "s_CurrentObject" ] != NIL
@@ -101,7 +101,7 @@ RETURN NIL
 
 
 //-------------------------------------------------------------------------------------------------------
-METHOD OnSysKeyDown( nwParam ) CLASS MenuStrip
+METHOD MenuStrip:OnSysKeyDown( nwParam )
    LOCAL n
 
    // close the menu on ALT KEY y it is selected
@@ -135,13 +135,13 @@ METHOD OnSysKeyDown( nwParam ) CLASS MenuStrip
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD __UpdateWidth() CLASS MenuStrip
+METHOD MenuStrip:__UpdateWidth()
    ::Width := ::Parent:Width - IIF( ::xShowGrip, (::__GripperPos + 1), 0 )
    ::__nWidth := ::Width
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD OnSize( nwParam, nlParam ) CLASS MenuStrip
+METHOD MenuStrip:OnSize( nwParam, nlParam )
    Super:OnSize( nwParam, nlParam )
    ::__PrevSize := LOWORD(nlParam)
    ::Parent:RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
@@ -152,7 +152,7 @@ METHOD OnSize( nwParam, nlParam ) CLASS MenuStrip
 RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
-METHOD __OnParentSize( x, y, hDef ) CLASS MenuStrip
+METHOD MenuStrip:__OnParentSize( x, y, hDef )
    LOCAL nLeft, nTop, i, n, aLines, aLine
    (x,y)
    IF ::IsWindowVisible() .AND. ::Parent:ClientWidth > 0
@@ -194,7 +194,7 @@ METHOD __OnParentSize( x, y, hDef ) CLASS MenuStrip
 RETURN hDef
 
 //-------------------------------------------------------------------------------------------------------
-//METHOD OnMove( x, y ) CLASS MenuStrip
+//METHOD MenuStrip:OnMove( x, y )
 //   Super:OnMove( x, y )
 //   ::RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )
 //   AEVAL( ::Children, {|o| o:InvalidateRect() } )
@@ -202,7 +202,7 @@ RETURN hDef
 
 //-------------------------------------------------------------------------------------------------------
 /*
-METHOD OnPaint() CLASS MenuStrip
+METHOD MenuStrip:OnPaint()
    LOCAL aRect := Array(4)
    LOCAL y, n, nDots := ( ::Height - 6 ) / 4
    LOCAL hMemDC, hMemBitmap, hOldBitmap, hDC, pt := (struct POINT)
@@ -245,7 +245,7 @@ RETURN 0
 */
 
 
-METHOD OnPaint() CLASS MenuStrip
+METHOD MenuStrip:OnPaint()
    LOCAL hMemDC, hMemBitmap, hOldBitmap, hDC
 
    hDC        := ::BeginPaint()
@@ -266,7 +266,7 @@ METHOD OnPaint() CLASS MenuStrip
 RETURN 0
 
 //-------------------------------------------------------------------------------------------------------
-METHOD OnEraseBkgnd( hDC ) CLASS MenuStrip
+METHOD MenuStrip:OnEraseBkgnd( hDC )
    LOCAL y, n, nDots := ( ::Height - 6 ) / 4
 
    //::Parent:RedrawWindow( , , hb_bitor(RDW_INVALIDATE, RDW_UPDATENOW, RDW_INTERNALPAINT) )

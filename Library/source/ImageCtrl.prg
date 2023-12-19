@@ -47,7 +47,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS Image
+METHOD Image:Init( oParent )
    DEFAULT ::__xCtrlName TO "Image"
    ::ClsName  := "static"
    ::Super:Init( oParent )
@@ -56,7 +56,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetImage( chHandle ) CLASS Image
+METHOD Image:SetImage( chHandle )
    IF ::ImageHandle != NIL .AND. ::hWnd != NIL
       DeleteObject( ::ImageHandle )
       ::ImageHandle := NIL
@@ -92,7 +92,7 @@ METHOD SetImage( chHandle ) CLASS Image
    ENDIF
 RETURN Self
 
-METHOD Create() CLASS Image
+METHOD Image:Create()
    LOCAL w := ::Width, h := ::Height
 
    ::Super:Create()

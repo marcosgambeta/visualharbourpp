@@ -64,7 +64,7 @@ ENDCLASS
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS Menu
+METHOD Menu:Init( oParent )
    ::Children := {}
    ::aItems:= {}
    ::Parent:= oParent
@@ -78,7 +78,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS Menu
+METHOD Menu:Create()
    LOCAL Popup
 
    ::hMenu := CreateMenu()
@@ -88,7 +88,7 @@ METHOD Create() CLASS Menu
    SetMenu( ::Parent:hWnd, ::hMenu )
 RETURN NIL
 
-METHOD Context( hWnd, x, y ) CLASS Menu
+METHOD Menu:Context( hWnd, x, y )
     ::Application:oCurMenu := Self
     DEFAULT hWnd TO ::Parent:hWnd
     DEFAULT x    TO ::Left
@@ -98,7 +98,7 @@ RETURN TrackPopupMenu( ::hMenu, ::Style, x, y, 0, hWnd )
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD OdProc( hWnd,nMsg,nwParam,nlParam ) CLASS Menu
+METHOD Menu:OdProc( hWnd,nMsg,nwParam,nlParam )
 
    LOCAL mi
    LOCAL dis
@@ -137,7 +137,7 @@ RETURN CallWindowProc(::ParProc,hWnd,nMsg,nwParam,nlParam)
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD GetSubMenu( hMenu ) CLASS Menu
+METHOD Menu:GetSubMenu( hMenu )
 
    LOCAL oSubMenu
    LOCAL oMenu
@@ -154,7 +154,7 @@ METHOD GetSubMenu( hMenu ) CLASS Menu
 
 RETURN NIL
 
-METHOD GetMenuById( nId ) CLASS Menu
+METHOD Menu:GetMenuById( nId )
 
    LOCAL oSubMenu
    LOCAL oMenu
@@ -167,7 +167,7 @@ METHOD GetMenuById( nId ) CLASS Menu
 
 RETURN NIL
 
-METHOD GetMenuByHandle( hMenu ) CLASS Menu
+METHOD Menu:GetMenuByHandle( hMenu )
 
    LOCAL oSubMenu
    LOCAL oMenu
@@ -186,7 +186,7 @@ RETURN NIL
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD DeleteItem( nId ) CLASS Menu
+METHOD Menu:DeleteItem( nId )
 
    LOCAL oSubMenu
    LOCAL oMenu
@@ -205,7 +205,7 @@ RETURN lRet
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD CheckItem( nId, lCheck )
+METHOD Menu:CheckItem( nId, lCheck )
 
    LOCAL oSubMenu
    LOCAL oMenu
@@ -225,7 +225,7 @@ RETURN lRet
 
 //-----------------------------------------------------------------------------------------------------
 
-METHOD GetItem( nId ) CLASS Menu
+METHOD Menu:GetItem( nId )
 
    LOCAL oSubMenu
    LOCAL oMenu
@@ -246,7 +246,7 @@ CLASS MenuPopup FROM Menu
    METHOD Create()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS MenuPopup
+METHOD MenuPopup:Init( oParent )
    ::Children := {}
    ::aItems:= {}
    ::Parent:= oParent
@@ -266,7 +266,7 @@ RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS MenuPopup
+METHOD MenuPopup:Create()
 
    ::hMenu := CreateMenu()
 
@@ -295,7 +295,7 @@ CLASS MenuBar INHERIT Component
    METHOD InvalidateRect() INLINE DrawMenuBar( ::Owner:hWnd )
 ENDCLASS
 
-METHOD Init( oParent ) CLASS MenuBar
+METHOD MenuBar:Init( oParent )
    DEFAULT ::__xCtrlName   TO "MenuBar"
    DEFAULT ::ComponentType TO "MenuBar"
    DEFAULT ::ClsName       TO "MenuBar"
@@ -303,7 +303,7 @@ METHOD Init( oParent ) CLASS MenuBar
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD Create() CLASS MenuBar
+METHOD MenuBar:Create()
    ::hMenu := CreateMenu()
 
    ::SetBackColor( ::xBackColor )
@@ -318,7 +318,7 @@ METHOD Create() CLASS MenuBar
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD SetBackColor(n) CLASS MenuBar
+METHOD MenuBar:SetBackColor(n)
    IF ::hMenu != NIL
       DEFAULT n TO ::xBackColor
       IF ::__hBrush != NIL
@@ -331,7 +331,7 @@ METHOD SetBackColor(n) CLASS MenuBar
 RETURN Self
 
 //-------------------------------------------------------------------------------------------------------
-METHOD __ResetImageList() CLASS MenuBar
+METHOD MenuBar:__ResetImageList()
    LOCAL oSubMenu, mii
 
    IF ::ImageList != NIL
@@ -351,7 +351,7 @@ METHOD __ResetImageList() CLASS MenuBar
    ENDIF
 RETURN Self
 
-METHOD Destroy() CLASS MenuBar
+METHOD MenuBar:Destroy()
    LOCAL n
    FOR n := 1 TO LEN( ::Children )
        ::Children[n]:Destroy()
@@ -363,11 +363,11 @@ METHOD Destroy() CLASS MenuBar
    ENDIF
 RETURN Self
 
-METHOD __AddMenuItem() CLASS MenuBar
+METHOD MenuBar:__AddMenuItem()
    ::Application:Project:SetAction( { { 1, 0, 0, 0, .T., Self, "MenuItem",,,1, {}, } }, ::Application:Project:aUndo )
 RETURN Self
 
-METHOD GetMenuById( nId ) CLASS MenuBar
+METHOD MenuBar:GetMenuById( nId )
    LOCAL oSubMenu, oMenu
    FOR EACH oSubMenu IN ::Children
        IF oSubMenu:Id == nId
@@ -389,7 +389,7 @@ CLASS ContextMenu INHERIT MenuBar
    METHOD Show()
 ENDCLASS
 
-METHOD Init( oParent ) CLASS ContextMenu
+METHOD ContextMenu:Init( oParent )
    ::__xCtrlName   := "ContextMenu"
    ::ComponentType := "ContextMenu"
    ::ClsName       := "ContextMenu"
@@ -402,7 +402,7 @@ METHOD Init( oParent ) CLASS ContextMenu
    ENDIF
 RETURN Self
 
-METHOD Create() CLASS ContextMenu
+METHOD ContextMenu:Create()
    ::hMenu := CreatePopupMenu()
 
    IF VALTYPE( ::xImageList ) == "C"
@@ -410,7 +410,7 @@ METHOD Create() CLASS ContextMenu
    ENDIF
 RETURN Self
 
-METHOD Show( x, y, nAlign ) CLASS ContextMenu
+METHOD ContextMenu:Show( x, y, nAlign )
    LOCAL nRes := 0
    DEFAULT x TO ::Left
    DEFAULT y TO ::Top

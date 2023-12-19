@@ -89,7 +89,7 @@ ENDCLASS
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Init( oParent, cName ) CLASS HeaderStrip
+METHOD HeaderStrip:Init( oParent, cName )
    ::ClsName   := WC_HEADER
    DEFAULT cName TO "HeaderStrip"
    ::__xCtrlName := cName
@@ -102,7 +102,7 @@ RETURN Self
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS HeaderStrip
+METHOD HeaderStrip:Create()
 //   ::Left   := 0
 //   ::Top    := 0
    IF ::Width  == 0
@@ -121,14 +121,14 @@ METHOD Create() CLASS HeaderStrip
 RETURN Self
 
 //---------------------------------------------------------------------------------------------------
-METHOD OnSize( nwParam, nlParam ) CLASS HeaderStrip
+METHOD HeaderStrip:OnSize( nwParam, nlParam )
    Super:OnSize( nwParam, nlParam )
    IF LEN( ::Children ) > 0 .AND. ::Children[1]:Height != HIWORD(nlParam)
       AEVAL( ::Children, {|o| o:Height := HIWORD(nlParam)} )
    ENDIF
 RETURN NIL
 
-METHOD SetImageList( oList ) CLASS HeaderStrip
+METHOD HeaderStrip:SetImageList( oList )
    IF ::hWnd != NIL
       oList := __ChkComponent( Self, oList )
       ::SendMessage( HDM_SETIMAGELIST, 0, IIF( oList != NIL, oList:Handle, NIL ) )
@@ -136,7 +136,7 @@ METHOD SetImageList( oList ) CLASS HeaderStrip
    ENDIF
 RETURN Self
 
-METHOD SetImageMargin( n ) CLASS HeaderStrip
+METHOD HeaderStrip:SetImageMargin( n )
    IF ::hWnd != NIL
       ::SendMessage( HDM_SETBITMAPMARGIN, n, 0 )
    ENDIF
@@ -144,14 +144,14 @@ RETURN Self
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD GetItemRect( nItem ) CLASS HeaderStrip
+METHOD HeaderStrip:GetItemRect( nItem )
    LOCAL rc := (struct RECT)
    SendMessage( ::hWnd, HDM_GETITEMRECT, nItem, @rc )
 RETURN rc
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD InsertItem( nPos, cText, nWidth, nAlign, nImageIndex ) CLASS HeaderStrip
+METHOD HeaderStrip:InsertItem( nPos, cText, nWidth, nAlign, nImageIndex )
    LOCAL o       := HeaderItem( Self )
    o:Caption     := cText
    o:Width       := nWidth
@@ -163,7 +163,7 @@ RETURN Self
 
 //---------------------------------------------------------------------------------------------------
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS HeaderStrip
+METHOD HeaderStrip:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL nRet, n
    (nwParam)
    DO CASE
@@ -207,7 +207,7 @@ METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS HeaderStrip
 
 RETURN nRet
 
-METHOD SetArrow( nColumn, nImage ) CLASS HeaderStrip
+METHOD HeaderStrip:SetArrow( nColumn, nImage )
    LOCAL ii, hdi, hdi2, nCount, nAlignment
 
    DEFAULT nImage TO 0
@@ -245,7 +245,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD DrawFrame( hDC, aRect, nStatus, lDraw ) CLASS HeaderStrip
+METHOD HeaderStrip:DrawFrame( hDC, aRect, nStatus, lDraw )
    LOCAL hTheme, nFlags := DFCS_BUTTONPUSH
    DEFAULT lDraw TO .T.
 
@@ -270,7 +270,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetItemWidth( nPos, nWidth ) CLASS HeaderStrip
+METHOD HeaderStrip:SetItemWidth( nPos, nWidth )
    LOCAL hi := (struct HDITEM)
    IF ::hWnd != NIL
       hi:mask  := HDI_WIDTH
@@ -282,7 +282,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD SetItemCaption( nPos, cCaption ) CLASS HeaderStrip
+METHOD HeaderStrip:SetItemCaption( nPos, cCaption )
    LOCAL hi   := (struct HDITEM)
    IF ::hWnd != NIL
       hi:mask    := HDI_TEXT
@@ -353,7 +353,7 @@ CLASS HeaderItem INHERIT Object
 ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
-METHOD Init( oParent ) CLASS HeaderItem
+METHOD HeaderItem:Init( oParent )
    IF oParent:DesignMode
       __SetInitialValues( Self )
    ENDIF
@@ -372,7 +372,7 @@ RETURN Self
 
 
 //-----------------------------------------------------------------------------------------------
-METHOD Create() CLASS HeaderItem
+METHOD HeaderItem:Create()
    LOCAL hi := (struct HDITEM)
    hi:mask  := hb_bitor(HDI_WIDTH, HDI_FORMAT, HDI_ORDER)
    hi:fmt   := 0
@@ -401,7 +401,7 @@ METHOD Create() CLASS HeaderItem
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD Destroy() CLASS HeaderItem
+METHOD HeaderItem:Destroy()
    LOCAL n := 0
    ::Parent:SendMessage(  HDM_DELETEITEM, ::Position, 0 )
    ADEL( ::Parent:Children, ::Position, .T. )
@@ -409,7 +409,7 @@ METHOD Destroy() CLASS HeaderItem
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetCaption() CLASS HeaderItem
+METHOD HeaderItem:SetCaption()
    LOCAL hi
    IF LEN( ::Parent:Children ) >= ::Position + 1
       hi := (struct HDITEM)
@@ -422,7 +422,7 @@ METHOD SetCaption() CLASS HeaderItem
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetImageIndex() CLASS HeaderItem
+METHOD HeaderItem:SetImageIndex()
    LOCAL hi
    IF LEN( ::Parent:Children ) >= ::Position + 1
       hi := (struct HDITEM)
@@ -440,7 +440,7 @@ METHOD SetImageIndex() CLASS HeaderItem
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetWidth() CLASS HeaderItem
+METHOD HeaderItem:SetWidth()
    LOCAL hi
    IF LEN( ::Parent:Children ) >= ::Position + 1
       hi := (struct HDITEM)
@@ -451,7 +451,7 @@ METHOD SetWidth() CLASS HeaderItem
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetHeight() CLASS HeaderItem
+METHOD HeaderItem:SetHeight()
    LOCAL hi
    IF LEN( ::Parent:Children ) >= ::Position + 1
       hi := (struct HDITEM)
@@ -465,7 +465,7 @@ METHOD SetHeight() CLASS HeaderItem
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD SetAlignment() CLASS HeaderItem
+METHOD HeaderItem:SetAlignment()
    LOCAL hi
    IF LEN( ::Parent:Children ) >= ::Position + 1
       hi := (struct HDITEM)
@@ -486,7 +486,7 @@ METHOD SetAlignment() CLASS HeaderItem
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetRect() CLASS HeaderItem
+METHOD HeaderItem:GetRect()
    LOCAL n, pt, rc := (struct RECT)
    SendMessage( ::Parent:hWnd, HDM_GETITEMRECT, ::Position, @rc )
    n    := rc:Top
@@ -506,7 +506,7 @@ METHOD GetRect() CLASS HeaderItem
 RETURN rc
 
 //-----------------------------------------------------------------------------------------------
-METHOD GetSize( nPos ) CLASS HeaderItem
+METHOD HeaderItem:GetSize( nPos )
    LOCAL rc := (struct RECT)
    SendMessage( ::Parent:hWnd, HDM_GETITEMRECT, ::Position, @rc )
    SWITCH nPos

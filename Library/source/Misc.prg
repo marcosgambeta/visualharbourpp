@@ -40,7 +40,7 @@ CLASS Registry
    error HANDLER OnError()
 ENDCLASS
 
-METHOD OnError( xValue ) CLASS Registry
+METHOD Registry:OnError( xValue )
    LOCAL cKey := __GetMessage()
    IF xValue == NIL
       RETURN ::GetValue( IIF( lower(cKey) == "default", "", cKey ) )
@@ -50,20 +50,20 @@ METHOD OnError( xValue ) CLASS Registry
 RETURN NIL
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Init( nKey, cKey ) CLASS Registry
+METHOD Registry:Init( nKey, cKey )
    ::nKey := nKey
    ::cKey := cKey
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetValue( cKey ) CLASS Registry
+METHOD Registry:GetValue( cKey )
    LOCAL cValue
    RegQueryValueEx( ATAIL( ::aKeys ), cKey, @cValue )
    ::Value := cValue
 RETURN cValue
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD GetKeys( lDel ) CLASS Registry
+METHOD Registry:GetKeys( lDel )
    LOCAL cName, cType, xData, aRet := {}
    LOCAL n := 0
    DEFAULT lDel TO .F.
@@ -78,7 +78,7 @@ METHOD GetKeys( lDel ) CLASS Registry
 RETURN aRet
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Open( nKey, cKey, nAccess ) CLASS Registry
+METHOD Registry:Open( nKey, cKey, nAccess )
    LOCAL lRet, hKey
    IF VALTYPE( nKey ) == "C"
       cKey := nKey
@@ -98,7 +98,7 @@ METHOD Open( nKey, cKey, nAccess ) CLASS Registry
 RETURN lRet
 
 //-----------------------------------------------------------------------------------------------------------------------------
-METHOD Create( ncKey, cKey ) CLASS Registry
+METHOD Registry:Create( ncKey, cKey )
    LOCAL lRet, hKey
 
    IF VALTYPE( ncKey ) == "C"

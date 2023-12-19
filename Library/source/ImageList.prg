@@ -70,7 +70,7 @@ ENDCLASS
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD Init( oOwner, x, y, nPalette, lAdd ) CLASS ImageList
+METHOD ImageList:Init( oOwner, x, y, nPalette, lAdd )
    ::__xCtrlName := "ImageList"
    ::ComponentType := "ImageList"
    ::ClsName := "ImageList"
@@ -92,7 +92,7 @@ RETURN SELF
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS ImageList
+METHOD ImageList:Create()
    LOCAL oComp, aImage, cEvent, nStyle := hb_bitor(::Palette, ILC_MASK)
 
    IF VALTYPE( ::Form ) == "O"
@@ -117,7 +117,7 @@ METHOD Create() CLASS ImageList
 RETURN Self
 
 //----------------------------------------------------------------------------------------------------
-METHOD Destroy() CLASS ImageList
+METHOD ImageList:Destroy()
    ImageListDestroy( ::Handle )
    ::Owner := NIL
    IF ::__lAdd
@@ -126,7 +126,7 @@ METHOD Destroy() CLASS ImageList
 RETURN NIL
 
 //----------------------------------------------------------------------------------------------------
-METHOD GetBitmap( nIndex ) CLASS ImageList
+METHOD ImageList:GetBitmap( nIndex )
    LOCAL hMemDC, hMemBitmap, hDC := GetDC( 0 )
    hMemDC     := CreateCompatibleDC( hDC )
    hMemBitmap := CreateImageListBitmap( ::Handle, nIndex-1, hDC, hMemDC, ::IconWidth, ::IconHeight )
@@ -136,7 +136,7 @@ RETURN hMemBitmap
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD Clean( oControl ) CLASS ImageList
+METHOD ImageList:Clean( oControl )
    LOCAL oChild
    TRY
       IF __objHasMsg( oControl, "IMAGELIST" )
@@ -157,7 +157,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD __RefreshHandle() CLASS ImageList
+METHOD ImageList:__RefreshHandle()
    IF ::Handle != NIL
       ImageListDestroy( ::Handle )
       ::Handle := NIL
@@ -167,7 +167,7 @@ RETURN Self
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD AddImage( cImage, nMask, hInst, nLoad, nType, cFile, lAdd, lParser ) CLASS ImageList
+METHOD ImageList:AddImage( cImage, nMask, hInst, nLoad, nType, cFile, lAdd, lParser )
    LOCAL hImage, hTool, tbb, nRet, hList, pImageInfo := (struct IMAGEINFO)
    DEFAULT lAdd TO .T.
    DEFAULT nType TO IMAGE_ICON
@@ -235,7 +235,7 @@ RETURN nRet
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD AddBitmap( cImage, nMask, hInst, nLoad ) CLASS ImageList
+METHOD ImageList:AddBitmap( cImage, nMask, hInst, nLoad )
    LOCAL hBmp
    hInst := ::AppInstance
    hBmp := LoadImage( hInst, cImage, IMAGE_BITMAP,,, nLoad )
@@ -250,7 +250,7 @@ RETURN SELF
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD AddIcon( hIcon, hInst ) CLASS ImageList
+METHOD ImageList:AddIcon( hIcon, hInst )
    IF VALTYPE( hIcon ) == "C"
       hInst := ::AppInstance
       hIcon := LoadIcon( hInst, hIcon )
@@ -260,7 +260,7 @@ RETURN SELF
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD DrawDisabled( hDC, nIndex, x, y, hBrush ) CLASS ImageList
+METHOD ImageList:DrawDisabled( hDC, nIndex, x, y, hBrush )
    LOCAL nStyle := DST_ICON, hIcon := ImageListGetIcon( ::Handle, nIndex-1, ILD_NORMAL )
    IF hBrush == NIL
       hBrush := 0
@@ -278,7 +278,7 @@ RETURN SELF
 #define ILS_SHADOW   0x00000002
 #define ILS_SATURATE 0x00000004
 
-METHOD DrawIndirect( hDC, nIndex, x, y, xBmp, yBmp, lDisabled, nFlags, nRop ) CLASS ImageList
+METHOD ImageList:DrawIndirect( hDC, nIndex, x, y, xBmp, yBmp, lDisabled, nFlags, nRop )
    LOCAL ildp   := (struct IMAGELISTDRAWPARAMS)
 
    DEFAULT lDisabled TO .F.
@@ -303,7 +303,7 @@ RETURN ImageListDrawIndirect( ildp )
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD DrawImage( hDC, nIndex, x, y, nFlags, nColor, nBackColor ) CLASS ImageList
+METHOD ImageList:DrawImage( hDC, nIndex, x, y, nFlags, nColor, nBackColor )
    DEFAULT nColor TO CLR_NONE
    DEFAULT nBackColor TO CLR_NONE
    ImageListDrawEx( ::Handle, nIndex-1, hDC, x, y, 0, 0, nBackColor, nColor, nFlags )
@@ -311,7 +311,7 @@ RETURN SELF
 
 //----------------------------------------------------------------------------------------------------
 
-METHOD GetImages() CLASS ImageList
+METHOD ImageList:GetImages()
    LOCAL n, hIcon, aImages := {}
    FOR n := 1 TO ImageListGetImageCount( ::Handle )
        hIcon := ::GetImage( n )
@@ -327,13 +327,13 @@ CLASS __ImageListComboBox INHERIT ComboBox
    METHOD OnParentDrawItem()
 ENDCLASS
 
-METHOD Init( oParent, oImageList ) CLASS __ImageListComboBox
+METHOD __ImageListComboBox:Init( oParent, oImageList )
    ::ImageList := oImageList
    ::Super:Init( oParent )
    ::Style     := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_VSCROLL, CBS_HASSTRINGS, CBS_OWNERDRAWFIXED, CBS_DROPDOWNLIST, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
 RETURN Self
 
-METHOD Create() CLASS __ImageListComboBox
+METHOD __ImageListComboBox:Create()
    LOCAL n
    ::Super:Create()
    ::AddItem( "None" )
@@ -343,7 +343,7 @@ METHOD Create() CLASS __ImageListComboBox
    NEXT
 RETURN Self
 
-METHOD OnParentDrawItem( nwParam, nlParam, dis ) CLASS __ImageListComboBox
+METHOD __ImageListComboBox:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL n, y, lSelected, nLen, itemTxt, aSize
    ( nwParam, nlParam )
    IF dis:hwndItem == ::hWnd

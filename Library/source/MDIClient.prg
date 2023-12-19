@@ -99,7 +99,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS MDIClient
+METHOD MDIClient:Init( oParent )
    ::Left   := 0
    ::Top    := 0
    ::Width  := 0
@@ -119,7 +119,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS MDIClient
+METHOD MDIClient:Create()
    LOCAL ccs := (struct CLIENTCREATESTRUCT)
    ccs:hWindowMenu  := 0
    ccs:idFirstChild := 10001
@@ -137,7 +137,7 @@ METHOD Create() CLASS MDIClient
 RETURN Self
 
 //-----------------------------------------------------------------------------------------------
-METHOD __SetBorder( nBorder ) CLASS MDIClient
+METHOD MDIClient:__SetBorder( nBorder )
    LOCAL nExStyle, nStyle
 
    IF VALTYPE( nBorder ) == "L" // backward compatibility
@@ -159,7 +159,7 @@ METHOD __SetBorder( nBorder ) CLASS MDIClient
    ::ExStyle := nExStyle
 RETURN nBorder
 
-METHOD SetBackColor( nColor, lRepaint ) CLASS MDIClient
+METHOD MDIClient:SetBackColor( nColor, lRepaint )
 
    DEFAULT lRepaint TO .T.
    ::xBackColor := nColor
@@ -183,7 +183,7 @@ METHOD SetBackColor( nColor, lRepaint ) CLASS MDIClient
    ENDIF
 RETURN Self
 
-METHOD SetExStyle(nStyle,lAdd) CLASS MDIClient
+METHOD MDIClient:SetExStyle(nStyle,lAdd)
    DEFAULT lAdd TO .T.
    IF !::__IsInstance
       IF IsWindow( ::hWnd )
@@ -202,7 +202,7 @@ METHOD SetExStyle(nStyle,lAdd) CLASS MDIClient
    ENDIF
 RETURN Self
 
-METHOD __ControlProc( hWnd, nMsg, nwParam, nlParam ) CLASS MDIClient
+METHOD MDIClient:__ControlProc( hWnd, nMsg, nwParam, nlParam )
    LOCAL lShow
 
    SWITCH nMsg
@@ -226,14 +226,14 @@ METHOD __ControlProc( hWnd, nMsg, nwParam, nlParam ) CLASS MDIClient
    END
 RETURN CallWindowProc( ::__nProc, hWnd, nMsg, nwParam, nlParam )
 
-METHOD GetActive() CLASS MDIClient
+METHOD MDIClient:GetActive()
    LOCAL n, hWnd := SendMessage( ::hWnd, WM_MDIGETACTIVE )
    IF( n := ASCAN( ::Children, {|o|o:hWnd == hWnd} ) ) > 0
       RETURN ::Children[n]
    ENDIF
 RETURN NIL
 
-METHOD SetMargins( cMargins ) CLASS MDIClient
+METHOD MDIClient:SetMargins( cMargins )
    LOCAL n, aMargins := hb_atokens( cMargins, "," )
    ::LeftMargin   := 0
    ::TopMargin    := 0
@@ -269,7 +269,7 @@ METHOD SetMargins( cMargins ) CLASS MDIClient
    ENDIF
 RETURN cMargins
 
-METHOD MoveWindow( nLeft, nTop, nWidth, nHeight ) CLASS MDIClient
+METHOD MDIClient:MoveWindow( nLeft, nTop, nWidth, nHeight )
    LOCAL n
 
    DEFAULT nLeft   TO 0

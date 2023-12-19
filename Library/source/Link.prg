@@ -49,7 +49,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS Link
+METHOD Link:Init( oParent )
    ::__xCtrlName := "SysLink"
    ::ClsName     := "SysLink"
    ::Style       := hb_bitor(WS_CHILD, WS_VISIBLE, WS_TABSTOP, WS_CLIPCHILDREN, WS_CLIPSIBLINGS)
@@ -59,13 +59,13 @@ METHOD Init( oParent ) CLASS Link
    ::Super:Init( oParent )
 RETURN Self
 
-METHOD GetText() CLASS Link
+METHOD Link:GetText()
    LOCAL cText := ::xText
 //   cText := StrTran( cText , "\\", "\" )
 //   cText := StrTran( cText , '\"', '"' )
 RETURN cText
 
-METHOD SetText() CLASS Link
+METHOD Link:SetText()
    LOCAL cText := ::xText
    cText := StrTran( cText , "\", "\\" )
    cText := StrTran( cText , '"', '\"' )
@@ -73,13 +73,13 @@ METHOD SetText() CLASS Link
    SetWindowText( ::hWnd, ::xText )
 RETURN cText
 
-METHOD Create() CLASS Link
+METHOD Link:Create()
    ::xText := StrTran( ::xText, "\\", "\" )
    ::xText := StrTran( ::xText, '\"', '"' )
    Super:Create()
 RETURN Self
 
-METHOD OnParentNotify( nwParam, nlParam, hdr ) CLASS Link
+METHOD Link:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL n, pNmLink, cText := "", aArray
    (nwParam)
    SWITCH hdr:code

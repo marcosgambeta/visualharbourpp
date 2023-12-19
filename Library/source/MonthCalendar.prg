@@ -53,7 +53,7 @@ ENDCLASS
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Init( oParent ) CLASS MonthCalendar
+METHOD MonthCalendar:Init( oParent )
    InitCommonControlsEx( ICC_DATE_CLASSES )
    ::xHeight := 0
    ::xWidth  := 0
@@ -76,7 +76,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 
-METHOD Create() CLASS MonthCalendar
+METHOD MonthCalendar:Create()
    LOCAL rc := (struct RECT)
    ExecuteEvent( "OnInit", Self )
    ::Super:Create()
@@ -106,7 +106,7 @@ METHOD Create() CLASS MonthCalendar
    ENDIF
 RETURN Self
 
-METHOD OnParentNotify( nwParam, nlParam ) CLASS MonthCalendar
+METHOD MonthCalendar:OnParentNotify( nwParam, nlParam )
    LOCAL nRet := 0
    (nwParam)
    DO CASE
@@ -127,7 +127,7 @@ METHOD OnParentNotify( nwParam, nlParam ) CLASS MonthCalendar
    ENDCASE
 RETURN nRet
 
-METHOD SetCurSel( dDate ) CLASS MonthCalendar
+METHOD MonthCalendar:SetCurSel( dDate )
    LOCAL st := (struct SYSTEMTIME)
    IF ::hWnd != NIL
       st:wYear         := YEAR( dDate )
@@ -140,7 +140,7 @@ METHOD SetCurSel( dDate ) CLASS MonthCalendar
    ::xDate := dDate
 RETURN Self
 
-METHOD SetRange( nMinMax ) CLASS MonthCalendar
+METHOD MonthCalendar:SetRange( nMinMax )
    LOCAL MinSt, MaxSt
    DEFAULT nMinMax TO hb_bitor(GDTR_MIN, GDTR_MAX)
 
@@ -168,7 +168,7 @@ METHOD SetRange( nMinMax ) CLASS MonthCalendar
    MonthCal_SetRange( ::hWnd, nMinMax, MinSt:Value, MaxSt:Value )
 RETURN Self
 
-METHOD SetToday( dDate ) CLASS MonthCalendar
+METHOD MonthCalendar:SetToday( dDate )
    LOCAL st := (struct SYSTEMTIME)
    IF ::hWnd != NIL
       st:wYear         := YEAR( dDate )
