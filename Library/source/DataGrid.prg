@@ -1273,8 +1273,8 @@ RETURN NIL
 
 METHOD DataGrid:OnLButtonDblClk( nwParam, xPos, yPos )
    LOCAL nClickRow  := Ceiling((yPos-::__GetHeaderHeight()) /::ItemHeight)
-   (nwParam)
-   (xPos)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(xPos)
 
    IF ::__hDragRecImage != NIL
       ImageListDestroy( ::__hDragRecImage )
@@ -1294,8 +1294,8 @@ RETURN 0
 //----------------------------------------------------------------------------------
 METHOD DataGrid:OnLButtonUp( nwParam, xPos, yPos )
    LOCAL lMouse, lDrag := .F., nPos, aDrag, aMove, i, nRec, aData := {}
-   (nwParam)
-   (xPos)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(xPos)
 
    lMouse := ::__lMouseDown
    ::__lMouseDown := .F.
@@ -1446,7 +1446,7 @@ METHOD DataGrid:OnLButtonDown( nwParam, xPos, yPos )
    LOCAL nClickCol, pt //, lShift, lCtrl, i
    LOCAL lLineChange:=.F.
    LOCAL lSameRow := .F.
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    ::RowCountUsable  := MIN( Int(  ::__DataHeight/::ItemHeight ), ::RowCount )
 
    ::__nXold := xPos
@@ -2888,7 +2888,7 @@ RETURN Self
 
 METHOD DataGrid:OnHorzScroll( nCode, nPos, nlParam, lDraw )
    LOCAL nPor, aScroll, aClip, nRight, n
-   (nlParam)
+   HB_SYMBOL_UNUSED(nlParam)
 
    //DEFAULT nCode TO LoWord( Sender:wParam )
    //DEFAULT nPos  TO HiWord( Sender:wParam )
@@ -3841,8 +3841,8 @@ RETURN Self
 
 METHOD DataGrid:__Edit( n, xPos, yPos, nMessage, nwParam )
    LOCAL aRect, x, xValue, nAlign, oSelf := Self, nCol := ::ColPos
-   (xPos)
-   (yPos)
+   HB_SYMBOL_UNUSED(xPos)
+   HB_SYMBOL_UNUSED(yPos)
 
    IF ::__CurControl == NIL .AND. ( nCol > 0 .OR. ::FullRowSelect )
       IF ::FullRowSelect

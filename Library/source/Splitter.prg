@@ -180,7 +180,8 @@ RETURN NIL
 
 METHOD Splitter:SplitOn( x, y, lDirect )
    LOCAL pt, nOwnerTop, nOwnerHeight, n
-   (x,y)
+   HB_SYMBOL_UNUSED(x)
+   HB_SYMBOL_UNUSED(y)
    DEFAULT lDirect TO .F.
 
    IF ::lDown .OR. lDirect
@@ -363,7 +364,7 @@ RETURN 0
 //----------------------------------------------------------------------------------------------------------------
 
 METHOD Splitter:OnLButtonUp(nwParam,x,y)
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    ReleaseCapture( ::hWnd )
    ::lDown := .F.
    IF !::ShowDragging

@@ -165,7 +165,7 @@ RETURN Self
 
 METHOD HeaderStrip:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL nRet, n
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    DO CASE
       CASE hdr:code == HDN_BEGINTRACK
            nRet := __Evaluate( ::OnBeginTrack, __GetHeaderItem( nlParam ) )

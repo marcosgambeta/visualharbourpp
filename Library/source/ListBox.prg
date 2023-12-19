@@ -260,7 +260,7 @@ METHOD ListBox:__ListboxMouseMove( nwParam, aPt )
    LOCAL rcDraw := (struct RECT)
    LOCAL cRect := space(16)
    LOCAL nCurSel := SendMessage( ::hWnd, LB_ITEMFROMPOINT, 0, MAKELONG( aPt[1], aPt[2] ) )
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
 
    IF ::__OriginalSel == nCurSel
       RETURN NIL

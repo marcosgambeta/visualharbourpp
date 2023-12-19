@@ -140,7 +140,7 @@ METHOD ProgressBar:OnDestroy()
 RETURN NIL
 
 METHOD ProgressBar:OnUserMsg( hWnd, nMsg )
-   (hWnd)
+   HB_SYMBOL_UNUSED(hWnd)
    IF nMsg == WM_USER + 555
       IF ::xMarquee
          TaskBarProgressState( IIF( ::Form:Parent != NIL, ::Form:Parent:hWnd, ::Form:hWnd ), TBPF_INDETERMINATE )

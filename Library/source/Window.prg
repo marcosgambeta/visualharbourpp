@@ -1478,7 +1478,7 @@ RETURN nRet
 //-----------------------------------------------------------------------------------------------
 METHOD Window:OnDropFiles( nwParam, nlParam )
    LOCAL nFiles, n, cFile, pt := (struct POINT)
-   (nlParam)
+   HB_SYMBOL_UNUSED(nlParam)
 
    nFiles := DragQueryFile( nwParam, 0xFFFFFFFF )
 
@@ -2931,7 +2931,7 @@ RETURN ::__WinProc(hWnd, nMsg, nwParam, nlParam)
 
 METHOD Window:OnMeasureItem( nwParam, nlParam, mis )
    LOCAL n, oItem, oButton, oSub, oMenu
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    IF ::Application != NIL
       oMenu := ::Application:oCurMenu
    ENDIF
@@ -2993,7 +2993,8 @@ RETURN nRet
 
 METHOD Window:OnDrawItem( nwParam, nlParam, dis )
    LOCAL n, oItem, oButton, oSub, oMenu
-   (nwParam, nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    oMenu := ::Application:oCurMenu
    IF dis:CtlType == ODT_MENU .AND. oMenu != NIL
       IF dis:itemState > 200

@@ -731,7 +731,8 @@ RETURN NIL
 
 METHOD ReplaceTextDialog:__WndProc( hWnd, nMsg, nwParam, nlParam )
    LOCAL pfr
-   (hWnd, nlParam)
+   HB_SYMBOL_UNUSED(hWnd)
+   HB_SYMBOL_UNUSED(nlParam)
    DO CASE
       CASE nMsg == WM_INITDIALOG
            pfr = (struct FINDREPLACE*) nlParam

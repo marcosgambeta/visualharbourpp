@@ -42,7 +42,7 @@ RETURN Self
 
 METHOD TrackBar:OnParentNotify( nwParam, nlParam, hdr )
    local tpc
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    IF hdr:code == TRBN_THUMBPOSCHANGING
       tpc := (struct NMTRBTHUMBPOSCHANGING *) nlParam
       ExecuteEvent( "OnPosChange", Self, tpc:dwPos, tpc:nReason )

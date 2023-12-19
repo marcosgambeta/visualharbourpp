@@ -146,7 +146,7 @@ RETURN 0
 
 METHOD CaptionBar:OnMouseMove( nwParam, nlParam)
    LOCAL x := LOWORD( nlParam )
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    IF x <= ::LeftMargin+::TextWidth+20
       IF !::Pushed
          ::Drawing:Draw3dRect( {0, 0, ::LeftMargin+::TextWidth+20,::ClientHeight}, GetSysColor(COLOR_3DHIGHLIGHT), GetSysColor(COLOR_3DDKSHADOW))
@@ -164,7 +164,7 @@ RETURN NIL
 //-----------------------------------------------------------------------------------------------------
 
 METHOD CaptionBar:OnLButtonDown(nwParam,x)
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    IF x <= ::LeftMargin+::TextWidth+20
       ::Pushed := !::Pushed
       ::InvalidateRect( {0, 0, ::LeftMargin+::TextWidth+20,::ClientHeight}, .F. )

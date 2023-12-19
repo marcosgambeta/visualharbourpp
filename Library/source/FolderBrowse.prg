@@ -212,7 +212,9 @@ METHOD FolderList:Create()
 RETURN Self
 
 METHOD FolderList:OnUserMsg( hWnd, nMsg, nwParam, nlParam )
-   (hWnd, nwParam, nlParam)
+   HB_SYMBOL_UNUSED(hWnd)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF nMsg == WM_USER + 15 .AND. ::__nCurFolderID != NIL
       FolderListPopulateByID( ::hWnd, ::__nCurFolderID  )
       RETURN 0

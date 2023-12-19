@@ -115,7 +115,9 @@ RETURN ::SendMessage( EM_SETCHARFORMAT, SCF_SELECTION, cf )
 
 //-----------------------------------------------------------------------------------------------
 METHOD RichTextBox:EditStreamCallback( dwCookie, pbBuff, cb, pcb )
-   (dwCookie, pbBuff, pcb)
+   HB_SYMBOL_UNUSED(dwCookie)
+   HB_SYMBOL_UNUSED(pbBuff)
+   HB_SYMBOL_UNUSED(pcb)
 RETURN cb
 
 #endif

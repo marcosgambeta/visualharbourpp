@@ -232,8 +232,8 @@ RETURN nWidth
 
 METHOD Button:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL nLeft, nTop, aRect, nStyle, lDisabled, lSelected, lFocus, aTextRect, nTextFlags, nColor, n, lDefault, oImageList
-   (nwParam)
-   (nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED((nlParam)
    IF !( ::__xCtrlName == "Button" )
       RETURN NIL
    ENDIF
@@ -381,7 +381,8 @@ RETURN 0
 
 METHOD Button:OnParentCommand( nId, nCode, nlParam )
    LOCAL pt
-   (nId, nCode)
+   HB_SYMBOL_UNUSED(nId)
+   HB_SYMBOL_UNUSED(nCode)
    IF ::MenuArrow .AND. ::ContextMenu != NIL .AND. nlParam == ::hWnd
       pt := (struct POINT)
       pt:x := ::Left
@@ -396,7 +397,7 @@ RETURN NIL
 
 METHOD Button:OnCtlColorBtn( nwParam, nlParam )
    LOCAL hBkGnd := ::Parent:BkBrush
-   (nlParam)
+   HB_SYMBOL_UNUSED(nlParam)
    SetBrushOrgEx( nwParam, ::Parent:ClientWidth-::Left, ::Parent:ClientHeight-::Top )
    IF ::Parent:ClsName == "DataGrid"
       hBkGnd := GetSysColorBrush( COLOR_HIGHLIGHT )
@@ -406,7 +407,7 @@ RETURN hBkGnd
 
 METHOD Button:OnCtlColorStatic( nwParam, nlParam )
    LOCAL hBkGnd := ::BkBrush
-   (nlParam)
+   HB_SYMBOL_UNUSED(nlParam)
    DEFAULT hBkGnd TO ::Parent:BkBrush
 
    IF ::Parent:ClsName == "ToolBarWindow32"

@@ -221,7 +221,8 @@ METHOD ToolTip:OnLButtonDown( n, x, y )
 RETURN NIL
 
 METHOD ToolTip:OnParentNotify( nwParam, nlParam, hdr )
-   (nwParam, nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF hdr:code == TTN_POP
       ::Parent:__lPopTip := .T.
       RETURN 0

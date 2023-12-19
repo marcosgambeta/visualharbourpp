@@ -237,7 +237,7 @@ RETURN iMax
 
 METHOD CoolBar:OnParentNotify( nwParam, nlParam )
    LOCAL nBand, chev, rbi
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
 
    DO CASE
       CASE ::Parent:hdr:code==RBN_BEGINDRAG

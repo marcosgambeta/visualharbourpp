@@ -180,7 +180,7 @@ RETURN Self
 //-------------------------------------------------------------------------------------------------------
 METHOD MemoryTable:Seek( xKey, lSoft, lCaseSensitive, lPartial )
    LOCAL bBlock
-   (lSoft)
+   HB_SYMBOL_UNUSED(lSoft)
    IF ! Empty( ::Tag )
       bBlock := {|a| a[ ::FieldPos( ::Tag ) ] == xKey }
       DEFAULT lCaseSensitive TO .T., lPartial TO .f.  // only affect string values

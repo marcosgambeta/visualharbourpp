@@ -345,7 +345,8 @@ RETURN Self
 
 METHOD __ImageListComboBox:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL n, y, lSelected, nLen, itemTxt, aSize
-   ( nwParam, nlParam )
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam )
    IF dis:hwndItem == ::hWnd
       lSelected := (dis:itemState & ODS_SELECTED) != 0
 

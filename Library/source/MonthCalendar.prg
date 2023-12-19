@@ -108,7 +108,7 @@ RETURN Self
 
 METHOD MonthCalendar:OnParentNotify( nwParam, nlParam )
    LOCAL nRet := 0
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    DO CASE
       CASE ::Parent:hdr:code == MCN_GETDAYSTATE
            ::NmDayState := (struct NMDAYSTATE*) nlParam

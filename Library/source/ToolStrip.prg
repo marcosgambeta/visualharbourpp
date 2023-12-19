@@ -2915,8 +2915,8 @@ RETURN SELF
 METHOD MenuStripItem:OnDrawItem( nwParam, nlParam, dis )
    LOCAL lDisabled, lSelected, lChecked, hSepDark, n, cText := ::Caption
    LOCAL xIcon := 0, yIcon := 0, hOldPen, hOldBrush, hFont, oImageList := ::ImageList
-   (nwParam)
-   (nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    yIcon := 22
 
    DEFAULT oImageList TO ::Parent:ImageList
@@ -3009,8 +3009,8 @@ METHOD MenuStripItem:OnMeasureItem( nwParam, nlParam, mi )
    LOCAL hOld, aRect, hDC, aExt, n, nWidth, nShort, oImageList := ::ImageList
    LOCAL xIcon := 0
    LOCAL yIcon := 0
-   (nwParam)
-   (nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF mi:CtlType == ODT_MENU
       DEFAULT oImageList TO ::Parent:ImageList
 

@@ -591,7 +591,7 @@ RETURN NIL
 //---------------------------------------------------------------------------------------------------
 METHOD EditBox:OnNCCalcSize( nwParam, nlParam )
    LOCAL n, nccs, oImageList
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    ::__nImageSize := 0
    ::__nArrowSize := 0
 
@@ -1036,8 +1036,8 @@ RETURN SendMessage( ::hWnd, EM_SHOWBALLOONTIP, 0, ebt )
 //-----------------------------------------------------------------------------------------------
 METHOD EditBox:OnParentCommand( nId, nCode, nlParam )
    LOCAL nRet
-   (nId)
-   (nlParam)
+   HB_SYMBOL_UNUSED(nId)
+   HB_SYMBOL_UNUSED(nlParam)
    DO CASE
       CASE nCode ==EN_ALIGN_LTR_EC
          nRet := ExecuteEvent( "OnEn_Align_Ltr_Ec", Self )

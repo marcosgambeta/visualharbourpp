@@ -154,7 +154,8 @@ RETURN NIL
 //-------------------------------------------------------------------------------------------------------
 METHOD MenuStrip:__OnParentSize( x, y, hDef )
    LOCAL nLeft, nTop, i, n, aLines, aLine
-   (x,y)
+   HB_SYMBOL_UNUSED(x)
+   HB_SYMBOL_UNUSED(y)
    IF ::IsWindowVisible() .AND. ::Parent:ClientWidth > 0
       ::Width := ::Parent:ClientWidth - IIF( ::xShowGrip, (::__GripperPos + 1), 0 )
       IF ::Row > 0 .AND. ::__PrevRow == 0

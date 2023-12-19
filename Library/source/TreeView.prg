@@ -324,7 +324,8 @@ RETURN Self
 
 //----------------------------------------------------------------------------//
 METHOD TreeView:OnUserMsg( hWnd, nMsg, nwParam, nlParam )
-   (hWnd,nwParam)
+   HB_SYMBOL_UNUSED(hWnd)
+   HB_SYMBOL_UNUSED(nwParam)
    IF nMsg == UM_CHECKSTATECHANGE
       ExecuteEvent( "ItemCheck", Self, FindTreeItem( ::Items, nlParam ) )
       RETURN 0
@@ -508,7 +509,7 @@ RETURN Self
 //----------------------------------------------------------------------------------------------------------
 METHOD TreeView:OnLButtonUp( w, x, y )
    LOCAL oItem
-   (w)
+   HB_SYMBOL_UNUSED(w)
    IF ::DragItems .AND. ::__oDrag != NIL
       SendMessage( ::hWnd, TVM_SETINSERTMARK, .F., NIL )
       IF ( oItem := ::HitTest( x, y ) ) != NIL .AND. ::__oDrag:hItem != oItem:hItem

@@ -142,7 +142,7 @@ RETURN NIL
 METHOD CheckBox:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL nRet, cd, aRect, lDisabled, lSelected, lFocus, nColor, lHot
    LOCAL sz, nStatus, hBkGnd, nFlags := DFCS_BUTTONCHECK
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    DO CASE
       CASE hdr:code==NM_CUSTOMDRAW
            nRet := CDRF_DODEFAULT

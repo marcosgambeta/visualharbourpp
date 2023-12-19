@@ -380,7 +380,7 @@ RETURN cText
 
 METHOD ListView:OnParentNotify( nwParam, nlParam )
    LOCAL nmia, pnkd, lCopy := .F., lpnmh := (struct NMHDR*) nlParam, pnmv
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    SWITCH lpnmh:code
       CASE NM_RCLICK
            nmia := (struct NMITEMACTIVATE*) nlParam

@@ -99,7 +99,7 @@ METHOD RadioButton:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL nRet, cd, nState, aRect, lHot, lDisabled, lSelected, lFocus, nColor, lChecked, lPressed
    LOCAL sz
    LOCAL hBkGnd := ::BkBrush
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    DO CASE
       CASE hdr:code==NM_CUSTOMDRAW
            nRet := CDRF_DODEFAULT

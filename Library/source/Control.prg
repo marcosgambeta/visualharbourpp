@@ -582,7 +582,7 @@ RETURN nRet
 
 METHOD TitleControl:OnNCCalcSize( nwParam, nlParam )
    LOCAL nccs
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    ::__nCaptionHeight := IIF( EMPTY( ::xText ), 0, ::xTitleHeight )
    IF ::__nCaptionHeight > 0
       nccs := (struct NCCALCSIZE_PARAMS)

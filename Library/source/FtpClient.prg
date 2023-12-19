@@ -96,7 +96,8 @@ RETURN Self
 //-------------------------------------------------------------------------------------------------------
 FUNCTION FtpStatusCallback( hInternet, dwContext, dwInternetStatus, lpvStatusInformation, dwStatusInformationLength )
    LOCAL n
-   (hInternet,dwStatusInformationLength)
+   HB_SYMBOL_UNUSED(hInternet)
+   HB_SYMBOL_UNUSED(dwStatusInformationLength)
    __oFtp:Context           := dwContext
    __oFtp:InternetStatus    := dwInternetStatus
    __oFtp:StatusInformation := lpvStatusInformation

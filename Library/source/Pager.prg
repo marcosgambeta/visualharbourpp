@@ -94,7 +94,7 @@ RETURN(self)
 
 METHOD PageScroller:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL pg, pgs
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
 
    DO CASE
 

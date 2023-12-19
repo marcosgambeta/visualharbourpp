@@ -294,7 +294,7 @@ RETURN Self
 
 METHOD DateTimePicker:OnParentNotify( nwParam, nlParam )
    LOCAL nRet, nmd, pt := (struct POINT)
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    DO CASE
       CASE ::Parent:hdr:code == DTN_CLOSEUP
            IF ::BlankDate

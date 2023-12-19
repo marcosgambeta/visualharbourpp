@@ -257,7 +257,8 @@ RETURN CallWindowProc( ::__nProcEdit, hWnd, nMsg, nwParam, nlParam )
 
 METHOD ComboBox:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL lSelected, nLen, itemTxt
-   ( nwParam, nlParam )
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam )
    IF dis != NIL .AND. dis:hwndItem == ::hWnd
       lSelected := (dis:itemState & ODS_SELECTED) != 0
       IF (dis:itemAction & ODA_DRAWENTIRE) != 0 .OR. (dis:itemAction & ODA_SELECT) != 0
@@ -386,8 +387,8 @@ RETURN cbi
 //----------------------------------------------------------------------------------------------------------------
 METHOD ComboBox:DrawFrame( hDC, aRect, nAlign, nWidth, nStatus )
    LOCAL hTheme, nFlags := DFCS_SCROLLCOMBOBOX
-   (nAlign)
-   (nWidth)
+   HB_SYMBOL_UNUSED(nAlign)
+   HB_SYMBOL_UNUSED(nWidth)
    IF nStatus != NIL
       IF ::OsVer:dwMajorVersion > 4 .AND. ::Application:ThemeActive
          nStatus := CBXS_NORMAL
@@ -417,7 +418,7 @@ RETURN( if(nLen == CB_ERR, nil, left(cBuf, nLen) ) )
 //----------------------------------------------------------------------------------------------------------------
 METHOD ComboBox:OnParentCommand( nId, nCode )
    LOCAL bChanged, nRet := NIL
-   (nId)
+   HB_SYMBOL_UNUSED(nId)
    DO CASE
       CASE nCode == CBN_SELENDOK
            nRet := __Evaluate( ::OnCBNSelEndOk, Self,,,,)
@@ -559,7 +560,7 @@ METHOD ComboBox:__ListboxMouseMove( hList, nwParam, aPt )
    LOCAL rcDraw := (struct RECT)
    LOCAL cRect := space(16)
    LOCAL nCurSel := SendMessage( hList, LB_ITEMFROMPOINT, 0, MAKELONG( aPt[1], aPt[2] ) )
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    IF ::__OriginalSel == nCurSel
       RETURN NIL
    ENDIF
@@ -673,7 +674,8 @@ RETURN Self
 
 METHOD DriveCombobox:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL n, x, lSelected, aClip, nLen, itemTxt, cText, aRect, nField, y
-   ( nwParam, nlParam )
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF dis != NIL .AND. dis:hwndItem == ::hWnd
       lSelected := (dis:itemState & ODS_SELECTED) != 0
       aClip     := { dis:rcItem:Left+20,  dis:rcItem:Top, ;
@@ -785,7 +787,7 @@ RETURN Self
 
 METHOD ColorPicker:OnParentCommand( nId, nCode )
    LOCAL cSel, nColor, nRet
-   (nId)
+   HB_SYMBOL_UNUSED(nId)
    DO CASE
       CASE nCode == CBN_SELENDOK
            cSel := ::Colors[ ::GetCurSel() ][2]
@@ -830,7 +832,8 @@ RETURN nRet
 
 METHOD ColorPicker:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL n, lSelected, aClip, nLen, itemTxt, hBrush, hOld, z
-   (nwParam, nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF dis != NIL .AND. dis:hwndItem == ::hWnd
       lSelected := (dis:itemState & ODS_SELECTED) != 0
       aClip     := { dis:rcItem:Left+20,  dis:rcItem:Top, ;
@@ -930,7 +933,8 @@ RETURN Self
 
 METHOD CursorComboBox:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL n, y, lSelected, aClip, nLen, itemTxt, aSize
-   (nwParam, nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF dis:hwndItem == ::hWnd
       lSelected := (dis:itemState & ODS_SELECTED) != 0
       aClip     := { dis:rcItem:Left+20,  dis:rcItem:Top, ;
@@ -1013,7 +1017,8 @@ RETURN Self
 
 METHOD FontComboBox:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL n, y, lSelected, aClip, nLen, itemTxt, aSize, hFont, hOld
-   (nwParam, nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF dis:hwndItem == ::hWnd
       lSelected := (dis:itemState & ODS_SELECTED) != 0
       aClip     := { dis:rcItem:Left+20,  dis:rcItem:Top, ;
@@ -1241,7 +1246,8 @@ RETURN NIL
 
 METHOD FormComboBox:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL n, lSelected, nLen, itemTxt, cText, aSize, hDC, hOld
-   (nwParam, nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF dis != NIL .AND. dis:hwndItem == ::hWnd
       hDC := dis:hDC
       lSelected := (dis:itemState & ODS_SELECTED) != 0
@@ -1277,7 +1283,7 @@ RETURN 0
 
 METHOD FormComboBox:OnParentCommand( nId, nCode )
    LOCAL nSel, nRet := 0
-   (nId)
+   HB_SYMBOL_UNUSED(nId)
    DO CASE
       CASE nCode == CBN_SELENDOK
            nSel := ::GetCurSel()

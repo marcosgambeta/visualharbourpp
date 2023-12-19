@@ -1608,7 +1608,7 @@ RETURN NIL
 
 #ifdef d_WinFakt
  FUNCTION wf_ErrorDialog(oErr,lSilent,lQuit,cDir)
-   (lQuit)
+   HB_SYMBOL_UNUSED(lQuit)
  RETURN VXH_DefError(oErr,.F.,lSilent,cDir)
  FUNCTION wf_Get_Path_Root()
  RETURN Left( GetModuleFileName(), Rat("\" ,GetModuleFileName() )-1 )

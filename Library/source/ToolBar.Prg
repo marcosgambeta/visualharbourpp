@@ -430,7 +430,7 @@ RETURN SELF
 
 METHOD ToolBar:OnMeasureItem( nwParam, nlParam, mis )
    LOCAL n, oItem, oButton, oSub
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    IF mis:CtlType == ODT_MENU
 
       IF ::Chevron != NIL
@@ -471,7 +471,8 @@ METHOD ToolBar:OnDrawItem( nwParam, nlParam, dis )
    LOCAL lCheck := .F., nPos, lArrow := .F., lWhole := .F., oSub
    LOCAL lDisabled, lSelected, nIcon, lDrop := .F.
    LOCAL Rect, pt
-   (nwParam, nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF dis:CtlType == ODT_MENU
 
       IF dis:itemState > 200
@@ -977,7 +978,7 @@ RETURN 0
 
 METHOD ToolBar:OnToolTipNotify( nwParam, nlParam, hdr )
    LOCAL n, cText
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    IF hdr:code == TTN_GETDISPINFOW .OR. hdr:code == TTN_GETDISPINFO
       IF (n:=ASCAN(::aItems,{|btn| btn:oStruct:idCommand==hdr:idFrom})) > 0
          cText := ::aItems[n]:ToolTip
@@ -1001,7 +1002,7 @@ METHOD ToolBar:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL oButton, oBtn, nDif, n, nState, x, nRet
    LOCAL nHot, oMdi, nTop, aRect, hIcon, hTheme, nButton//, hBrush
    LOCAL tbcd, nmt, nmtb, rc, pt, cr, lColor := .F.
-   (nwParam)
+   HB_SYMBOL_UNUSED(nwParam)
    DO CASE
       CASE hdr:code==NM_CUSTOMDRAW .AND. !::Parent:ClsName == "StatusBarPanel"
            nRet := CDRF_DODEFAULT
@@ -1716,7 +1717,7 @@ RETURN Self
 
 //-----------------------------------------------------------------------------------------------
 METHOD ToolButton:SetPosition(n)
-   (n)
+   HB_SYMBOL_UNUSED(n)
 //   LOCAL cName, x, oButton
 //   IF ::lCreated
 //      cName := ::xName

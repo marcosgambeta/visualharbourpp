@@ -339,7 +339,7 @@ RETURN NIL
 
 //-----------------------------------------------------------------------------------------------
 METHOD TabControl:OnUserMsg( hWnd, nMsg )
-   (hWnd)
+   HB_SYMBOL_UNUSED(hWnd)
    IF nMsg == WM_USER + 1111
       ::xHeight++
       ::MoveWindow()
@@ -711,7 +711,8 @@ RETURN 0
 //-----------------------------------------------------------------------------------------------
 METHOD TabControl:OnParentNotify( nwParam, nlParam, hdr )
    LOCAL nSel, lAllow, nOldSel, oCurPage, oSelPage, aRect, h
-   (nwParam, nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    DO CASE
       CASE hdr:code == NM_CLICK
            ::__lMouseDown := .F.
@@ -1350,7 +1351,8 @@ RETURN ::Super:OnCtlColorDlg( nwParam, nlParam )
 //-----------------------------------------------------------------------------------------------
 METHOD TabPage:__OnParentSize( x, y, hDef )
    LOCAL rc, aRect, nBorder := 0
-   (x, y)
+   HB_SYMBOL_UNUSED(x)
+   HB_SYMBOL_UNUSED(y)
    rc := (struct RECT)
    aRect := _GetClientRect( ::Parent:hWnd )
    rc:Left   := 0
@@ -1698,7 +1700,7 @@ METHOD TabStrip:__GetGradienBrush( hDC, hRgn, aItem, n, d )
    LOCAL nColor1, nColor2, x
    LOCAL hBrush, hOldBitmap, hMemBitmap, hMemDC
    LOCAL __aMesh, aPt := { {=>}, {=>} }
-   (hRgn)
+   HB_SYMBOL_UNUSED(hRgn)
    nColor1 := ::ColorScheme:ToolStripGradientBegin
    nColor2 := ::ColorScheme:ToolStripGradientEnd
 

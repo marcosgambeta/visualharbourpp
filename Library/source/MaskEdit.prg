@@ -596,7 +596,8 @@ RETURN Super:OnKillFocus( nwParam, nlParam )
 
 METHOD MaskEdit:OnPaste( nwParam, nlParam )
    LOCAL nStart, nEnd, cText, i, cChar
-   (nwParam, nlParam)
+   HB_SYMBOL_UNUSED(nwParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF ::IsWindowEnabled() .AND. !::NoEdit .AND. !::ReadOnly
       nStart := LoWord( ::SendMessage( EM_GETSEL, 0, 0 ) ) + 1
       nEnd   := HiWord( ::SendMessage( EM_GETSEL, 0, 0 ) ) + 1

@@ -183,7 +183,7 @@ RETURN Self
 
 METHOD ExplorerBar:OnThemeChanged( oObj, lClean )
    DEFAULT lClean TO .T.
-   (oObj)
+   HB_SYMBOL_UNUSED(oObj)
    IF lClean .AND. ::__hImageListTitle != NIL
       ImageListDestroy( ::__hImageListTitle )
    ENDIF
