@@ -233,7 +233,7 @@ RETURN nWidth
 METHOD Button:OnParentDrawItem( nwParam, nlParam, dis )
    LOCAL nLeft, nTop, aRect, nStyle, lDisabled, lSelected, lFocus, aTextRect, nTextFlags, nColor, n, lDefault, oImageList
    HB_SYMBOL_UNUSED(nwParam)
-   HB_SYMBOL_UNUSED((nlParam)
+   HB_SYMBOL_UNUSED(nlParam)
    IF !( ::__xCtrlName == "Button" )
       RETURN NIL
    ENDIF
