@@ -167,7 +167,7 @@ METHOD System:GetPathFromFolder( nId, lCreate )
    LOCAL cPath := ""
    DEFAULT lCreate TO .F.
    If lCreate
-      nId := hb_bitor((nId, CSIDL_FLAG_CREATE)
+      nId := hb_bitor(nId, CSIDL_FLAG_CREATE)
    Endif
    SHGetFolderPath( 0, nId, 0, SHGFP_TYPE_CURRENT, @cPath )
 RETURN cPath
@@ -860,8 +860,8 @@ RETURN xValue
 FUNCTION GC2RGB( p_nColor )
    LOCAL l_nRed, l_nGreen, l_nBlue
    l_nRed   := MOD(p_nColor, 256)
-   l_nGreen := MOD(INT(p_nColor/256), 256)
-   l_nBlue  := MOD(INT(p_nColor/(256*256)), 256)
+   l_nGreen := MOD(Int(p_nColor/256), 256)
+   l_nBlue  := MOD(Int(p_nColor/(256*256)), 256)
 RETURN ALLTRIM(STR(l_nRed))+","+ALLTRIM(STR(l_nGreen))+","+ALLTRIM(STR(l_nBlue))
 
 //-----------------------------------------------------------------------------------------------------------------------------
